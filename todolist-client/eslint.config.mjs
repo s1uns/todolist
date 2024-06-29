@@ -38,6 +38,5 @@ export default [
       semi: "error"
     }
   },
-
   eslintConfigPrettier
 ];
