@@ -12,7 +12,7 @@ interface FormProps<T> {
   onSubmit: (values: T) => void;
 }
 
-const FormComponent = <T extends {}>(props: FormProps<T>) => {
+const FormComponent = <T extends object>(props: FormProps<T>) => {
   const {
     submitButtonText,
     initialValues,
@@ -41,11 +41,11 @@ const FormComponent = <T extends {}>(props: FormProps<T>) => {
   );
 };
 
-const StyledForm = styled(FormComponent)({
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  justifyContent: "center"
-});
+const StyledForm = styled(FormComponent)`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 export default StyledForm;
