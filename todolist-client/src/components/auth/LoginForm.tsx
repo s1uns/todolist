@@ -1,8 +1,13 @@
-import React, { FC } from "react";
-import Form from "../common/Form";
+import { FC, useEffect } from "react";
 import { userLoginSchema } from "../../utils/validators";
 import { mapToField } from "../../utils/helpers";
 import Input from "../common/Input";
+import { Field } from "formik";
+import { FormButton } from "../common/Button";
+import { StyledForm, StyledFormPaper, StyledFormikForm } from "../common/Form";
+import FormRow from "../common/FormRow";
+import CheckBox from "../common/CheckBox";
+import { FormControlLabel } from "@mui/material";
 
 const fields = [
   {
@@ -26,11 +31,13 @@ const authMapper = {
 interface LoginFormValues {
   email: string;
   password: string;
+  rememberMe: boolean;
 }
 
 const initialValues: LoginFormValues = {
   email: "",
-  password: ""
+  password: "",
+  rememberMe: false
 };
 
 const LoginForm: FC = () => {
@@ -47,17 +54,52 @@ const LoginForm: FC = () => {
   };
 
   return (
-    <Form
-      initialErrors={initialValues}
-      initialValues={initialValues}
-      submitButtonText={"Login"}
-      validationSchema={userLoginSchema}
-      onSubmit={(values) => {
-        handleLogin(values as unknown as LoginFormValues);
-      }}
-    >
-      {fields.map((field) => mapToField(field, authMapper))}
-    </Form>
+    <StyledFormPaper>
+      <StyledFormikForm
+        // initialErrors={initialValues}
+        initialValues={initialValues}
+        validationSchema={userLoginSchema}
+        onSubmit={(values) => {
+          handleLogin(values as unknown as LoginFormValues);
+        }}
+      >
+        {({ setTouched, isValid }) => {
+          useEffect(() => {
+            const touchAllFields = {
+              email: true,
+              password: true,
+              rememberMe: false
+            };
+            setTouched(touchAllFields);
+          }, [setTouched]);
+
+          return (
+            <StyledForm>
+              {fields.map((field) => mapToField(field, authMapper))}
+              <FormRow>
+                <FormControlLabel
+                  control={
+                    <Field
+                      name="rememberMe"
+                      type="checkbox"
+                      component={CheckBox}
+                    />
+                  }
+                  label="Remember me"
+                ></FormControlLabel>
+                <FormButton type="submit" disabled={!isValid}>
+                  Login
+                </FormButton>
+              </FormRow>
+              <FormRow>
+                <a href="/register">Register now</a>
+                <a href="/register">Forgot password?</a>
+              </FormRow>
+            </StyledForm>
+          );
+        }}
+      </StyledFormikForm>
+    </StyledFormPaper>
   );
 };
 

@@ -12,13 +12,10 @@ const mapToField = (componentObject: ComponentObject, mapper: any) => {
   return (
     <div style={{ width: "100%" }} key={componentObject.name}>
       <Field
-        touched={true}
+      
         component={mapper[componentObject.componentType]}
         {...componentObject}
       />
-      // error 
-      // styled div
-
       <ErrorMessage name={componentObject.name}>
         {(msg) => <div style={{ color: "red" }}>{msg}</div>}
       </ErrorMessage>

@@ -19,5 +19,5 @@ const StyledFormRow = styled(Box)({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  gap: "0.7rem"
+  gap: "30%"
 });
