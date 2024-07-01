@@ -16,6 +16,9 @@ const mapToField = (componentObject: ComponentObject, mapper: any) => {
         component={mapper[componentObject.componentType]}
         {...componentObject}
       />
+      // error 
+      // styled div
+
       <ErrorMessage name={componentObject.name}>
         {(msg) => <div style={{ color: "red" }}>{msg}</div>}
       </ErrorMessage>
