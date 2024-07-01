@@ -54,7 +54,7 @@ const LoginForm: FC = () => {
   };
 
   return (
-    <StyledFormPaper>
+    <StyledFormPaper width={20} height={60}>
       <StyledFormikForm
         // initialErrors={initialValues}
         initialValues={initialValues}

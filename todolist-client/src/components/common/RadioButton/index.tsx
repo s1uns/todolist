@@ -3,11 +3,13 @@ import { ChangeEvent } from "react";
 
 interface RadioButtonProps {
   name: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
+  field: undefined | any;
+  // onChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }
 
 const RadioButton = (props: RadioButtonProps) => {
-  return <Radio {...props} />;
+  const { name, field } = props;
+  return <Radio name={name} {...field} />;
 };
 
 export default RadioButton;
