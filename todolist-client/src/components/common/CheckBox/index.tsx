@@ -1,14 +1,20 @@
 import { Checkbox as MuiCheckbox } from "@mui/material";
+import { useState } from "react";
 
 interface CheckBoxProps {
-  name: string;
+  checkBoxName: string;
   field: undefined | any;
 }
 
 const CheckBox = (props: CheckBoxProps) => {
-  const { name, field } = props;
+  const { checkBoxName, field } = props;
 
-  return <MuiCheckbox name={name} {...field} />;
+  return (
+    <MuiCheckbox
+      name={checkBoxName}
+      {...field}
+    />
+  );
 };
 
 export default CheckBox;

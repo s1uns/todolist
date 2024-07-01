@@ -12,11 +12,11 @@ const userRegistrationSchema = yup.object().shape({
   username: yup.string().required("The username is required."),
   firstName: yup.string().required("The first name is required."),
   lastName: yup.string().required("The last name is required."),
-  birthDate: yup
-    .date()
-    .required("The birthday is required.")
-    .min("1900-01-01", "You are too old for this s.")
-    .max(new Date(Date.now()), "You are too young for this s. "),
+  // birthDate: yup
+  //   .date()
+  //   .required("The birthday is required.")
+  //   .min("1900-01-01", "You are too old for this s.")
+  //   .max(new Date(Date.now()), "You are too young for this s. "),
   country: yup.string().required("The country is required."),
   city: yup.string().required("The city is required."),
   gender: yup.string().required("Your gender is required."),

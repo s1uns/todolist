@@ -10,6 +10,8 @@ import CheckBox from "../common/CheckBox";
 import { FormControlLabel } from "@mui/material";
 import { ComponentObject } from "../../utils/helpers/mapComponentToField";
 import DatePicker from "../common/DatePicker";
+import HeardFromSelector from "./HeardFromSelector";
+import GenderSelector from "./GenderSelector";
 
 const topFullRows = [
   {
@@ -41,19 +43,19 @@ const halfRows = [
       componentType: "input"
     }
   },
-  // {
-  //   firstField: {
-  //     name: "birthDate",
-  //     placeholder: "Your birthday date",
-  //     componentType: "datePicker"
-  //   },
-  //   secondField: {
-  //     name: "gender",
-  //     placeholder: "Your sex",
-  //     type: "radio",
-  //     componentType: "gender"
-  //   }
-  // },
+  {
+    firstField: {
+      // name: "birthDate",
+      // placeholder: "Your birthday date",
+      // componentType: "datePicker"
+    },
+    secondField: {
+      name: "gender",
+      placeholder: "Your sex",
+      type: "radio",
+      componentType: "gender"
+    }
+  },
   {
     firstField: {
       name: "country",
@@ -71,11 +73,11 @@ const halfRows = [
 ];
 
 const bottomFullRows = [
-  // {
-  //   name: "heardFrom",
-  //   type: "checkbox",
-  //   componentType: "heardFrom"
-  // },
+  {
+    name: "heardFrom",
+    type: "checkbox",
+    componentType: "heardFrom"
+  },
   {
     name: "password",
     type: "password",
@@ -92,7 +94,9 @@ const bottomFullRows = [
 
 const authMapper = {
   input: Input,
-  datePicker: DatePicker
+  gender: GenderSelector,
+  datePicker: DatePicker,
+  heardFrom: HeardFromSelector
 };
 
 interface RegistrationFormValues {
@@ -101,6 +105,8 @@ interface RegistrationFormValues {
   lastName: string;
   city: string;
   country: string;
+  heardFrom: number[];
+  rememberMe: boolean;
   password: string;
   passwordConfirmation: string;
 }
@@ -111,6 +117,8 @@ const initialValues: RegistrationFormValues = {
   lastName: "",
   city: "",
   country: "",
+  heardFrom: [],
+  rememberMe: false,
   password: "",
   passwordConfirmation: ""
 };
@@ -145,6 +153,8 @@ const RegistrationForm: FC = () => {
               lastName: true,
               city: true,
               country: true,
+              heardFrom: true,
+              rememberMe: true,
               password: true,
               passwordConfirmation: true
             };
@@ -174,8 +184,9 @@ const RegistrationForm: FC = () => {
               })}
               {bottomFullRows.map((field) =>
                 mapToField(field, authMapper, errors)
-              )}{" "}
-              <FormRow>
+              )}
+
+              <FormRow fieldsGap={12}>
                 <FormControlLabel
                   control={
                     <Field
@@ -190,10 +201,7 @@ const RegistrationForm: FC = () => {
                   Registration
                 </FormButton>
               </FormRow>
-              <FormRow>
-                <a href="/Registration">Registration now</a>
-                <a href="/Registration">Forgot password?</a>
-              </FormRow>
+              <a href="/login">Already have an account? Log in!</a>
             </StyledForm>
           );
         }}

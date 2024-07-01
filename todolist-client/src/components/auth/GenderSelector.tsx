@@ -8,22 +8,22 @@ import {
   GENDER_OTHER
 } from "../../utils/constants";
 
-import { FormHelperText } from "@mui/material";
-import { Field } from "formik";
-
 const genderOptions = [
   { value: GENDER_MALE, label: "Male" },
   { value: GENDER_FEMALE, label: "Female" },
   { value: GENDER_OTHER, label: "Other" }
 ];
 
-const GenderSelector = () => {
+const GenderSelector = ({ field }: any) => {
   return (
-    <Field>
-      <FormControl sx={{ width: "100%" }}>
-        {/* <RadioGroup name="gender" options={genderOptions} label="Your Gender" /> */}
-      </FormControl>
-    </Field>
+    <FormControl sx={{ width: "100%" }}>
+      <RadioGroup
+        name="gender"
+        options={genderOptions}
+        label="Your Gender"
+        {...field}
+      />
+    </FormControl>
   );
 };
 
