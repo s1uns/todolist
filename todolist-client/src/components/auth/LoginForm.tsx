@@ -1,8 +1,27 @@
 import React, { FC } from "react";
 import Form from "../common/Form";
 import { userLoginSchema } from "../../utils/validators";
-import { Field, ErrorMessage } from "formik";
-import { TextField } from "@mui/material";
+import { mapToField } from "../../utils/helpers";
+import Input from "../common/Input";
+
+const fields = [
+  {
+    name: "email",
+    type: "text",
+    placeholder: "Email",
+    componentType: "input"
+  },
+  {
+    name: "password",
+    type: "password",
+    placeholder: "Password",
+    componentType: "input"
+  }
+];
+
+const authMapper = {
+  input: Input
+};
 
 interface LoginFormValues {
   email: string;
@@ -11,12 +30,13 @@ interface LoginFormValues {
 
 const initialValues: LoginFormValues = {
   email: "",
-  password: "",
+  password: ""
 };
 
 const LoginForm: FC = () => {
   const handleLogin = (values: LoginFormValues) => {
     const { email, password } = values;
+    console.log("Login: ", values);
 
     // dispatch(
     //     loginUserRequest({
@@ -24,25 +44,19 @@ const LoginForm: FC = () => {
     //         password: password,
     //     })
     // );
-
-    return;
   };
 
   return (
-    <Form<LoginFormValues>
+    <Form
+      initialErrors={initialValues}
       initialValues={initialValues}
       submitButtonText={"Login"}
       validationSchema={userLoginSchema}
-      onSubmit={handleLogin}
+      onSubmit={(values) => {
+        handleLogin(values as unknown as LoginFormValues);
+      }}
     >
-      <div>
-        <Field name="email" type="email" as={TextField} label="Email" fullWidth />
-        <ErrorMessage name="email" component="div" />
-      </div>
-      <div>
-        <Field name="password" type="password" as={TextField} label="Password" fullWidth />
-        <ErrorMessage name="password" component="div" />
-      </div>
+      {fields.map((field) => mapToField(field, authMapper))}
     </Form>
   );
 };

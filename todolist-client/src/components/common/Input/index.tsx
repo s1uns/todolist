@@ -3,13 +3,14 @@ import { InputProps } from "./types";
 import { FC } from "react";
 
 const Input: FC<InputProps> = (props: InputProps) => {
-  const { autoFocus, inputType, placeholder } = props;
+  const { autoFocus, type, placeholder, field } = props;
 
   return (
     <TextField
       autoFocus={autoFocus}
-      type={inputType}
+      type={type}
       placeholder={placeholder}
+      {...field}
     />
   );
 };

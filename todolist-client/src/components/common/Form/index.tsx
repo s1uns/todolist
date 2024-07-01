@@ -1,12 +1,13 @@
 import React from "react";
-import { Formik, Form as FormikForm } from "formik";
+import { Formik, Form as FormikForm, FormikHelpers, FormikProps } from "formik";
 import * as Yup from "yup";
 import { Button, Paper } from "@mui/material";
 import styled from "@emotion/styled";
 
-interface FormProps<T> {
+interface FormProps<T extends object> {
   submitButtonText: string;
   initialValues: T;
+  initialErrors: T;
   validationSchema: Yup.ObjectSchema<any>;
   children: React.ReactNode;
   onSubmit: (values: T) => void;
@@ -22,16 +23,26 @@ const FormComponent = <T extends object>(props: FormProps<T>) => {
   } = props;
 
   return (
-    <Paper>
+    <Paper sx={{ width: "50%", height: "50%" }}>
       <Formik
+        validateOnBlur
+        initialErrors={initialValues}
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ isSubmitting }) => (
-          <FormikForm>
+        {({ isValid }) => (
+          <FormikForm
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
             {children}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={!isValid}>
               {submitButtonText}
             </Button>
           </FormikForm>
@@ -42,7 +53,7 @@ const FormComponent = <T extends object>(props: FormProps<T>) => {
 };
 
 const StyledForm = styled(FormComponent)`
-  width: 100%;
+  width: 100hw;
   height: 100%;
   display: flex;
   justify-content: center;

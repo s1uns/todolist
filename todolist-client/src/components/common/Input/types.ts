@@ -1,5 +1,6 @@
 export interface InputProps {
-    autoFocus: boolean;
-    inputType: string;
-    placeholder: string;
+  autoFocus: boolean;
+  type: string;
+  placeholder: string;
+  field: undefined | any;
 }

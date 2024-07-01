@@ -1,5 +1,5 @@
 import { ErrorMessage } from "formik";
-import { Field } from "react-final-form";
+import { Field } from "formik";
 
 type ComponentObject = {
   name: string;
@@ -9,14 +9,16 @@ type ComponentObject = {
 };
 
 const mapToField = (componentObject: ComponentObject, mapper: any) => {
-  // create type for the mapper
   return (
-    <div key={componentObject.name}>
+    <div style={{ width: "100%" }} key={componentObject.name}>
       <Field
-        {...componentObject}
+        touched={true}
         component={mapper[componentObject.componentType]}
+        {...componentObject}
       />
-      <ErrorMessage name={componentObject.name} />
+      <ErrorMessage name={componentObject.name}>
+        {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+      </ErrorMessage>
     </div>
   );
 };
