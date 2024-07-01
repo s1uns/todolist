@@ -137,7 +137,7 @@ const RegistrationForm: FC = () => {
           handleRegistration(values as unknown as RegistrationFormValues);
         }}
       >
-        {({ setTouched, isValid }) => {
+        {({ errors, setTouched, isValid }) => {
           useEffect(() => {
             const touchAllFields = {
               email: true,
@@ -153,16 +153,28 @@ const RegistrationForm: FC = () => {
 
           return (
             <StyledForm>
-              {topFullRows.map((field) => mapToField(field, authMapper))}
+              {topFullRows.map((field) =>
+                mapToField(field, authMapper, errors)
+              )}
               {halfRows.map((row) => {
                 return (
                   <FormRow>
-                    {mapToField(row.firstField as ComponentObject, authMapper)}
-                    {mapToField(row.secondField as ComponentObject, authMapper)}
+                    {mapToField(
+                      row.firstField as ComponentObject,
+                      authMapper,
+                      errors
+                    )}
+                    {mapToField(
+                      row.secondField as ComponentObject,
+                      authMapper,
+                      errors
+                    )}
                   </FormRow>
                 );
               })}
-              {bottomFullRows.map((field) => mapToField(field, authMapper))}{" "}
+              {bottomFullRows.map((field) =>
+                mapToField(field, authMapper, errors)
+              )}{" "}
               <FormRow>
                 <FormControlLabel
                   control={

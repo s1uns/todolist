@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { ErrorMessage } from "formik";
+import { ErrorMessage, FormikErrors, FormikValues } from "formik";
 import { Field } from "formik";
 
 export type ComponentObject = {
@@ -9,17 +9,24 @@ export type ComponentObject = {
   componentType: string;
 };
 
-const mapToField = (componentObject: ComponentObject, mapper: any) => {
-  console.log("Object: ", componentObject);
+const mapToField = (
+  componentObject: ComponentObject,
+  mapper: any,
+  errors: FormikErrors<FormikValues>
+) => {
   return (
     <StyledFieldContainer key={componentObject.name}>
       <Field
         component={mapper[componentObject.componentType]}
         {...componentObject}
       />
-      {/* <ErrorMessage name={componentObject.name}>
-        {(msg) => <StyledError>{msg}</StyledError>}
-      </ErrorMessage> */}
+      {errors[componentObject.name] ? (
+        <StyledError>
+          {errors[componentObject.name] as unknown as string}
+        </StyledError>
+      ) : (
+        <StyledError>&nbsp;</StyledError>
+      )}
     </StyledFieldContainer>
   );
 };
@@ -33,9 +40,8 @@ const StyledField = styled.div`
 `;
 
 const StyledError = styled.div`
+  height: 100%;
   color: red;
-  margin-top: -1.5rem;
-  margin-bottom: 0.3rem;
 `;
 
 export default mapToField;

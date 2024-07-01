@@ -63,7 +63,7 @@ const LoginForm: FC = () => {
           handleLogin(values as unknown as LoginFormValues);
         }}
       >
-        {({ setTouched, isValid }) => {
+        {({ errors, setTouched, isValid }) => {
           useEffect(() => {
             const touchAllFields = {
               email: true,
@@ -75,7 +75,7 @@ const LoginForm: FC = () => {
 
           return (
             <StyledForm>
-              {fields.map((field) => mapToField(field, authMapper))}
+              {fields.map((field) => mapToField(field, authMapper, errors))}
               <FormRow>
                 <FormControlLabel
                   control={

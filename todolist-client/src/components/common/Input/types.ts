@@ -1,5 +1,5 @@
 export interface InputProps {
-  name: "string";
+  componentName: "string";
   autoFocus: boolean;
   type: string;
   placeholder: string;
