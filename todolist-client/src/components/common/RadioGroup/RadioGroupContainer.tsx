@@ -23,8 +23,13 @@ const RadioGroupContainer = (props: RadioGroupProps) => {
       <StyledRadioGroup aria-labelledby="radio-buttons-group-label" name={name}>
         {options.map(({ value, label }) => (
           <FormLabel>
-            <RadioButton key={value} name={name} field={field} />
-            {label}
+            <RadioButton
+              key={value}
+              name={name}
+              field={field}
+              label={label}
+              labelPlacement="bottom"
+            />
           </FormLabel>
         ))}
       </StyledRadioGroup>

@@ -3,9 +3,10 @@ import { useField, useFormikContext } from "formik";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InputLabel from "@mui/material/InputLabel";
-import { Container } from "@mui/material";
+import { Container, TextField } from "@mui/material";
 import { DatePickerProps } from "./types";
 import { FC } from "react";
+import styled from "@emotion/styled";
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
   const { placeholder, field } = props;
@@ -14,7 +15,7 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
   const { setValue } = helpers;
 
   return (
-    <Container>
+    <Container disableGutters={true}>
       <InputLabel className="form-label">{placeholder}</InputLabel>
 
       <ReactDatePicker
@@ -27,6 +28,8 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
           setValue(val);
         }}
         todayButton="Today"
+        customInput={<TextField />}
+        wrapperClassName="datePicker"
       />
     </Container>
   );

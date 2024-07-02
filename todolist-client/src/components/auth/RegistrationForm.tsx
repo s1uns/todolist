@@ -45,7 +45,7 @@ const halfRows = [
     }
   },
   {
-    fieldsGap: 0.5,
+    fieldsGap: 5,
     firstField: {
       name: "birthDate",
       type: "date",
@@ -60,7 +60,7 @@ const halfRows = [
     }
   },
   {
-    fieldsGap: 10,
+    fieldsGap: 5,
     firstField: {
       name: "country",
       type: "text",

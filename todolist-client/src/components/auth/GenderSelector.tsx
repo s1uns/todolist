@@ -8,6 +8,7 @@ import {
 } from "../../utils/constants";
 import { Field } from "formik";
 import styled from "@emotion/styled";
+import RadioButton from "../common/RadioButton";
 
 const genderOptions = [
   { value: GENDER_MALE, label: "Male" },
@@ -17,14 +18,20 @@ const genderOptions = [
 
 const GenderSelector = () => {
   return (
-    <StyledFormControl sx={{ width: "100%" }}>
+    <StyledFormControl>
       <FormLabel>Your gender</FormLabel>
       <RadioGroup>
         {genderOptions.map(
           ({ value, label }: { value: number; label: string }) => (
             <FormLabel key={value}>
-              <Field type="radio" name="gender" value={value.toString()} />
-              {label}
+              <Field
+                type="radio"
+                name="gender"
+                value={value.toString()}
+                component={RadioButton}
+                label={label}
+                labelPlacement="bottom"
+              />
             </FormLabel>
           )
         )}

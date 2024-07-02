@@ -11,10 +11,10 @@ const theme = createTheme({
             transform: "translate(14px, 8px) scale(1)"
           },
           "& .MuiInputLabel-root": {
-            color: "green"
+            color: "black"
           },
           "& .MuiInputLabel-root.Mui-focused": {
-            color: "purple"
+            color: "gray"
           },
           "& .MuiInputBase-input": {
             width: "100%",

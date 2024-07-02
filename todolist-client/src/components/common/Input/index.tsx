@@ -7,11 +7,11 @@ const Input: FC<InputProps> = (props: InputProps) => {
 
   return (
     <TextField
+      label={placeholder}
       autoFocus={autoFocus}
       type={type}
       placeholder={placeholder}
       {...field}
-
     />
   );
 };

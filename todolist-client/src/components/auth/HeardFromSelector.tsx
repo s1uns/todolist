@@ -10,6 +10,7 @@ import {
   HEARD_FROM_INTERNET,
   HEARD_FROM_OTHER
 } from "../../utils/constants";
+import styled from "@emotion/styled";
 
 const heardFromOptions = [
   { value: HEARD_FROM_FRIEND, label: "Friend" },
@@ -20,15 +21,13 @@ const heardFromOptions = [
 
 const HeardFromSelector = () => {
   return (
-    <Container
-      sx={{ display: "flex", flexDirection: "column", marginTop: "3rem" }}
-    >
+    <StyledContainer>
       <FormLabel id="checkbox-buttons-group-label">
         How did you know about us?
       </FormLabel>
-      <Grid role="group" container spacing={2}>
+      <Grid role="group" container spacing={1}>
         {heardFromOptions.map(({ value, label }) => (
-          <Grid item xs={6} key={value}>
+          <StyledGridItem item xs={6} key={value}>
             <FormControlLabel
               control={
                 <Field
@@ -41,11 +40,24 @@ const HeardFromSelector = () => {
               }
               label={label}
             ></FormControlLabel>
-          </Grid>
+          </StyledGridItem>
         ))}
       </Grid>
-    </Container>
+    </StyledContainer>
   );
 };
 
 export default HeardFromSelector;
+
+const StyledContainer = styled(Container)({
+  display: "flex",
+  flexDirection: "column",
+  marginTop: "2rem",
+  gap: "1rem"
+});
+
+const StyledGridItem = styled(Grid)({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "flex-start"
+});
