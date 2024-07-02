@@ -52,7 +52,6 @@ const CheckBoxField = ({ value, label }: { value: number; label: string }) => {
     <StyledGridItem item xs={6} key={value}>
       <FastField
         name="heardFrom"
-        // type="checkbox"
         component={CheckBox}
         onChange={handleSelectHeardFrom}
         value={value}
@@ -63,8 +62,6 @@ const CheckBoxField = ({ value, label }: { value: number; label: string }) => {
 };
 
 const HeardFromSelector = ({ error, touched }: HeardFromSelectorProps) => {
-  console.log("Rerender");
-
   return (
     <StyledContainer>
       <FormLabel id="checkbox-buttons-group-label">

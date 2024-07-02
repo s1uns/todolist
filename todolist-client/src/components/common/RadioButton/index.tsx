@@ -1,12 +1,10 @@
 import { FormControlLabel, Radio } from "@mui/material";
-import { ChangeEvent } from "react";
 
 interface RadioButtonProps {
   name: string;
   label: string;
-  labelPlacement: string;
+  labelPlacement: "end" | "start" | "top" | "bottom" | undefined;
   field: undefined | any;
-  // onChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }
 
 const RadioButton = (props: RadioButtonProps) => {

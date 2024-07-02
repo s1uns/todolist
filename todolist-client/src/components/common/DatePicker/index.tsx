@@ -7,9 +7,10 @@ import { Container, TextField } from "@mui/material";
 import { DatePickerProps } from "./types";
 import { FC } from "react";
 import styled from "@emotion/styled";
+import StyledError from "../Error";
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
-  const { placeholder, field } = props;
+  const { placeholder, field, error, touched } = props;
   const { value } = field;
   const [dateField, meta, helpers] = useField(field);
   const { setValue } = helpers;
@@ -31,6 +32,11 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
         customInput={<TextField />}
         wrapperClassName="datePicker"
       />
+      {error && touched ? (
+        <StyledError>{error}</StyledError>
+      ) : (
+        <StyledError>&nbsp;</StyledError>
+      )}
     </Container>
   );
 };

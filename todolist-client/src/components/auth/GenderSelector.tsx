@@ -6,9 +6,10 @@ import {
   GENDER_MALE,
   GENDER_OTHER
 } from "../../utils/constants";
-import { Field } from "formik";
+import { FastField, Field, useField } from "formik";
 import styled from "@emotion/styled";
 import RadioButton from "../common/RadioButton";
+import StyledError from "../common/Error";
 
 const genderOptions = [
   { value: GENDER_MALE, label: "Male" },
@@ -16,15 +17,22 @@ const genderOptions = [
   { value: GENDER_OTHER, label: "Other" }
 ];
 
-const GenderSelector = () => {
+interface GenderSelectorProps {
+  error: string;
+  touched: boolean;
+}
+
+const GenderSelector = ({ error, touched }: GenderSelectorProps) => {
+  console.log("Rerender");
   return (
     <StyledFormControl>
       <FormLabel>Your gender</FormLabel>
       <RadioGroup>
         {genderOptions.map(
-          ({ value, label }: { value: number; label: string }) => (
-            <FormLabel key={value}>
-              <Field
+          ({ value, label }: { value: number; label: string }) => {
+            console.log("Val: ", value);
+            return (
+              <FastField
                 type="radio"
                 name="gender"
                 value={value.toString()}
@@ -32,10 +40,15 @@ const GenderSelector = () => {
                 label={label}
                 labelPlacement="bottom"
               />
-            </FormLabel>
-          )
+            );
+          }
         )}
       </RadioGroup>
+      {error && touched ? (
+        <StyledError>{error}</StyledError>
+      ) : (
+        <StyledError>&nbsp;</StyledError>
+      )}
     </StyledFormControl>
   );
 };

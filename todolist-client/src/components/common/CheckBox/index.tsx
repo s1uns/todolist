@@ -14,7 +14,7 @@ const CheckBox = (props: CheckBoxProps) => {
 
   return (
     <CheckBoxWrapper>
-      <MuiCheckbox name={checkBoxName} {...field} onChange={onChange} />;
+      <MuiCheckbox name={checkBoxName} {...field} onChange={onChange} />
       {label ? <CheckBoxLabelTitle>{label}</CheckBoxLabelTitle> : <div></div>}
     </CheckBoxWrapper>
   );
@@ -31,3 +31,4 @@ const CheckBoxWrapper = styled.div`
 const CheckBoxLabelTitle = styled(Typography)`
   font-size: 1rem;
 `;
+

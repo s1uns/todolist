@@ -5,7 +5,6 @@ import StyledError from "../Error";
 
 const Input: FC<InputProps> = (props: InputProps) => {
   const { autoFocus, type, placeholder, field, error, touched } = props;
-  console.log("Props: ", props);
   return (
     <>
       <TextField
