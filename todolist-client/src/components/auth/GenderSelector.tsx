@@ -23,14 +23,12 @@ interface GenderSelectorProps {
 }
 
 const GenderSelector = ({ error, touched }: GenderSelectorProps) => {
-  console.log("Rerender");
   return (
     <StyledFormControl>
       <FormLabel>Your gender</FormLabel>
       <RadioGroup>
         {genderOptions.map(
           ({ value, label }: { value: number; label: string }) => {
-            console.log("Val: ", value);
             return (
               <FastField
                 type="radio"
