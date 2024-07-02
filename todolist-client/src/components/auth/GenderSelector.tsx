@@ -1,12 +1,13 @@
 import React from "react";
-import { FormControl } from "@mui/material";
-import { RadioGroup } from "../common/RadioGroup";
+import { FormControl, FormLabel } from "@mui/material";
 
 import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER
 } from "../../utils/constants";
+import { Field } from "formik";
+import styled from "@emotion/styled";
 
 const genderOptions = [
   { value: GENDER_MALE, label: "Male" },
@@ -14,17 +15,33 @@ const genderOptions = [
   { value: GENDER_OTHER, label: "Other" }
 ];
 
-const GenderSelector = ({ field }: any) => {
+const GenderSelector = () => {
   return (
-    <FormControl sx={{ width: "100%" }}>
-      <RadioGroup
-        name="gender"
-        options={genderOptions}
-        label="Your Gender"
-        {...field}
-      />
-    </FormControl>
+    <StyledFormControl sx={{ width: "100%" }}>
+      <FormLabel>Your gender</FormLabel>
+      <RadioGroup>
+        {genderOptions.map(
+          ({ value, label }: { value: number; label: string }) => (
+            <FormLabel key={value}>
+              <Field type="radio" name="gender" value={value.toString()} />
+              {label}
+            </FormLabel>
+          )
+        )}
+      </RadioGroup>
+    </StyledFormControl>
   );
 };
+
+const StyledFormControl = styled(FormControl)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const RadioGroup = styled.div`
+  display: flex;
+`;
 
 export default GenderSelector;

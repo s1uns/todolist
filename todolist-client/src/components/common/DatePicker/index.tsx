@@ -1,3 +1,5 @@
+import React from "react";
+import { useField, useFormikContext } from "formik";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InputLabel from "@mui/material/InputLabel";
@@ -6,20 +8,23 @@ import { DatePickerProps } from "./types";
 import { FC } from "react";
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
-  const { placeholder, onChange } = props;
+  const { placeholder, field } = props;
+  const { value } = field;
+  const [dateField, meta, helpers] = useField(field);
+  const { setValue } = helpers;
 
   return (
-    <Container sx={{ width: "50%" }}>
+    <Container>
       <InputLabel className="form-label">{placeholder}</InputLabel>
 
       <ReactDatePicker
-        className="input"
         dateFormat="dd.MM.yyyy"
         showPopperArrow={false}
         showMonthDropdown
         dropdownMode="select"
-        onChange={(value) => {
-          onChange(value!);
+        selected={(value && new Date(value)) || null}
+        onChange={(val) => {
+          setValue(val);
         }}
         todayButton="Today"
       />

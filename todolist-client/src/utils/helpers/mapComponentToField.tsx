@@ -4,7 +4,7 @@ import { Field } from "formik";
 
 export type ComponentObject = {
   name: string;
-  type: string | undefined;
+  type?: string;
   placeholder: string;
   componentType: string;
 };
@@ -41,6 +41,8 @@ const StyledField = styled.div`
 
 const StyledError = styled.div`
   height: 100%;
+  display: flex;
+  justify-content: center;
   color: red;
 `;
 

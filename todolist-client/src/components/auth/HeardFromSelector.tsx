@@ -20,13 +20,15 @@ const heardFromOptions = [
 
 const HeardFromSelector = () => {
   return (
-    <Container sx={{ display: "flex", flexDirection: "column" }}>
+    <Container
+      sx={{ display: "flex", flexDirection: "column", marginTop: "3rem" }}
+    >
       <FormLabel id="checkbox-buttons-group-label">
         How did you know about us?
       </FormLabel>
       <Grid role="group" container spacing={2}>
         {heardFromOptions.map(({ value, label }) => (
-          <Grid item xs={6}>
+          <Grid item xs={6} key={value}>
             <FormControlLabel
               control={
                 <Field

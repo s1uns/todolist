@@ -30,6 +30,7 @@ const topFullRows = [
 
 const halfRows = [
   {
+    fieldsGap: 5,
     firstField: {
       name: "firstName",
       type: "text",
@@ -44,10 +45,12 @@ const halfRows = [
     }
   },
   {
+    fieldsGap: 0.5,
     firstField: {
-      // name: "birthDate",
-      // placeholder: "Your birthday date",
-      // componentType: "datePicker"
+      name: "birthDate",
+      type: "date",
+      placeholder: "Your birthday date",
+      componentType: "datePicker"
     },
     secondField: {
       name: "gender",
@@ -57,6 +60,7 @@ const halfRows = [
     }
   },
   {
+    fieldsGap: 10,
     firstField: {
       name: "country",
       type: "text",
@@ -103,6 +107,8 @@ interface RegistrationFormValues {
   email: string;
   firstName: string;
   lastName: string;
+  birthDate: Date;
+  gender: number | null;
   city: string;
   country: string;
   heardFrom: number[];
@@ -115,6 +121,8 @@ const initialValues: RegistrationFormValues = {
   email: "",
   firstName: "",
   lastName: "",
+  birthDate: new Date(),
+  gender: null,
   city: "",
   country: "",
   heardFrom: [],
@@ -137,7 +145,7 @@ const RegistrationForm: FC = () => {
   };
 
   return (
-    <StyledFormPaper width={30} height={80}>
+    <StyledFormPaper width={30} height={90}>
       <StyledFormikForm
         initialValues={initialValues}
         validationSchema={userRegistrationSchema}
@@ -151,6 +159,7 @@ const RegistrationForm: FC = () => {
               email: true,
               firstName: true,
               lastName: true,
+              gender: true,
               city: true,
               country: true,
               heardFrom: true,
@@ -168,7 +177,7 @@ const RegistrationForm: FC = () => {
               )}
               {halfRows.map((row) => {
                 return (
-                  <FormRow>
+                  <FormRow key={row.firstField.name} fieldsGap={row.fieldsGap}>
                     {mapToField(
                       row.firstField as ComponentObject,
                       authMapper,
