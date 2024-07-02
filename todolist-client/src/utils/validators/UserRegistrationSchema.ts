@@ -19,7 +19,7 @@ const userRegistrationSchema = yup.object().shape({
     .max(new Date(Date.now()), "You are too young for this s. "),
   country: yup.string().required("The country is required."),
   city: yup.string().required("The city is required."),
-  gender: yup.string().required("Your gender is required."),
+  gender: yup.number().required("Your gender is required."),
   heardFrom: yup
     .array()
     .min(1, "Choose at least one source.")
