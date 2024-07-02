@@ -43,6 +43,7 @@ const initialValues: LoginFormValues = {
 const LoginForm: FC = () => {
   const handleLogin = (values: LoginFormValues) => {
     const { email, password } = values;
+    console.log("Login: ", values);
 
     // dispatch(
     //     loginUserRequest({
