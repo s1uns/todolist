@@ -1,10 +1,11 @@
 import { FormControlLabel, Radio } from "@mui/material";
+import { FieldInputProps } from "formik";
 
 interface RadioButtonProps {
   name: string;
   label: string;
   labelPlacement: "end" | "start" | "top" | "bottom" | undefined;
-  field: undefined | any;
+  field?: FieldInputProps<number>;
 }
 
 const RadioButton = (props: RadioButtonProps) => {
