@@ -43,7 +43,6 @@ const initialValues: LoginFormValues = {
 const LoginForm: FC = () => {
   const handleLogin = (values: LoginFormValues) => {
     const { email, password } = values;
-    console.log("Login: ", values);
 
     // dispatch(
     //     loginUserRequest({
@@ -56,26 +55,18 @@ const LoginForm: FC = () => {
   return (
     <StyledFormPaper width={20} height={40}>
       <StyledFormikForm
-        // initialErrors={initialValues}
         initialValues={initialValues}
         validationSchema={userLoginSchema}
         onSubmit={(values) => {
           handleLogin(values as unknown as LoginFormValues);
         }}
       >
-        {({ errors, setTouched, isValid }) => {
-          useEffect(() => {
-            const touchAllFields = {
-              email: true,
-              password: true,
-              rememberMe: false
-            };
-            setTouched(touchAllFields);
-          }, [setTouched]);
-
+        {({ errors, touched }) => {
           return (
             <StyledForm>
-              {fields.map((field) => mapToField(field, authMapper, errors))}
+              {fields.map((field) =>
+                mapToField(field, authMapper, errors, touched)
+              )}
               <FormRow>
                 <FormControlLabel
                   control={
@@ -87,9 +78,7 @@ const LoginForm: FC = () => {
                   }
                   label="Remember me"
                 ></FormControlLabel>
-                <FormButton type="submit" disabled={!isValid}>
-                  Login
-                </FormButton>
+                <FormButton type="submit">Login</FormButton>
               </FormRow>
               <FormRow>
                 <a href="/register">Register now</a>

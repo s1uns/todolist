@@ -5,4 +5,6 @@ export interface InputProps {
   placeholder: string;
   field: undefined | any;
   form: undefined | any;
+  error: undefined | string;
+  touched: boolean;
 }

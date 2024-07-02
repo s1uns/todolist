@@ -4,10 +4,10 @@ const GENDER_FEMALE = 1;
 const GENDER_OTHER = 2;
 
 // heard from
-const HEARD_FROM_FRIEND = 0;
-const HEARD_FROM_INTERNET = 1;
-const HEARD_FROM_ADVERTISEMENT = 2;
-const HEARD_FROM_OTHER = 3;
+const HEARD_FROM_FRIEND = 1;
+const HEARD_FROM_INTERNET = 2;
+const HEARD_FROM_ADVERTISEMENT = 3;
+const HEARD_FROM_OTHER = 4;
 
 // requests
 const POST_REQUEST = "POST";

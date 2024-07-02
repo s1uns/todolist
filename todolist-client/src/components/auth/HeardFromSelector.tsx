@@ -1,7 +1,6 @@
-import React from "react";
-import { Field } from "formik";
+import { ChangeEvent, useCallback } from "react";
+import { FastField, Field, useField } from "formik";
 import CheckBox from "../common/CheckBox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { Container, FormLabel, Grid } from "@mui/material";
 
 import {
@@ -11,6 +10,7 @@ import {
   HEARD_FROM_OTHER
 } from "../../utils/constants";
 import styled from "@emotion/styled";
+import StyledError from "../common/Error";
 
 const heardFromOptions = [
   { value: HEARD_FROM_FRIEND, label: "Friend" },
@@ -19,7 +19,52 @@ const heardFromOptions = [
   { value: HEARD_FROM_OTHER, label: "Other" }
 ];
 
-const HeardFromSelector = () => {
+interface HeardFromSelectorProps {
+  error: string;
+  touched: boolean;
+}
+
+const CheckBoxField = ({ value, label }: { value: number; label: string }) => {
+  const [field, meta, helpers] = useField("heardFrom");
+  const { value: inputValue } = meta;
+  const { setValue } = helpers;
+  const handleSelectHeardFrom = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation;
+
+      const isExist = inputValue?.find((item: number) => item === value);
+      if (isExist) {
+        const newList = [...inputValue].filter(
+          (item: number) => item !== value
+        );
+        setValue(newList);
+        return;
+      } else {
+        const newList = [...inputValue, value];
+        setValue(newList);
+        return;
+      }
+    },
+    [inputValue]
+  );
+
+  return (
+    <StyledGridItem item xs={6} key={value}>
+      <FastField
+        name="heardFrom"
+        // type="checkbox"
+        component={CheckBox}
+        onChange={handleSelectHeardFrom}
+        value={value}
+        label={label}
+      />
+    </StyledGridItem>
+  );
+};
+
+const HeardFromSelector = ({ error, touched }: HeardFromSelectorProps) => {
+  console.log("Rerender");
+
   return (
     <StyledContainer>
       <FormLabel id="checkbox-buttons-group-label">
@@ -27,22 +72,14 @@ const HeardFromSelector = () => {
       </FormLabel>
       <Grid role="group" container spacing={1}>
         {heardFromOptions.map(({ value, label }) => (
-          <StyledGridItem item xs={6} key={value}>
-            <FormControlLabel
-              control={
-                <Field
-                  name="heardFrom"
-                  type="checkbox"
-                  component={CheckBox}
-                  checked={true}
-                  value={value.toString()}
-                />
-              }
-              label={label}
-            ></FormControlLabel>
-          </StyledGridItem>
+          <CheckBoxField key={value} value={value} label={label} />
         ))}
       </Grid>
+      {error && touched ? (
+        <StyledError>{error}</StyledError>
+      ) : (
+        <StyledError>&nbsp;</StyledError>
+      )}
     </StyledContainer>
   );
 };

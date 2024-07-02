@@ -153,27 +153,11 @@ const RegistrationForm: FC = () => {
           handleRegistration(values as unknown as RegistrationFormValues);
         }}
       >
-        {({ errors, setTouched, isValid }) => {
-          useEffect(() => {
-            const touchAllFields = {
-              email: true,
-              firstName: true,
-              lastName: true,
-              gender: true,
-              city: true,
-              country: true,
-              heardFrom: true,
-              rememberMe: true,
-              password: true,
-              passwordConfirmation: true
-            };
-            setTouched(touchAllFields);
-          }, [setTouched]);
-
+        {({ errors, touched, values }) => {
           return (
             <StyledForm>
               {topFullRows.map((field) =>
-                mapToField(field, authMapper, errors)
+                mapToField(field, authMapper, errors, touched)
               )}
               {halfRows.map((row) => {
                 return (
@@ -181,18 +165,20 @@ const RegistrationForm: FC = () => {
                     {mapToField(
                       row.firstField as ComponentObject,
                       authMapper,
-                      errors
+                      errors,
+                      touched
                     )}
                     {mapToField(
                       row.secondField as ComponentObject,
                       authMapper,
-                      errors
+                      errors,
+                      touched
                     )}
                   </FormRow>
                 );
               })}
               {bottomFullRows.map((field) =>
-                mapToField(field, authMapper, errors)
+                mapToField(field, authMapper, errors, touched)
               )}
 
               <FormRow fieldsGap={12}>
@@ -206,9 +192,7 @@ const RegistrationForm: FC = () => {
                   }
                   label="Remember me"
                 ></FormControlLabel>
-                <FormButton type="submit" disabled={!isValid}>
-                  Registration
-                </FormButton>
+                <FormButton type="submit">Registration</FormButton>
               </FormRow>
               <a href="/login">Already have an account? Log in!</a>
             </StyledForm>

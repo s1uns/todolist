@@ -12,10 +12,6 @@ interface RadioButtonProps {
 const RadioButton = (props: RadioButtonProps) => {
   const { name, label, labelPlacement, field } = props;
 
-  console.log("Props: ", props);
-  console.log("Label: ", label);
-  console.log("Label placement: ", labelPlacement);
-
   return (
     <FormControlLabel
       control={<Radio />}
