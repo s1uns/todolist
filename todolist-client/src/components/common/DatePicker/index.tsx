@@ -26,8 +26,6 @@ interface DatePickerProps {
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
   const { label, placeholder, value, error, onChange } = props;
 
-  // const handleChange = () => ;
-
   return (
     <Container disableGutters={true}>
       <InputLabel className="form-label">{label}</InputLabel>
