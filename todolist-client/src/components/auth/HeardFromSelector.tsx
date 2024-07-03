@@ -1,15 +1,15 @@
-import { ChangeEvent, useCallback } from "react";
-import { FastField, Field, useField } from "formik";
-import CheckBox from "../common/CheckBox";
 import { Container, FormLabel, Grid, Typography } from "@mui/material";
+import { FastField, useField } from "formik";
+import { ChangeEvent, useCallback } from "react";
+import CheckBox from "../common/CheckBox";
 
+import styled from "@emotion/styled";
 import {
   HEARD_FROM_ADVERTISEMENT,
   HEARD_FROM_FRIEND,
   HEARD_FROM_INTERNET,
   HEARD_FROM_OTHER
 } from "../../utils/constants";
-import styled from "@emotion/styled";
 
 const heardFromOptions = [
   { value: HEARD_FROM_FRIEND, label: "Friend" },

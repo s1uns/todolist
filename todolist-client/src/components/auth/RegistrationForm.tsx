@@ -1,17 +1,17 @@
-import { FC, useEffect } from "react";
-import { userRegistrationSchema } from "../../utils/validators";
-import { mapToField } from "../../utils/helpers";
-import Input from "../common/Input";
-import { Field } from "formik";
-import { FormButton } from "../common/Button";
-import { StyledForm, StyledFormPaper, StyledFormikForm } from "../common/Form";
-import FormRow from "../common/FormRow";
-import CheckBox from "../common/CheckBox";
 import { FormControlLabel } from "@mui/material";
+import { Field } from "formik";
+import { FC } from "react";
+import { mapToField } from "../../utils/helpers";
 import { ComponentObject } from "../../utils/helpers/mapComponentToField";
+import { userRegistrationSchema } from "../../utils/validators";
+import { FormButton } from "../common/Button";
+import CheckBox from "../common/CheckBox";
 import DatePicker from "../common/DatePicker";
-import HeardFromSelector from "./HeardFromSelector";
+import { StyledForm, StyledFormikForm, StyledFormPaper } from "../common/Form";
+import FormRow from "../common/FormRow";
+import Input from "../common/Input";
 import GenderSelector from "./GenderSelector";
+import HeardFromSelector from "./HeardFromSelector";
 
 const topFullRows = [
   {

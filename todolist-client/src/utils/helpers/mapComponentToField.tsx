@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  ErrorMessage,
-  FastField,
-  FormikErrors,
-  FormikTouched,
-  FormikValues
-} from "formik";
-import { Field } from "formik";
+import { FastField, FormikErrors, FormikTouched, FormikValues } from "formik";
 
 export type ComponentObject = {
   name: string;

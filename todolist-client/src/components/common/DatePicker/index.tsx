@@ -1,12 +1,10 @@
-import React from "react";
-import { useField, useFormikContext } from "formik";
+import { Container, TextField, Typography } from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import { useField } from "formik";
+import { FC } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import InputLabel from "@mui/material/InputLabel";
-import { Container, TextField, Typography } from "@mui/material";
 import { DatePickerProps } from "./types";
-import { FC } from "react";
-import styled from "@emotion/styled";
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
   const { placeholder, field, error, touched, onChange } = props;

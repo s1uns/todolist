@@ -1,6 +1,6 @@
 import { TextField, Typography } from "@mui/material";
-import { InputProps } from "./types";
 import { FC } from "react";
+import { InputProps } from "./types";
 
 const Input: FC<InputProps> = (props: InputProps) => {
   const {

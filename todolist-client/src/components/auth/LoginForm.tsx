@@ -1,13 +1,13 @@
-import { FC, useEffect } from "react";
-import { userLoginSchema } from "../../utils/validators";
-import { mapToField } from "../../utils/helpers";
-import Input from "../common/Input";
-import { Field } from "formik";
-import { FormButton } from "../common/Button";
-import { StyledForm, StyledFormPaper, StyledFormikForm } from "../common/Form";
-import FormRow from "../common/FormRow";
-import CheckBox from "../common/CheckBox";
 import { FormControlLabel } from "@mui/material";
+import { Field } from "formik";
+import { FC } from "react";
+import { mapToField } from "../../utils/helpers";
+import { userLoginSchema } from "../../utils/validators";
+import { FormButton } from "../common/Button";
+import CheckBox from "../common/CheckBox";
+import { StyledForm, StyledFormikForm, StyledFormPaper } from "../common/Form";
+import FormRow from "../common/FormRow";
+import Input from "../common/Input";
 
 const fields = [
   {
