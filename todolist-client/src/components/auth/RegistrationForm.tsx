@@ -1,107 +1,15 @@
-import { FC, useEffect } from "react";
+import styled from "@emotion/styled";
+import { FormControlLabel, Paper } from "@mui/material";
+import { Field, Form, Formik } from "formik";
+import { FC } from "react";
+import DatePicker from "react-datepicker";
 import { userRegistrationSchema } from "../../utils/validators";
-import { mapToField } from "../../utils/helpers";
-import Input from "../common/Input";
-import { Field } from "formik";
 import { FormButton } from "../common/Button";
-import { StyledForm, StyledFormPaper, StyledFormikForm } from "../common/Form";
-import FormRow from "../common/FormRow";
 import CheckBox from "../common/CheckBox";
-import { FormControlLabel } from "@mui/material";
-import { ComponentObject } from "../../utils/helpers/mapComponentToField";
-import DatePicker from "../common/DatePicker";
-import HeardFromSelector from "./HeardFromSelector";
+import FormRow from "../common/FormRow";
+import Input from "../common/Input";
 import GenderSelector from "./GenderSelector";
-
-const topFullRows = [
-  {
-    name: "email",
-    type: "text",
-    placeholder: "Email",
-    componentType: "input"
-  },
-  {
-    name: "username",
-    type: "text",
-    placeholder: "Username",
-    componentType: "input"
-  }
-] as ComponentObject[];
-
-const halfRows = [
-  {
-    fieldsGap: 5,
-    firstField: {
-      name: "firstName",
-      type: "text",
-      placeholder: "First Name",
-      componentType: "input"
-    },
-    secondField: {
-      name: "lastName",
-      type: "text",
-      placeholder: "Last Name",
-      componentType: "input"
-    }
-  },
-  {
-    fieldsGap: 5,
-    firstField: {
-      name: "birthDate",
-      type: "date",
-      placeholder: "Your birthday date",
-      componentType: "datePicker"
-    },
-    secondField: {
-      name: "gender",
-      placeholder: "Your sex",
-      type: "radio",
-      componentType: "gender"
-    }
-  },
-  {
-    fieldsGap: 5,
-    firstField: {
-      name: "country",
-      type: "text",
-      placeholder: "Country",
-      componentType: "input"
-    },
-    secondField: {
-      name: "city",
-      type: "text",
-      placeholder: "City",
-      componentType: "input"
-    }
-  }
-];
-
-const bottomFullRows = [
-  {
-    name: "heardFrom",
-    type: "checkbox",
-    componentType: "heardFrom"
-  },
-  {
-    name: "password",
-    type: "password",
-    placeholder: "Password",
-    componentType: "input"
-  },
-  {
-    name: "passwordConfirmation",
-    type: "password",
-    placeholder: "Confirm password",
-    componentType: "input"
-  }
-] as ComponentObject[];
-
-const authMapper = {
-  input: Input,
-  gender: GenderSelector,
-  datePicker: DatePicker,
-  heardFrom: HeardFromSelector
-};
+import HeardFromSelector from "./HeardFromSelector";
 
 interface RegistrationFormValues {
   email: string;
@@ -130,7 +38,6 @@ const initialValues: RegistrationFormValues = {
   password: "",
   passwordConfirmation: ""
 };
-
 const RegistrationForm: FC = () => {
   const handleRegistration = (values: RegistrationFormValues) => {
     const { email, password } = values;
@@ -156,44 +63,107 @@ const RegistrationForm: FC = () => {
         {({ errors, touched, values }) => {
           return (
             <StyledForm>
-              {topFullRows.map((field) =>
-                mapToField(field, authMapper, errors, touched)
-              )}
-              {halfRows.map((row) => {
-                return (
-                  <FormRow key={row.firstField.name} fieldsGap={row.fieldsGap}>
-                    {mapToField(
-                      row.firstField as ComponentObject,
-                      authMapper,
-                      errors,
-                      touched
-                    )}
-                    {mapToField(
-                      row.secondField as ComponentObject,
-                      authMapper,
-                      errors,
-                      touched
-                    )}
-                  </FormRow>
-                );
-              })}
-              {bottomFullRows.map((field) =>
-                mapToField(field, authMapper, errors, touched)
-              )}
-
-              <FormRow fieldsGap={12}>
-                <FormControlLabel
-                  control={
-                    <Field
-                      name="rememberMe"
-                      type="checkbox"
-                      component={CheckBox}
-                    />
-                  }
-                  label="Remember me"
-                ></FormControlLabel>
-                <FormButton type="submit">Registration</FormButton>
+              <Field
+                validateOnBlur
+                validateOnChange
+                name="email"
+                component={Input}
+                type="text"
+                placeholder="Email"
+              />
+              <Field
+                validateOnBlur
+                validateOnChange
+                name="username"
+                component={Input}
+                type="text"
+                placeholder="Username"
+              />
+              <FormRow fieldsGap={5}>
+                <Field
+                  validateOnBlur
+                  validateOnChange
+                  name="firstName"
+                  component={Input}
+                  type="text"
+                  placeholder="First name"
+                />
+                <Field
+                  validateOnBlur
+                  validateOnChange
+                  name="lastName"
+                  component={Input}
+                  type="text"
+                  placeholder="Last name"
+                />
               </FormRow>
+              <FormRow fieldsGap={10}>
+                <Field
+                  validateOnBlur
+                  validateOnChange
+                  name="birthDate"
+                  component={DatePicker}
+                  type="date"
+                  placeholder="Your birthdate"
+                />
+                <Field
+                  validateOnBlur
+                  validateOnChange
+                  name="lastName"
+                  component={GenderSelector}
+                  type="radio"
+                  placeholder="Your gender"
+                />
+              </FormRow>
+              <FormRow fieldsGap={5}>
+                <Field
+                  validateOnBlur
+                  validateOnChange
+                  name="country"
+                  component={Input}
+                  type="text"
+                  placeholder="Country"
+                />
+                <Field
+                  validateOnBlur
+                  validateOnChange
+                  name="city"
+                  component={Input}
+                  type="text"
+                  placeholder="City"
+                />
+              </FormRow>
+
+              <HeardFromSelector
+                error={errors?.heardFrom as string}
+                touched={touched?.heardFrom as boolean}
+              />
+              <Field
+                validateOnBlur
+                validateOnChange
+                name="password"
+                component={Input}
+                type="password"
+                placeholder="Password"
+              />
+              <Field
+                validateOnBlur
+                validateOnChangename="passwordConfirmation"
+                component={Input}
+                type="password"
+                placeholder="Confirm your password"
+              />
+              <FormControlLabel
+                control={
+                  <Field
+                    name="rememberMe"
+                    type="checkbox"
+                    component={CheckBox}
+                  />
+                }
+                label="Remember me"
+              ></FormControlLabel>
+              <FormButton type="submit">Registration</FormButton>
               <a href="/login">Already have an account? Log in!</a>
             </StyledForm>
           );
@@ -204,3 +174,28 @@ const RegistrationForm: FC = () => {
 };
 
 export default RegistrationForm;
+
+const StyledForm = styled(Form)`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const StyledFormikForm = styled(Formik)`
+  width: 100%;
+  height: 100%;
+  margin: 5rem;
+  display: flex;
+  justify-content: center;
+`;
+
+const StyledFormPaper = styled(Paper)(
+  ({ width, height }: { width: number; height: number }) => ({
+    width: `${width}%`,
+    height: `${height}%`
+  })
+);

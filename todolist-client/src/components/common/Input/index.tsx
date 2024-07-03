@@ -14,7 +14,7 @@ const Input: FC<InputProps> = (props: InputProps) => {
         placeholder={placeholder}
         {...field}
       />
-      {error && touched ? (
+      {error ? (
         <StyledError>{error}</StyledError>
       ) : (
         <StyledError>&nbsp;</StyledError>

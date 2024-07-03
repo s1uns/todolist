@@ -30,8 +30,7 @@ const mapToField = (
         type={componentObject.placeholder}
         name={componentObject.name}
         placeholder={componentObject.placeholder}
-        error={errors[componentObject.name]}
-        touched={touched[componentObject.name]}
+        error={touched[componentObject.name] && errors[componentObject.name]}
       />
     </StyledFieldContainer>
   );
