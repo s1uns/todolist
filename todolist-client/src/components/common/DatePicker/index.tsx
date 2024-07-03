@@ -11,12 +11,14 @@ import {
   PickerChangeHandlerContext
 } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { FieldInputProps } from "formik";
 
 interface DatePickerProps {
   label: string;
   placeholder: string;
   error: string;
   value: Dayjs;
+  field?: FieldInputProps<Dayjs>;
   onChange: (
     value: Dayjs | null,
     context: PickerChangeHandlerContext<DateValidationError>
@@ -24,8 +26,15 @@ interface DatePickerProps {
 }
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
-  const { label, placeholder, value, error, onChange } = props;
+  const { label, placeholder, field, value, error, onChange } = props;
 
+  const pickerValue = field
+    ? dayjs(field.value)
+    : value
+      ? dayjs(value)
+      : dayjs(new Date());
+
+  console.log("Props: ", props);
   return (
     <Container disableGutters={true}>
       <InputLabel className="form-label">{label}</InputLabel>
@@ -34,7 +43,7 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
         <MuiDatePicker
           label={placeholder}
           name="birthDate"
-          value={value ? dayjs(value) : dayjs(new Date())}
+          value={pickerValue}
           onChange={onChange}
         />
       </LocalizationProvider>

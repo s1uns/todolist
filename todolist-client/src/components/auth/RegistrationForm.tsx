@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
 import { Button, FormControlLabel, Paper } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
 import { FastField, Form, Formik } from "formik";
 import { FC } from "react";
 import { userRegistrationSchema } from "../../utils/validators";
 import CheckBox from "../common/CheckBox";
+import DatePicker from "../common/DatePicker";
 import FormRow from "../common/FormRow";
 import Input from "../common/Input";
-import BirthDatePicker from "./BirthDatePicker";
 import GenderSelector from "./GenderSelector";
 import HeardFromSelector from "./HeardFromSelector";
 
@@ -61,7 +62,18 @@ const RegistrationForm: FC = () => {
           handleRegistration(values as unknown as RegistrationFormValues);
         }}
       >
-        {({ errors, touched, values, handleChange, handleBlur }) => {
+        {({
+          errors,
+          touched,
+          values,
+          handleChange,
+          handleBlur,
+          setFieldValue
+        }) => {
+          console.log("Values: ", values);
+          const handleBirthDate = (value: Dayjs) => {
+            setFieldValue("birthDate", dayjs(value).format());
+          };
           return (
             <StyledForm>
               <FastField
@@ -119,7 +131,8 @@ const RegistrationForm: FC = () => {
                   validateOnBlur
                   validateOnChange
                   name="birthDate"
-                  component={BirthDatePicker}
+                  component={DatePicker}
+                  onChange={handleBirthDate}
                   error={touched.birthDate && errors.birthDate}
                   type="date"
                   placeholder="Your birthdate"
