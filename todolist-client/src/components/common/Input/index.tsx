@@ -1,7 +1,6 @@
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { InputProps } from "./types";
 import { FC } from "react";
-import StyledError from "../Error";
 
 const Input: FC<InputProps> = (props: InputProps) => {
   const { autoFocus, type, placeholder, field, error, touched } = props;
@@ -14,13 +13,9 @@ const Input: FC<InputProps> = (props: InputProps) => {
         placeholder={placeholder}
         {...field}
       />
-      {error && touched ? (
-        <StyledError>{error}</StyledError>
-      ) : (
-        <StyledError>&nbsp;</StyledError>
-      )}
+      <Typography color="error">{error && touched ? error : "\u00A0"}</Typography>
     </>
-  );
+  );  
 };
 
 export default Input;

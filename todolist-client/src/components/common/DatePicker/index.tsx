@@ -3,17 +3,18 @@ import { useField, useFormikContext } from "formik";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InputLabel from "@mui/material/InputLabel";
-import { Container, TextField } from "@mui/material";
+import { Container, TextField, Typography } from "@mui/material";
 import { DatePickerProps } from "./types";
 import { FC } from "react";
 import styled from "@emotion/styled";
-import StyledError from "../Error";
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
-  const { placeholder, field, error, touched } = props;
+  const { placeholder, field, error, touched, onChange } = props;
   const { value } = field;
   const [dateField, meta, helpers] = useField(field);
   const { setValue } = helpers;
+
+  console.log("Field: ", field);
 
   return (
     <Container disableGutters={true}>
@@ -32,11 +33,9 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
         customInput={<TextField />}
         wrapperClassName="datePicker"
       />
-      {error && touched ? (
-        <StyledError>{error}</StyledError>
-      ) : (
-        <StyledError>&nbsp;</StyledError>
-      )}
+      <Typography color="error">
+        {error && touched ? error : "\u00A0"}
+      </Typography>
     </Container>
   );
 };

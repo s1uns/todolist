@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, FormLabel } from "@mui/material";
+import { FormControl, FormLabel, Typography } from "@mui/material";
 
 import {
   GENDER_FEMALE,
@@ -9,7 +9,6 @@ import {
 import { FastField, Field, useField } from "formik";
 import styled from "@emotion/styled";
 import RadioButton from "../common/RadioButton";
-import StyledError from "../common/Error";
 
 const genderOptions = [
   { value: GENDER_MALE, label: "Male" },
@@ -42,11 +41,9 @@ const GenderSelector = ({ error, touched }: GenderSelectorProps) => {
           }
         )}
       </RadioGroup>
-      {error && touched ? (
-        <StyledError>{error}</StyledError>
-      ) : (
-        <StyledError>&nbsp;</StyledError>
-      )}
+      <Typography color="error">
+        {error && touched ? error : "\u00A0"}
+      </Typography>
     </StyledFormControl>
   );
 };
