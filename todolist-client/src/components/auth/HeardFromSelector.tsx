@@ -1,16 +1,15 @@
+import { Container, FormLabel, Grid, Typography } from "@mui/material";
+import { FastField, useField } from "formik";
 import { ChangeEvent, useCallback } from "react";
-import { FastField, Field, useField } from "formik";
 import CheckBox from "../common/CheckBox";
-import { Container, FormLabel, Grid } from "@mui/material";
 
+import styled from "@emotion/styled";
 import {
   HEARD_FROM_ADVERTISEMENT,
   HEARD_FROM_FRIEND,
   HEARD_FROM_INTERNET,
   HEARD_FROM_OTHER
 } from "../../utils/constants";
-import styled from "@emotion/styled";
-import StyledError from "../common/Error";
 
 const heardFromOptions = [
   { value: HEARD_FROM_FRIEND, label: "Friend" },
@@ -72,11 +71,9 @@ const HeardFromSelector = ({ error, touched }: HeardFromSelectorProps) => {
           <CheckBoxField key={value} value={value} label={label} />
         ))}
       </Grid>
-      {error && touched ? (
-        <StyledError>{error}</StyledError>
-      ) : (
-        <StyledError>&nbsp;</StyledError>
-      )}
+      <Typography color="error">
+        {error && touched ? error : "\u00A0"}
+      </Typography>
     </StyledContainer>
   );
 };

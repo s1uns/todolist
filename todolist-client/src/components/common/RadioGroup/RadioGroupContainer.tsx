@@ -1,9 +1,9 @@
+import styled from "@emotion/styled";
 import {
   Container,
   FormLabel,
   RadioGroup as MuiRadioGroup
 } from "@mui/material";
-import styled from "@emotion/styled";
 import RadioButton from "../RadioButton";
 import { Option } from "./types";
 

@@ -3,8 +3,11 @@ export interface InputProps {
   autoFocus: boolean;
   type: string;
   placeholder: string;
-  field: undefined | any;
-  form: undefined | any;
+  // field: undefined | any;
+  // form: undefined | any;
+  fieldName?: string;
+  onChange?: (e: React.ChangeEvent<any>) => void;
+  onBlur?: (e: any) => void;
   error: undefined | string;
   touched: boolean;
 }

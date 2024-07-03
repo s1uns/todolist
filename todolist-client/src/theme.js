@@ -1,6 +1,14 @@
 import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#085982"
+    },
+    error: {
+      main: "#d40808"
+    }
+  },
   components: {
     MuiTextField: {
       styleOverrides: {

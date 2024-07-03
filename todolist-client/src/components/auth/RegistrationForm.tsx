@@ -60,7 +60,8 @@ const RegistrationForm: FC = () => {
           handleRegistration(values as unknown as RegistrationFormValues);
         }}
       >
-        {({ errors, touched, values }) => {
+        {({ errors, touched, values, handleChange, handleBlur }) => {
+          console.log("Values: ", values);
           return (
             <StyledForm>
               <Field

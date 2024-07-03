@@ -1,6 +1,9 @@
 export interface DatePickerProps {
   placeholder: string;
-  field: undefined | any;
   error: string;
   touched: boolean;
+
+  field?: undefined | any;
+  onChange?: any;
 }
+//(value: Date) => void

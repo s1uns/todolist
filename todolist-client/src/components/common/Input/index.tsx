@@ -1,24 +1,33 @@
-import { TextField } from "@mui/material";
-import { InputProps } from "./types";
+import { TextField, Typography } from "@mui/material";
 import { FC } from "react";
-import StyledError from "../Error";
+import { InputProps } from "./types";
 
 const Input: FC<InputProps> = (props: InputProps) => {
-  const { autoFocus, type, placeholder, field, error, touched } = props;
+  const {
+    autoFocus,
+    type,
+    placeholder,
+    fieldName,
+    onChange,
+    onBlur,
+    error,
+    touched
+  } = props;
+  console.log("Props: ", props);
   return (
     <>
       <TextField
+        name={fieldName ? fieldName : ""}
+        onChange={onChange}
+        onBlur={onBlur}
         label={placeholder}
         autoFocus={autoFocus}
         type={type}
         placeholder={placeholder}
-        {...field}
       />
-      {error ? (
-        <StyledError>{error}</StyledError>
-      ) : (
-        <StyledError>&nbsp;</StyledError>
-      )}
+      <Typography color="error">
+        {error && touched ? error : "\u00A0"}
+      </Typography>
     </>
   );
 };

@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  ErrorMessage,
-  FastField,
-  FormikErrors,
-  FormikTouched,
-  FormikValues
-} from "formik";
-import { Field } from "formik";
+import { FastField, FormikErrors, FormikTouched, FormikValues } from "formik";
 
 export type ComponentObject = {
   name: string;
@@ -19,7 +12,9 @@ const mapToField = (
   componentObject: ComponentObject,
   mapper: any,
   errors: FormikErrors<FormikValues>,
-  touched: FormikTouched<FormikValues>
+  touched: FormikTouched<FormikValues>,
+  handleChange: (e: React.ChangeEvent<any>) => void,
+  handleBlur: (e: any) => void
 ) => {
   return (
     <StyledFieldContainer key={componentObject.name}>
@@ -29,6 +24,9 @@ const mapToField = (
         component={mapper[componentObject.componentType]}
         type={componentObject.placeholder}
         name={componentObject.name}
+        fieldName={componentObject.name}
+        onChange={handleChange}
+        onBlur={handleBlur}
         placeholder={componentObject.placeholder}
         error={touched[componentObject.name] && errors[componentObject.name]}
       />

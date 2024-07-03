@@ -31,4 +31,3 @@ const CheckBoxWrapper = styled.div`
 const CheckBoxLabelTitle = styled(Typography)`
   font-size: 1rem;
 `;
-
