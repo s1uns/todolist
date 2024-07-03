@@ -72,7 +72,7 @@ const HeardFromSelector = ({ error, touched }: HeardFromSelectorProps) => {
         ))}
       </Grid>
       <Typography color="error">
-        {error && touched ? error : "\u00A0"}
+        {error ? error : "\u00A0"}
       </Typography>
     </StyledContainer>
   );

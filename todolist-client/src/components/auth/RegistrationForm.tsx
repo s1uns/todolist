@@ -1,18 +1,18 @@
 import styled from "@emotion/styled";
-import { FormControlLabel, Paper } from "@mui/material";
-import { Field, Form, Formik } from "formik";
+import { Button, FormControlLabel, Paper } from "@mui/material";
+import { FastField, Form, Formik } from "formik";
 import { FC } from "react";
-import DatePicker from "react-datepicker";
 import { userRegistrationSchema } from "../../utils/validators";
-import { FormButton } from "../common/Button";
 import CheckBox from "../common/CheckBox";
 import FormRow from "../common/FormRow";
 import Input from "../common/Input";
+import BirthDatePicker from "./BirthDatePicker";
 import GenderSelector from "./GenderSelector";
 import HeardFromSelector from "./HeardFromSelector";
 
 interface RegistrationFormValues {
   email: string;
+  username: string;
   firstName: string;
   lastName: string;
   birthDate: Date;
@@ -27,6 +27,7 @@ interface RegistrationFormValues {
 
 const initialValues: RegistrationFormValues = {
   email: "",
+  username: "",
   firstName: "",
   lastName: "",
   birthDate: new Date(),
@@ -52,7 +53,7 @@ const RegistrationForm: FC = () => {
   };
 
   return (
-    <StyledFormPaper width={30} height={90}>
+    <StyledFormPaper>
       <StyledFormikForm
         initialValues={initialValues}
         validationSchema={userRegistrationSchema}
@@ -64,107 +65,153 @@ const RegistrationForm: FC = () => {
           console.log("Values: ", values);
           return (
             <StyledForm>
-              <Field
+              <FastField
                 validateOnBlur
                 validateOnChange
                 name="email"
-                component={Input}
+                fieldName="email"
                 type="text"
                 placeholder="Email"
+                component={Input}
+                error={touched.email && errors.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
-              <Field
+              <FastField
                 validateOnBlur
                 validateOnChange
                 name="username"
-                component={Input}
+                fieldName="username"
                 type="text"
                 placeholder="Username"
+                component={Input}
+                error={touched.username && errors.username}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <FormRow fieldsGap={5}>
-                <Field
+                <FastField
                   validateOnBlur
                   validateOnChange
                   name="firstName"
-                  component={Input}
+                  fieldName="firstName"
                   type="text"
-                  placeholder="First name"
+                  placeholder="First Name"
+                  component={Input}
+                  error={touched.firstName && errors.firstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Field
+                <FastField
                   validateOnBlur
                   validateOnChange
                   name="lastName"
-                  component={Input}
+                  fieldName="lastName"
                   type="text"
-                  placeholder="Last name"
+                  placeholder="Last Name"
+                  component={Input}
+                  error={touched.lastName && errors.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </FormRow>
-              <FormRow fieldsGap={10}>
-                <Field
+              <FormRow fieldsGap={5}>
+                <FastField
                   validateOnBlur
                   validateOnChange
                   name="birthDate"
-                  component={DatePicker}
+                  component={BirthDatePicker}
+                  error={touched.birthDate && errors.birthDate}
                   type="date"
                   placeholder="Your birthdate"
                 />
-                <Field
+                <FastField
                   validateOnBlur
                   validateOnChange
-                  name="lastName"
+                  name="gender"
+                  error={touched.gender && errors.gender}
                   component={GenderSelector}
                   type="radio"
                   placeholder="Your gender"
                 />
               </FormRow>
               <FormRow fieldsGap={5}>
-                <Field
+                <FastField
                   validateOnBlur
                   validateOnChange
                   name="country"
-                  component={Input}
+                  fieldName="country"
                   type="text"
                   placeholder="Country"
+                  component={Input}
+                  error={touched.country && errors.country}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
-                <Field
+                <FastField
                   validateOnBlur
                   validateOnChange
                   name="city"
-                  component={Input}
+                  fieldName="city"
                   type="text"
                   placeholder="City"
+                  component={Input}
+                  error={touched.city && errors.city}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </FormRow>
 
-              <HeardFromSelector
-                error={errors?.heardFrom as string}
-                touched={touched?.heardFrom as boolean}
+              <FastField
+                validateOnBlur
+                validateOnChange
+                name="heardFrom"
+                fieldName="heardFrom"
+                type="text"
+                component={HeardFromSelector}
+                error={touched.heardFrom && errors.heardFrom}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
-              <Field
+              <FastField
                 validateOnBlur
                 validateOnChange
                 name="password"
-                component={Input}
-                type="password"
+                fieldName="password"
+                type="text"
                 placeholder="Password"
-              />
-              <Field
-                validateOnBlur
-                validateOnChangename="passwordConfirmation"
                 component={Input}
-                type="password"
-                placeholder="Confirm your password"
+                error={touched.password && errors.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
-              <FormControlLabel
-                control={
-                  <Field
-                    name="rememberMe"
-                    type="checkbox"
-                    component={CheckBox}
-                  />
+              <FastField
+                validateOnBlur
+                validateOnChange
+                name="passwordConfirmation"
+                fieldName="passwordConfirmation"
+                type="text"
+                placeholder="Confirm your password"
+                component={Input}
+                error={
+                  touched.passwordConfirmation && errors.passwordConfirmation
                 }
-                label="Remember me"
-              ></FormControlLabel>
-              <FormButton type="submit">Registration</FormButton>
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FormRow>
+                <FormControlLabel
+                  control={
+                    <FastField
+                      name="rememberMe"
+                      type="checkbox"
+                      component={CheckBox}
+                    />
+                  }
+                  label="Remember me"
+                ></FormControlLabel>
+                <FormButton type="submit">Registration</FormButton>
+              </FormRow>
               <a href="/login">Already have an account? Log in!</a>
             </StyledForm>
           );
@@ -194,9 +241,13 @@ const StyledFormikForm = styled(Formik)`
   justify-content: center;
 `;
 
-const StyledFormPaper = styled(Paper)(
-  ({ width, height }: { width: number; height: number }) => ({
-    width: `${width}%`,
-    height: `${height}%`
-  })
-);
+const StyledFormPaper = styled(Paper)`
+  width: 30%;
+  height: 95%;
+`;
+
+const FormButton = styled(Button)`
+  width: 30%;
+  height: 50%;
+  font-size: 1rem;
+`;

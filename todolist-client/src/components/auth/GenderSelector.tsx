@@ -1,13 +1,13 @@
-import React from "react";
 import { FormControl, FormLabel, Typography } from "@mui/material";
 
+import styled from "@emotion/styled";
+import { FastField, useField } from "formik";
+import { ChangeEvent, useCallback } from "react";
 import {
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER
 } from "../../utils/constants";
-import { FastField, Field, useField } from "formik";
-import styled from "@emotion/styled";
 import RadioButton from "../common/RadioButton";
 
 const genderOptions = [
@@ -18,32 +18,52 @@ const genderOptions = [
 
 interface GenderSelectorProps {
   error: string;
-  touched: boolean;
 }
 
-const GenderSelector = ({ error, touched }: GenderSelectorProps) => {
+const RadioButtonField = ({
+  value,
+  label
+}: {
+  value: number;
+  label: string;
+}) => {
+  const [field, meta, helpers] = useField("gender");
+  const { value: inputValue } = meta;
+  const { setValue } = helpers;
+  const handleSelectGender = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation;
+      setValue(value);
+    },
+    [inputValue]
+  );
+
+  return (
+    <FastField
+      type="number"
+      name="gender"
+      component={RadioButton}
+      onChange={handleSelectGender}
+      value={value}
+      label={label}
+      labelPlacement="bottom"
+      isChecked={inputValue === value}
+    />
+  );
+};
+
+const GenderSelector = ({ error }: GenderSelectorProps) => {
   return (
     <StyledFormControl>
       <FormLabel>Your gender</FormLabel>
       <RadioGroup>
         {genderOptions.map(
           ({ value, label }: { value: number; label: string }) => {
-            return (
-              <FastField
-                type="radio"
-                name="gender"
-                value={value.toString()}
-                component={RadioButton}
-                label={label}
-                labelPlacement="bottom"
-              />
-            );
+            return <RadioButtonField value={value} label={label} />;
           }
         )}
       </RadioGroup>
-      <Typography color="error">
-        {error && touched ? error : "\u00A0"}
-      </Typography>
+      <Typography color="error">{error ? error : "\u00A0"}</Typography>
     </StyledFormControl>
   );
 };

@@ -1,21 +1,24 @@
+import styled from "@emotion/styled";
 import { TextField, Typography } from "@mui/material";
 import { FC } from "react";
-import { InputProps } from "./types";
+
+interface InputProps {
+  componentName: "string";
+  autoFocus: boolean;
+  type: string;
+  placeholder: string;
+  fieldName?: string;
+  onChange?: (e: React.ChangeEvent<any>) => void;
+  onBlur?: (e: any) => void;
+  error: undefined | string;
+}
 
 const Input: FC<InputProps> = (props: InputProps) => {
-  const {
-    autoFocus,
-    type,
-    placeholder,
-    fieldName,
-    onChange,
-    onBlur,
-    error,
-    touched
-  } = props;
-  console.log("Props: ", props);
+  const { autoFocus, type, placeholder, fieldName, onChange, onBlur, error } =
+    props;
+
   return (
-    <>
+    <InputContainer>
       <TextField
         name={fieldName ? fieldName : ""}
         onChange={onChange}
@@ -25,11 +28,16 @@ const Input: FC<InputProps> = (props: InputProps) => {
         type={type}
         placeholder={placeholder}
       />
-      <Typography color="error">
-        {error && touched ? error : "\u00A0"}
-      </Typography>
-    </>
+      <Typography color="error">{error ? error : "\u00A0"}</Typography>
+    </InputContainer>
   );
 };
 
 export default Input;
+
+const InputContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.01rem;
+`;

@@ -1,41 +1,53 @@
-import { Container, TextField, Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
-import { useField } from "formik";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FC } from "react";
-import ReactDatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { DatePickerProps } from "./types";
+
+import styled from "@emotion/styled";
+import {
+  DateValidationError,
+  LocalizationProvider,
+  DatePicker as MuiDatePicker,
+  PickerChangeHandlerContext
+} from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+
+interface DatePickerProps {
+  label: string;
+  placeholder: string;
+  error: string;
+  value: any;
+  onChange: (
+    value: Dayjs | null,
+    context: PickerChangeHandlerContext<DateValidationError>
+  ) => void;
+}
 
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
-  const { placeholder, field, error, touched, onChange } = props;
-  const { value } = field;
-  const [dateField, meta, helpers] = useField(field);
-  const { setValue } = helpers;
+  const { label, placeholder, value, error, onChange } = props;
 
-  console.log("Field: ", field);
+  console.log("Props: ", props);
+  // const handleChange = () => ;
 
   return (
     <Container disableGutters={true}>
-      <InputLabel className="form-label">{placeholder}</InputLabel>
+      <InputLabel className="form-label">{label}</InputLabel>
 
-      <ReactDatePicker
-        dateFormat="dd.MM.yyyy"
-        showPopperArrow={false}
-        showMonthDropdown
-        dropdownMode="select"
-        selected={(value && new Date(value)) || null}
-        onChange={(val) => {
-          setValue(val);
-        }}
-        todayButton="Today"
-        customInput={<TextField />}
-        wrapperClassName="datePicker"
-      />
-      <Typography color="error">
-        {error && touched ? error : "\u00A0"}
-      </Typography>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <MuiDatePicker
+          label={placeholder}
+          name="birthDate"
+          value={value ? dayjs(value) : dayjs(new Date())}
+          onChange={onChange}
+        />
+      </LocalizationProvider>
+      <Typography color="error">{error ? error : "\u00A0"}</Typography>
     </Container>
   );
 };
 
 export default DatePicker;
+
+const DatePickerContainer = styled.div`
+  width: 100%;
+`;

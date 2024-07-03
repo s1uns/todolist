@@ -6,6 +6,5 @@
   "printWidth": 80,
   "tabWidth": 2,
   "arrowParens": "always",
-  "endOfLine": "lf",
-  "plugins": ["prettier-plugin-organize-imports"]
+  "endOfLine": "lf"
 }
