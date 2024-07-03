@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { TextField, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, FocusEventHandler } from "react";
 
 interface InputProps {
   componentName: "string";
@@ -8,8 +8,11 @@ interface InputProps {
   type: string;
   placeholder: string;
   fieldName?: string;
-  onChange?: (e: React.ChangeEvent<any>) => void;
-  onBlur?: (e: any) => void;
+  onChange?: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => void;
+  onBlur?: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement>;
+
   error: undefined | string;
 }
 
