@@ -62,11 +62,18 @@ const LoginForm: FC = () => {
           handleLogin(values as unknown as LoginFormValues);
         }}
       >
-        {({ errors, touched, handleChange }) => {
+        {({ errors, touched, handleChange, handleBlur }) => {
           return (
             <StyledForm>
               {fields.map((field) =>
-                mapToField(field, authMapper, errors, touched, handleChange)
+                mapToField(
+                  field,
+                  authMapper,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur
+                )
               )}
               <FormRow>
                 <FormControlLabel

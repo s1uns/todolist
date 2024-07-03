@@ -20,7 +20,8 @@ const mapToField = (
   mapper: any,
   errors: FormikErrors<FormikValues>,
   touched: FormikTouched<FormikValues>,
-  handleChange: (e: React.ChangeEvent<any>) => void
+  handleChange: (e: React.ChangeEvent<any>) => void,
+  handleBlur: (e: any) => void
 ) => {
   return (
     <StyledFieldContainer key={componentObject.name}>
@@ -30,7 +31,9 @@ const mapToField = (
         component={mapper[componentObject.componentType]}
         type={componentObject.placeholder}
         name={componentObject.name}
+        fieldName={componentObject.name}
         onChange={handleChange}
+        onBlur={handleBlur}
         placeholder={componentObject.placeholder}
         error={errors[componentObject.name]}
         touched={touched[componentObject.name]}
