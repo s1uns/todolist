@@ -17,10 +17,12 @@ const Input: FC<InputProps> = (props: InputProps) => {
   const { autoFocus, type, placeholder, fieldName, onChange, onBlur, error } =
     props;
 
+  const name = fieldName ? fieldName : "";
+
   return (
     <InputContainer>
       <TextField
-        name={fieldName ? fieldName : ""}
+        name={name}
         onChange={onChange}
         onBlur={onBlur}
         label={placeholder}

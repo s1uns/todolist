@@ -16,7 +16,7 @@ interface DatePickerProps {
   label: string;
   placeholder: string;
   error: string;
-  value: any;
+  value: Dayjs;
   onChange: (
     value: Dayjs | null,
     context: PickerChangeHandlerContext<DateValidationError>

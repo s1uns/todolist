@@ -30,6 +30,8 @@ const BirthDatePicker = ({ error }: BirthDatePickerProps) => {
   return (
     <StyledFieldContainer>
       <FastField
+        validateOnBlur
+        validateOnChange
         label="Your birthday date"
         error={error}
         value={inputValue}
