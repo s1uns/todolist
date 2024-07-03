@@ -62,7 +62,6 @@ const RegistrationForm: FC = () => {
         }}
       >
         {({ errors, touched, values, handleChange, handleBlur }) => {
-          console.log("Values: ", values);
           return (
             <StyledForm>
               <FastField

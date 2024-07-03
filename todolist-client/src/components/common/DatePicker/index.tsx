@@ -26,7 +26,6 @@ interface DatePickerProps {
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
   const { label, placeholder, value, error, onChange } = props;
 
-  console.log("Props: ", props);
   // const handleChange = () => ;
 
   return (
