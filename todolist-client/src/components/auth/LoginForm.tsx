@@ -1,32 +1,10 @@
-import { FormControlLabel } from "@mui/material";
-import { Field } from "formik";
+import { Button, FormControlLabel, Paper, styled } from "@mui/material";
+import { FastField, Field, Form, Formik } from "formik";
 import { FC } from "react";
-import { mapToField } from "../../utils/helpers";
 import { userLoginSchema } from "../../utils/validators";
-import { FormButton } from "../common/Button";
 import CheckBox from "../common/CheckBox";
-import { StyledForm, StyledFormikForm, StyledFormPaper } from "../common/Form";
 import FormRow from "../common/FormRow";
 import Input from "../common/Input";
-
-const fields = [
-  {
-    name: "email",
-    type: "text",
-    placeholder: "Email",
-    componentType: "input"
-  },
-  {
-    name: "password",
-    type: "password",
-    placeholder: "Password",
-    componentType: "input"
-  }
-];
-
-const authMapper = {
-  input: Input
-};
 
 interface LoginFormValues {
   email: string;
@@ -54,7 +32,7 @@ const LoginForm: FC = () => {
   };
 
   return (
-    <StyledFormPaper width={20} height={40}>
+    <StyledFormPaper>
       <StyledFormikForm
         initialValues={initialValues}
         validationSchema={userLoginSchema}
@@ -65,16 +43,30 @@ const LoginForm: FC = () => {
         {({ errors, touched, handleChange, handleBlur }) => {
           return (
             <StyledForm>
-              {fields.map((field) =>
-                mapToField(
-                  field,
-                  authMapper,
-                  errors,
-                  touched,
-                  handleChange,
-                  handleBlur
-                )
-              )}
+              <FastField
+                validateOnBlur
+                validateOnChange
+                name="email"
+                fieldName="email"
+                type="text"
+                placeholder="Email"
+                component={Input}
+                error={touched.email && errors.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <FastField
+                validateOnBlur
+                validateOnChange
+                name="password"
+                fieldName="password"
+                type="text"
+                placeholder="Password"
+                component={Input}
+                error={touched.password && errors.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
               <FormRow>
                 <FormControlLabel
                   control={
@@ -101,3 +93,31 @@ const LoginForm: FC = () => {
 };
 
 export default LoginForm;
+
+const StyledForm = styled(Form)`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const StyledFormikForm = styled(Formik)`
+  width: 100%;
+  height: 100%;
+  margin: 5rem;
+  display: flex;
+  justify-content: center;
+`;
+
+const StyledFormPaper = styled(Paper)`
+  width: 20%;
+  height: 40%;
+`;
+const FormButton = styled(Button)`
+  width: 30%;
+  height: 50%;
+  font-size: 1rem;
+`;

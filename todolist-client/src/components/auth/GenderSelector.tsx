@@ -59,7 +59,7 @@ const GenderSelector = ({ error }: GenderSelectorProps) => {
       <RadioGroup>
         {genderOptions.map(
           ({ value, label }: { value: number; label: string }) => {
-            return <RadioButtonField value={value} label={label} />;
+            return <RadioButtonField key={value} value={value} label={label} />;
           }
         )}
       </RadioGroup>
