@@ -153,11 +153,11 @@ const RegistrationForm: FC = () => {
           handleRegistration(values as unknown as RegistrationFormValues);
         }}
       >
-        {({ errors, touched, values }) => {
+        {({ errors, touched, values, handleChange }) => {
           return (
             <StyledForm>
               {topFullRows.map((field) =>
-                mapToField(field, authMapper, errors, touched)
+                mapToField(field, authMapper, errors, touched, handleChange)
               )}
               {halfRows.map((row) => {
                 return (
@@ -166,19 +166,21 @@ const RegistrationForm: FC = () => {
                       row.firstField as ComponentObject,
                       authMapper,
                       errors,
-                      touched
+                      touched,
+                      handleChange
                     )}
                     {mapToField(
                       row.secondField as ComponentObject,
                       authMapper,
                       errors,
-                      touched
+                      touched,
+                      handleChange
                     )}
                   </FormRow>
                 );
               })}
               {bottomFullRows.map((field) =>
-                mapToField(field, authMapper, errors, touched)
+                mapToField(field, authMapper, errors, touched, handleChange)
               )}
 
               <FormRow fieldsGap={12}>
