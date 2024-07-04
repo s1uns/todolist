@@ -1,10 +1,12 @@
 import { Button, FormControlLabel, Paper, styled } from "@mui/material";
 import { FastField, Field, Form, Formik } from "formik";
 import { FC } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import CheckBox from "../../components/common/CheckBox";
 import FormRow from "../../components/common/FormRow";
 import Input from "../../components/common/Input";
+import { loginUserRequest } from "../../store/actions/authActions";
 import { userLoginSchema } from "../../utils/validators";
 
 interface LoginPageValues {
@@ -20,16 +22,18 @@ const initialValues: LoginPageValues = {
 };
 
 const LoginPage: FC = () => {
+  const dispatch = useDispatch();
   const handleLogin = (values: LoginPageValues) => {
     const { email, password } = values;
     console.log("Login: ", values);
+    console.log("Request: ", loginUserRequest);
 
-    // dispatch(
-    //     loginUserRequest({
-    //         email: email,
-    //         password: password,
-    //     })
-    // );
+    dispatch(
+      loginUserRequest({
+        email: email,
+        password: password
+      })
+    );
   };
 
   return (

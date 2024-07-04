@@ -1,4 +1,5 @@
 import { AuthResult } from "../../types/auth/AuthResult";
+import { LoginCredentials } from "../../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../../types/auth/RegistrationCredentials";
 import { actionRequestType, actionSuccessType } from "./constants";
 
@@ -12,19 +13,17 @@ const authUserSuccess = (payload: AuthResult) => ({
   payload: payload
 });
 
-const loginUserRequest = (payload) => ({
+const loginUserRequest = (payload: LoginCredentials) => ({
   type: actionRequestType.LOGIN_USER_REQUEST,
   payload: payload
 });
 
-const logoutUserRequest = (payload) => ({
-  type: actionRequestType.LOGOUT_USER_REQUEST,
-  payload: payload
+const logoutUserRequest = () => ({
+  type: actionRequestType.LOGOUT_USER_REQUEST
 });
 
-const logoutUserSuccess = (payload) => ({
-  type: actionSuccessType.LOGOUT_USER_SUCCESS,
-  payload: payload
+const logoutUserSuccess = () => ({
+  type: actionSuccessType.LOGOUT_USER_SUCCESS
 });
 
 export {

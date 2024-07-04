@@ -1,9 +1,14 @@
-import { composeWithDevTools } from "@redux-devtools/extension";
-import { applyMiddleware, createStore } from "redux";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
+import { persistReducer } from "redux-persist";
+import persistStore from "redux-persist/es/persistStore";
+import storage from "redux-persist/es/storage";
 import createSagaMiddleware from "redux-saga";
-import rootReducer from "./reducers/rootReducer";
+import authReducer from "./slices/authSlice";
+
+const rootReducer = combineReducers({
+  user: authReducer
+});
 
 const persistConfig = {
   key: "root",
@@ -12,10 +17,19 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const sagaMiddleware = createSagaMiddleware();
-const store = createStore(
-  persistedReducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware))
-);
-let persistor = persistStore(store);
 
-export { persistor, sagaMiddleware, store };
+const store = configureStore({
+  reducer: persistedReducer,
+  devTools: true,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    }).concat(sagaMiddleware)
+});
+const persistor = persistStore(store);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+const useAppDispatch: () => AppDispatch = useDispatch;
+
+export { persistor, sagaMiddleware, store, useAppDispatch };
