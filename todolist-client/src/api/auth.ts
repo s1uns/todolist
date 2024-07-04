@@ -1,13 +1,17 @@
+import { AuthResult } from "../types/auth/AuthResult";
 import { LoginCredentials } from "../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../types/auth/RegistrationCredentials";
+import { ErrorResponse } from "../types/common/ErrorResponse";
 import { POST_REQUEST } from "../utils/constants";
 import { customRequest } from "./helpers";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 console.log("Url: ", url);
 
-const registerUser = async (credentials: RegistrationCredentials) => {
-  const response = await customRequest(
+const registerUser = async (
+  credentials: RegistrationCredentials
+): Promise<AuthResult | ErrorResponse> => {
+  const response = await customRequest<RegistrationCredentials, AuthResult>(
     POST_REQUEST,
     `${url}auth/registration`,
     credentials
@@ -15,14 +19,14 @@ const registerUser = async (credentials: RegistrationCredentials) => {
   return response;
 };
 
-const loginUser = async (credentials: LoginCredentials) => {
-  const response = await customRequest(
+const loginUser = async (
+  credentials: LoginCredentials
+): Promise<AuthResult | ErrorResponse> => {
+  const response = await customRequest<LoginCredentials, AuthResult>(
     POST_REQUEST,
     `${url}auth/login`,
     credentials
   );
-
-  console.log("Response: ", response);
 
   return response;
 };

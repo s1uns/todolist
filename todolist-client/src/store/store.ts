@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
+import logger from "redux-logger";
 import { persistReducer } from "redux-persist";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/es/storage";
@@ -24,7 +25,9 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    }).concat(sagaMiddleware)
+    })
+      .concat(logger)
+      .concat(sagaMiddleware)
 });
 const persistor = persistStore(store);
 

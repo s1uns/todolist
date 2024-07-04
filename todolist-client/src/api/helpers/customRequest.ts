@@ -1,9 +1,15 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { ServerError } from "../../types/common/ServerError.js";
+import { ErrorResponse } from "../../types/common/ErrorResponse";
 
 axios.defaults.withCredentials = true;
 
-const customRequest = async <T>(method: string, url: string, data?: T) => {
+//class ServerError extends error
+
+const customRequest = async <TData, TResponse>(
+  method: string,
+  url: string,
+  data?: TData
+): Promise<TResponse | ErrorResponse> => {
   try {
     const config: AxiosRequestConfig = {
       method,
@@ -12,22 +18,27 @@ const customRequest = async <T>(method: string, url: string, data?: T) => {
     };
 
     const response = await axios(config);
-    return response.data;
+    return response.data as TResponse;
   } catch (error: unknown) {
-    console.log((error as ServerError).response.message);
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          // store.dispatch(logoutUserRequest());
+        }
 
-    // if (error.response) {
-    //   if (error.response.status === 401) {
-    //     store.dispatch(logoutUserRequest);
-    //   }
+        return {
+          code: error.response.data.code,
+          message: error.response.data.message,
+          success: false
+        } as ErrorResponse;
+      }
+    }
 
-    //   return error.response.data;
-    // } else {
-    //   return {
-    //     success: false,
-    //     message: "Couldn't send your request, retry later"
-    //   };
-    // }
+    return {
+      code: 500,
+      message: "Couldn't send your request, try again later",
+      success: false
+    } as ErrorResponse;
   }
 };
 
