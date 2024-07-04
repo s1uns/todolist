@@ -6,6 +6,7 @@ interface RadioButtonProps {
   label: string;
   labelPlacement: "end" | "start" | "top" | "bottom" | undefined;
   isChecked: boolean;
+  
   onChange: (e: SyntheticEvent<Element, Event>) => void;
 }
 

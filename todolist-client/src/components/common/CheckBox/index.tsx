@@ -1,19 +1,23 @@
 import styled from "@emotion/styled";
 import { Checkbox as MuiCheckbox, Typography } from "@mui/material";
+import { FieldInputProps } from "formik";
 import { ChangeEvent } from "react";
 
 interface CheckBoxProps {
-  checkBoxName: string;
   label?: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  field?: FieldInputProps<string | number | boolean>;
+
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CheckBox = (props: CheckBoxProps) => {
-  const { checkBoxName, label, onChange } = props;
+  const { label, field, onChange } = props;
+
+  const name = field ? field.name : "";
 
   return (
     <CheckBoxWrapper>
-      <MuiCheckbox name={checkBoxName} onChange={onChange} />
+      <MuiCheckbox name={name} onChange={onChange} />
       {label ? <CheckBoxLabelTitle>{label}</CheckBoxLabelTitle> : <div></div>}
     </CheckBoxWrapper>
   );

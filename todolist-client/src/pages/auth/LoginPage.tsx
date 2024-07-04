@@ -1,25 +1,26 @@
 import { Button, FormControlLabel, Paper, styled } from "@mui/material";
 import { FastField, Field, Form, Formik } from "formik";
 import { FC } from "react";
+import { Link } from "react-router-dom";
+import CheckBox from "../../components/common/CheckBox";
+import FormRow from "../../components/common/FormRow";
+import Input from "../../components/common/Input";
 import { userLoginSchema } from "../../utils/validators";
-import CheckBox from "../common/CheckBox";
-import FormRow from "../common/FormRow";
-import Input from "../common/Input";
 
-interface LoginFormValues {
+interface LoginPageValues {
   email: string;
   password: string;
   rememberMe: boolean;
 }
 
-const initialValues: LoginFormValues = {
+const initialValues: LoginPageValues = {
   email: "",
   password: "",
   rememberMe: false
 };
 
-const LoginForm: FC = () => {
-  const handleLogin = (values: LoginFormValues) => {
+const LoginPage: FC = () => {
+  const handleLogin = (values: LoginPageValues) => {
     const { email, password } = values;
     console.log("Login: ", values);
 
@@ -37,7 +38,7 @@ const LoginForm: FC = () => {
         initialValues={initialValues}
         validationSchema={userLoginSchema}
         onSubmit={(values) => {
-          handleLogin(values as unknown as LoginFormValues);
+          handleLogin(values as unknown as LoginPageValues);
         }}
       >
         {({ errors, touched, handleChange, handleBlur }) => {
@@ -81,8 +82,9 @@ const LoginForm: FC = () => {
                 <FormButton type="submit">Login</FormButton>
               </FormRow>
               <FormRow>
-                <a href="/register">Register now</a>
+                <Link to="/registration">Register now</Link>
                 <a href="/register">Forgot password?</a>
+                {/* Add drop password page*/}
               </FormRow>
             </StyledForm>
           );
@@ -92,7 +94,7 @@ const LoginForm: FC = () => {
   );
 };
 
-export default LoginForm;
+export default LoginPage;
 
 const StyledForm = styled(Form)`
   position: relative;

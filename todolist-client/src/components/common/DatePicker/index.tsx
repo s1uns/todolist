@@ -1,4 +1,4 @@
-import { Container, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FC } from "react";
@@ -16,10 +16,11 @@ import { FieldInputProps } from "formik";
 interface DatePickerProps {
   label: string;
   placeholder: string;
-  error: string;
   value: Dayjs;
   field?: FieldInputProps<Dayjs>;
-  onChange: (
+  error?: string;
+
+  onChange?: (
     value: Dayjs | null,
     context: PickerChangeHandlerContext<DateValidationError>
   ) => void;
@@ -34,9 +35,8 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
       ? dayjs(value)
       : dayjs(new Date());
 
-  console.log("Props: ", props);
   return (
-    <Container disableGutters={true}>
+    <DatePickerContainer>
       <InputLabel className="form-label">{label}</InputLabel>
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -48,12 +48,12 @@ const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
         />
       </LocalizationProvider>
       <Typography color="error">{error ? error : "\u00A0"}</Typography>
-    </Container>
+    </DatePickerContainer>
   );
 };
 
 export default DatePicker;
 
 const DatePickerContainer = styled.div`
-  width: 100%;
+  width: 50%;
 `;

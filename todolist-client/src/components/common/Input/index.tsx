@@ -1,36 +1,36 @@
 import styled from "@emotion/styled";
 import { TextField, Typography } from "@mui/material";
-import { FC, FocusEventHandler } from "react";
+import { FieldInputProps } from "formik";
+import { FC, FocusEventHandler, HTMLInputTypeAttribute } from "react";
 
 interface InputProps {
-  componentName: "string";
-  autoFocus: boolean;
-  type: string;
+  autoFocus?: boolean;
+  type?: HTMLInputTypeAttribute;
   placeholder: string;
-  fieldName?: string;
+  field?: FieldInputProps<string>;
+  error?: string;
+
   onChange?: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => void;
   onBlur?: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement>;
-
-  error: undefined | string;
 }
 
 const Input: FC<InputProps> = (props: InputProps) => {
-  const { autoFocus, type, placeholder, fieldName, onChange, onBlur, error } =
+  const { autoFocus, type, placeholder, field, onChange, onBlur, error } =
     props;
 
-  const name = fieldName ? fieldName : "";
+  const name = field ? field.name : "";
 
   return (
     <InputContainer>
       <TextField
         name={name}
-        onChange={onChange}
-        onBlur={onBlur}
+        onChange={field ? field.onChange : onChange}
+        onBlur={field ? field.onBlur : onBlur}
         label={placeholder}
         autoFocus={autoFocus}
-        type={type}
+        type={type ? type : "text"}
         placeholder={placeholder}
       />
       <Typography color="error">{error ? error : "\u00A0"}</Typography>
