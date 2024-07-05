@@ -2,8 +2,9 @@ import styled from "@emotion/styled";
 import { Button, Paper } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { FastField, Form, Formik } from "formik";
-import { FC } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { Link } from "react-router-dom";
+import { checkEmailAvailability } from "../../api/auth";
 import GenderSelector from "../../components/auth/GenderSelector";
 import HeardFromSelector from "../../components/auth/HeardFromSelector";
 import CheckBox from "../../components/common/CheckBox";
@@ -45,7 +46,8 @@ const initialValues: RegistrationPageValues = {
 };
 const RegistrationPage: FC = () => {
   const dispatch = useAppDispatch();
-
+  const [emailErrors, setEmailErrors] = useState<string | null>(null);
+  console.log("Email error: ", emailErrors);
   const handleRegistration = (values: RegistrationPageValues) => {
     dispatch(registerUserRequest(values));
   };
@@ -60,6 +62,19 @@ const RegistrationPage: FC = () => {
         }}
       >
         {({ errors, touched, handleChange, setFieldValue }) => {
+          const handleEmailChange = async (
+            e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+          ) => {
+            const value = e.target.value;
+            setFieldValue("email", value);
+            const response = await checkEmailAvailability(value);
+            if (response.success) {
+              setEmailErrors(response.data ? null : "The email is taken");
+            } else {
+              setEmailErrors("Couldn't get the email availability");
+            }
+          };
+
           const handleBirthDate = (value: Dayjs) => {
             setFieldValue("birthDate", dayjs(value).format());
           };
@@ -72,7 +87,12 @@ const RegistrationPage: FC = () => {
                 name="email"
                 placeholder="Email"
                 component={Input}
-                error={touched.email && errors.email}
+                error={
+                  emailErrors
+                    ? touched.email && emailErrors
+                    : touched.email && errors.email
+                }
+                onChange={handleEmailChange}
               />
               <FastField
                 validateOnBlur

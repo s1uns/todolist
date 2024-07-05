@@ -7,7 +7,7 @@ const customRequest = async <TData, TResponse>(
   method: string,
   url: string,
   data?: TData
-): Promise<TResponse | ErrorResponse> => {
+): Promise<TResponse> => {
   try {
     const config: AxiosRequestConfig = {
       method,
@@ -28,7 +28,7 @@ const customRequest = async <TData, TResponse>(
           code: error.response.data.code,
           message: error.response.data.message,
           success: false
-        } as ErrorResponse;
+        } as TResponse;
       }
     }
 
@@ -36,7 +36,7 @@ const customRequest = async <TData, TResponse>(
       code: 500,
       message: "Couldn't send your request, try again later",
       success: false
-    } as ErrorResponse;
+    } as TResponse;
   }
 };
 

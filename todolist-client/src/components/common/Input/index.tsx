@@ -26,7 +26,7 @@ const Input: FC<InputProps> = (props: InputProps) => {
     <InputContainer>
       <TextField
         name={name}
-        onChange={field ? field.onChange : onChange}
+        onChange={onChange ? onChange : field ? field.onChange : () => {}}
         onBlur={field ? field.onBlur : onBlur}
         label={placeholder}
         autoFocus={autoFocus}

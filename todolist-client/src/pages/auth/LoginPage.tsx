@@ -1,29 +1,32 @@
-import { Button, FormControlLabel, Paper, styled } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Paper,
+  styled,
+  Typography
+} from "@mui/material";
 import { FastField, Field, Form, Formik } from "formik";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import CheckBox from "../../components/common/CheckBox";
 import FormRow from "../../components/common/FormRow";
 import Input from "../../components/common/Input";
 import { loginUserRequest } from "../../store/actions/authActions";
 import { useAppDispatch } from "../../store/store";
+import { LoginCredentials } from "../../types/auth/LoginCredentials";
 import { userLoginSchema } from "../../utils/validators";
 
-interface LoginPageValues {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-const initialValues: LoginPageValues = {
+const initialValues: LoginCredentials = {
   email: "",
   password: "",
   rememberMe: false
 };
 
 const LoginPage: FC = () => {
+  const [serverErrors, setServerErrors] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const handleLogin = (values: LoginPageValues) => {
+  const handleLogin = (values: LoginCredentials) => {
+    values.setErrors = setServerErrors;
     dispatch(loginUserRequest(values));
   };
 
@@ -33,10 +36,10 @@ const LoginPage: FC = () => {
         initialValues={initialValues}
         validationSchema={userLoginSchema}
         onSubmit={(values) => {
-          handleLogin(values as unknown as LoginPageValues);
+          handleLogin(values as unknown as LoginCredentials);
         }}
       >
-        {({ errors, touched, handleChange, handleBlur }) => {
+        {({ errors, touched }) => {
           return (
             <StyledForm>
               <FastField
@@ -74,6 +77,13 @@ const LoginPage: FC = () => {
                 <a href="/register">Forgot password?</a>
                 {/* Add drop password page*/}
               </FormRow>
+              <br />
+
+              {serverErrors ? (
+                <Typography color="error">{serverErrors}</Typography>
+              ) : (
+                "\u00A0"
+              )}
             </StyledForm>
           );
         }}
@@ -103,8 +113,8 @@ const StyledFormikForm = styled(Formik)`
 `;
 
 const StyledFormPaper = styled(Paper)`
-  width: 20%;
-  height: 40%;
+  width: 30%;
+  height: 50%;
 `;
 const FormButton = styled(Button)`
   width: 30%;

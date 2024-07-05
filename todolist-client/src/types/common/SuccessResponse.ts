@@ -1,5 +1,5 @@
 export type SuccessResponse<TData> = {
-  code: 200;
+  code: number;
   message: string;
   data?: TData;
   success: boolean;

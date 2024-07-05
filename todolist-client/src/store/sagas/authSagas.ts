@@ -21,7 +21,9 @@ function* workRegisterUser({
     const { userId, email, fullName, username } = response.data!;
     yield put(authUserSuccess({ userId, email, fullName, username }));
   } else {
-    toast.error(response.message);
+    if (response.code === 500) {
+      toast.error(response.message);
+    }
   }
 }
 
@@ -34,7 +36,13 @@ function* workLoginUser({ payload }: PayloadAction<LoginCredentials>) {
     const { userId, email, fullName, username } = response.data!;
     yield put(authUserSuccess({ userId, email, fullName, username }));
   } else {
-    toast.error(response.message);
+    if (response.code === 500) {
+      toast.error(response.message);
+    } else {
+      if (payload.setErrors) {
+        payload.setErrors(response.message);
+      }
+    }
   }
 }
 

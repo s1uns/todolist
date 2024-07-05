@@ -1,7 +1,7 @@
 import { AuthResult } from "../types/auth/AuthResult";
 import { LoginCredentials } from "../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../types/auth/RegistrationCredentials";
-import { ErrorResponse } from "../types/common/ErrorResponse";
+import { SuccessResponse } from "../types/common/SuccessResponse";
 import { POST_REQUEST } from "../utils/constants";
 import { customRequest } from "./helpers";
 
@@ -9,7 +9,7 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 const registerUser = async (
   credentials: RegistrationCredentials
-): Promise<AuthResult | ErrorResponse> => {
+): Promise<AuthResult> => {
   const response = await customRequest<RegistrationCredentials, AuthResult>(
     POST_REQUEST,
     `${url}auth/registration`,
@@ -18,9 +18,19 @@ const registerUser = async (
   return response;
 };
 
+const checkEmailAvailability = async (
+  email: string
+): Promise<SuccessResponse<boolean>> => {
+  const response = await customRequest<
+    { email: string },
+    SuccessResponse<boolean>
+  >(POST_REQUEST, `${url}auth/available-email`, { email: email });
+  return response;
+};
+
 const loginUser = async (
   credentials: LoginCredentials
-): Promise<AuthResult | ErrorResponse> => {
+): Promise<AuthResult> => {
   const response = await customRequest<LoginCredentials, AuthResult>(
     POST_REQUEST,
     `${url}auth/login`,
@@ -35,4 +45,4 @@ const logoutUser = async () => {
   return response;
 };
 
-export { loginUser, logoutUser, registerUser };
+export { checkEmailAvailability, loginUser, logoutUser, registerUser };
