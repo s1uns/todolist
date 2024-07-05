@@ -21,7 +21,7 @@ const Input: FC<InputProps> = (props: InputProps) => {
     props;
 
   const name = field ? field.name : "";
-
+  console.log("Current error: ", error);
   return (
     <InputContainer>
       <TextField

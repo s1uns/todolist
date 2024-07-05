@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
 import { Button, Paper } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { FastField, Form, Formik } from "formik";
+import { FastField, Form, Formik, FormikErrors, FormikValues } from "formik";
 import { ChangeEvent, FC, useState } from "react";
 import { Link } from "react-router-dom";
+import * as yup from "yup";
 import { checkEmailAvailability } from "../../api/auth";
 import GenderSelector from "../../components/auth/GenderSelector";
 import HeardFromSelector from "../../components/auth/HeardFromSelector";
@@ -14,6 +15,8 @@ import Input from "../../components/common/Input";
 import { registerUserRequest } from "../../store/actions/authActions";
 import { useAppDispatch } from "../../store/store";
 import { userRegistrationSchema } from "../../utils/validators";
+
+const emailSchema = yup.object().shape({ email: yup.string().email() });
 
 interface RegistrationPageValues {
   email: string;
@@ -48,8 +51,44 @@ const RegistrationPage: FC = () => {
   const dispatch = useAppDispatch();
   const [emailErrors, setEmailErrors] = useState<string | null>(null);
   console.log("Email error: ", emailErrors);
+
   const handleRegistration = (values: RegistrationPageValues) => {
     dispatch(registerUserRequest(values));
+  };
+
+  const handleEmailChange = async (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    setFieldValue: (
+      field: string,
+      value: string,
+      shouldValidate?: boolean
+    ) => Promise<void | FormikErrors<FormikValues>>
+  ) => {
+    const value = e.target.value;
+    const valid =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        value
+      );
+    if (valid) {
+      const response = await checkEmailAvailability(value);
+      if (response.success) {
+        setEmailErrors(response.data ? null : "The email is taken");
+      } else {
+        setEmailErrors("Couldn't get the email availability");
+      }
+    }
+    setFieldValue("email", value);
+  };
+
+  const handleBirthDate = (
+    value: Dayjs,
+    setFieldValue: (
+      field: string,
+      value: string,
+      shouldValidate?: boolean
+    ) => Promise<void | FormikErrors<FormikValues>>
+  ) => {
+    setFieldValue("birthDate", dayjs(value).format());
   };
 
   return (
@@ -62,23 +101,6 @@ const RegistrationPage: FC = () => {
         }}
       >
         {({ errors, touched, handleChange, setFieldValue }) => {
-          const handleEmailChange = async (
-            e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-          ) => {
-            const value = e.target.value;
-            setFieldValue("email", value);
-            const response = await checkEmailAvailability(value);
-            if (response.success) {
-              setEmailErrors(response.data ? null : "The email is taken");
-            } else {
-              setEmailErrors("Couldn't get the email availability");
-            }
-          };
-
-          const handleBirthDate = (value: Dayjs) => {
-            setFieldValue("birthDate", dayjs(value).format());
-          };
-
           return (
             <StyledForm>
               <FastField
@@ -88,11 +110,11 @@ const RegistrationPage: FC = () => {
                 placeholder="Email"
                 component={Input}
                 error={
-                  emailErrors
-                    ? touched.email && emailErrors
-                    : touched.email && errors.email
+                  emailErrors ? emailErrors : touched.email && errors.email
                 }
-                onChange={handleEmailChange}
+                onChange={(
+                  e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+                ) => handleEmailChange(e, setFieldValue)}
               />
               <FastField
                 validateOnBlur
@@ -128,7 +150,9 @@ const RegistrationPage: FC = () => {
                   component={DatePicker}
                   placeholder="Your birthdate"
                   error={touched.birthDate && errors.birthDate}
-                  onChange={handleBirthDate}
+                  onChange={(value: Dayjs) =>
+                    handleBirthDate(value, setFieldValue)
+                  }
                 />
                 <FastField
                   validateOnBlur
