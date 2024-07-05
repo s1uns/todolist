@@ -50,7 +50,6 @@ const initialValues: RegistrationPageValues = {
 const RegistrationPage: FC = () => {
   const dispatch = useAppDispatch();
   const [emailErrors, setEmailErrors] = useState<string | null>(null);
-  console.log("Email error: ", emailErrors);
 
   const handleRegistration = (values: RegistrationPageValues) => {
     dispatch(registerUserRequest(values));
