@@ -123,7 +123,6 @@ const RegistrationPage: FC = () => {
         }}
       >
         {({ errors, touched, handleChange, setFieldValue, values }) => {
-          // console.log("Email values: ", values.username);
           return (
             <StyledForm>
               <Field
