@@ -10,6 +10,8 @@ import CheckBox from "../../components/common/CheckBox";
 import DatePicker from "../../components/common/DatePicker";
 import FormRow from "../../components/common/FormRow";
 import Input from "../../components/common/Input";
+import { registerUserRequest } from "../../store/actions/authActions";
+import { useAppDispatch } from "../../store/store";
 import { userRegistrationSchema } from "../../utils/validators";
 
 interface RegistrationPageValues {
@@ -42,16 +44,40 @@ const initialValues: RegistrationPageValues = {
   passwordConfirmation: ""
 };
 const RegistrationPage: FC = () => {
-  const handleRegistration = (values: RegistrationPageValues) => {
-    const { email, password } = values;
-    console.log("Registration: ", values);
+  const dispatch = useAppDispatch();
 
-    // dispatch(
-    //     RegistrationUserRequest({
-    //         email: email,
-    //         password: password,
-    //     })
-    // );
+  const handleRegistration = (values: RegistrationPageValues) => {
+    const {
+      email,
+      username,
+      firstName,
+      lastName,
+      birthDate,
+      gender,
+      city,
+      country,
+      heardFrom,
+      password,
+      passwordConfirmation,
+      rememberMe
+    } = values;
+
+    dispatch(
+      registerUserRequest({
+        email: email,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: birthDate,
+        gender: gender,
+        city: city,
+        country: country,
+        heardFrom: heardFrom,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+        rememberMe: rememberMe
+      })
+    );
   };
 
   return (

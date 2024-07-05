@@ -21,7 +21,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     authUserSuccess: (state, action: PayloadAction<AuthResult>) => {
-      console.log("Action: ", action)
       return {
         userId: action.payload.userId,
         email: action.payload.email,

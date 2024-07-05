@@ -3,8 +3,6 @@ import { ErrorResponse } from "../../types/common/ErrorResponse";
 
 axios.defaults.withCredentials = true;
 
-//class ServerError extends error
-
 const customRequest = async <TData, TResponse>(
   method: string,
   url: string,
