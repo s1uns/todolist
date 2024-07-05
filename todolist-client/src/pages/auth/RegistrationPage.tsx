@@ -47,37 +47,7 @@ const RegistrationPage: FC = () => {
   const dispatch = useAppDispatch();
 
   const handleRegistration = (values: RegistrationPageValues) => {
-    const {
-      email,
-      username,
-      firstName,
-      lastName,
-      birthDate,
-      gender,
-      city,
-      country,
-      heardFrom,
-      password,
-      passwordConfirmation,
-      rememberMe
-    } = values;
-
-    dispatch(
-      registerUserRequest({
-        email: email,
-        username: username,
-        firstName: firstName,
-        lastName: lastName,
-        birthDate: birthDate,
-        gender: gender,
-        city: city,
-        country: country,
-        heardFrom: heardFrom,
-        password: password,
-        passwordConfirmation: passwordConfirmation,
-        rememberMe: rememberMe
-      })
-    );
+    dispatch(registerUserRequest(values));
   };
 
   return (

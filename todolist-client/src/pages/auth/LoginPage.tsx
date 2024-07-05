@@ -24,15 +24,7 @@ const initialValues: LoginPageValues = {
 const LoginPage: FC = () => {
   const dispatch = useAppDispatch();
   const handleLogin = (values: LoginPageValues) => {
-    const { email, password, rememberMe } = values;
-
-    dispatch(
-      loginUserRequest({
-        email: email,
-        password: password,
-        rememberMe: rememberMe
-      })
-    );
+    dispatch(loginUserRequest(values));
   };
 
   return (
@@ -51,7 +43,6 @@ const LoginPage: FC = () => {
                 validateOnBlur
                 validateOnChange
                 name="email"
-                fieldName="email"
                 placeholder="Email"
                 component={Input}
                 error={touched.email && errors.email}

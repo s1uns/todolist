@@ -1,4 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { call, put, takeEvery } from "redux-saga/effects";
 import { loginUser, logoutUser, registerUser } from "../../api";
 import { AuthResult } from "../../types/auth/AuthResult";
@@ -20,7 +21,7 @@ function* workRegisterUser({
     const { userId, email, fullName, username } = response.data!;
     yield put(authUserSuccess({ userId, email, fullName, username }));
   } else {
-    console.log("Auth error: ", response.message);
+    toast.error(response.message);
   }
 }
 
@@ -28,12 +29,12 @@ function* workLoginUser({ payload }: PayloadAction<LoginCredentials>) {
   const response: SuccessResponse<AuthResult> = yield call(() =>
     loginUser(payload)
   );
-  
+
   if (response.success) {
     const { userId, email, fullName, username } = response.data!;
     yield put(authUserSuccess({ userId, email, fullName, username }));
   } else {
-    console.log("Auth error: ", response.message);
+    toast.error(response.message);
   }
 }
 
