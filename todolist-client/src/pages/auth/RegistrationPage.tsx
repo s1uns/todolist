@@ -1,7 +1,14 @@
 import styled from "@emotion/styled";
 import { Button, Paper } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { FastField, Form, Formik, FormikErrors, FormikValues } from "formik";
+import {
+  FastField,
+  Field,
+  Form,
+  Formik,
+  FormikErrors,
+  FormikValues
+} from "formik";
 import { ChangeEvent, FC, useState } from "react";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
@@ -50,6 +57,29 @@ const initialValues: RegistrationPageValues = {
 const RegistrationPage: FC = () => {
   const dispatch = useAppDispatch();
   const [emailErrors, setEmailErrors] = useState<string | null>(null);
+  const emailSchema = yup
+    .string()
+    .email("Invalid email address")
+    .required("Required");
+
+  const validateEmail = async (email: string) => {
+    try {
+      await emailSchema.validate(email);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const handleEmailIsAvailable = async (email: string) => {
+    const response = await checkEmailAvailability(email);
+
+    if (response.success) {
+      setEmailErrors(response.data ? null : "The email is taken");
+    } else {
+      setEmailErrors("Couldn't get the email availability");
+    }
+  };
 
   const handleRegistration = (values: RegistrationPageValues) => {
     dispatch(registerUserRequest(values));
@@ -64,19 +94,12 @@ const RegistrationPage: FC = () => {
     ) => Promise<void | FormikErrors<FormikValues>>
   ) => {
     const value = e.target.value;
-    const valid =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        value
-      );
-    if (valid) {
-      const response = await checkEmailAvailability(value);
-      if (response.success) {
-        setEmailErrors(response.data ? null : "The email is taken");
-      } else {
-        setEmailErrors("Couldn't get the email availability");
-      }
-    }
     setFieldValue("email", value);
+
+    const valid = await validateEmail(value);
+    if (valid) {
+      handleEmailIsAvailable(value);
+    }
   };
 
   const handleBirthDate = (
@@ -99,10 +122,11 @@ const RegistrationPage: FC = () => {
           handleRegistration(values as unknown as RegistrationPageValues);
         }}
       >
-        {({ errors, touched, handleChange, setFieldValue }) => {
+        {({ errors, touched, handleChange, setFieldValue, values }) => {
+          // console.log("Email values: ", values.username);
           return (
             <StyledForm>
-              <FastField
+              <Field
                 validateOnBlur
                 validateOnChange
                 name="email"

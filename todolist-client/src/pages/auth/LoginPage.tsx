@@ -5,7 +5,7 @@ import {
   styled,
   Typography
 } from "@mui/material";
-import { FastField, Field, Form, Formik } from "formik";
+import { FastField, Form, Formik } from "formik";
 import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import CheckBox from "../../components/common/CheckBox";
@@ -62,7 +62,7 @@ const LoginPage: FC = () => {
               <FormRow>
                 <FormControlLabel
                   control={
-                    <Field
+                    <FastField
                       name="rememberMe"
                       type="checkbox"
                       component={CheckBox}
