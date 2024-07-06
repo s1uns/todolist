@@ -2,7 +2,15 @@ import styled from "@emotion/styled";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { TextField, Typography } from "@mui/material";
 import { FieldInputProps } from "formik";
-import { FC, FocusEventHandler, HTMLInputTypeAttribute, useState } from "react";
+import {
+  FC,
+  FocusEventHandler,
+  HTMLInputTypeAttribute,
+  memo,
+  useCallback,
+  useMemo,
+  useState
+} from "react";
 
 interface InputProps {
   autoFocus?: boolean;
@@ -17,6 +25,29 @@ interface InputProps {
   ) => void;
   onBlur?: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement>;
 }
+
+interface PasswordVisibilityProps {
+  type: string;
+  passwordVisibility: boolean;
+  handleChangeVisibility: () => void;
+}
+
+const PasswordVisibility = memo(
+  ({
+    type,
+    passwordVisibility,
+    handleChangeVisibility
+  }: PasswordVisibilityProps) => {
+    if (type === "text" && passwordVisibility) {
+      return <VisibilityOff onClick={handleChangeVisibility} />;
+    }
+
+    if (type === "password" && !passwordVisibility) {
+      return <Visibility onClick={handleChangeVisibility} />;
+    }
+    return null;
+  }
+);
 
 const Input: FC<InputProps> = (props: InputProps) => {
   const {
@@ -35,29 +66,9 @@ const Input: FC<InputProps> = (props: InputProps) => {
   const inputValue = field ? field.value : value;
   const name = field ? field.name : "";
 
-  const handleChangeVisibility = () => {
-    setPasswordVisibility((prevVisibility) => !passwordVisibility);
-  };
-
-  const getInputType = () => {
-    if (type === "password" && !passwordVisibility) {
-      return "password";
-    } else if (type === "password" && passwordVisibility) {
-      return "text";
-    } else if (type) {
-      return type;
-    }
-    return "text";
-  };
-
-  const getPasswordVisibility = () => {
-    if (type === "password" && passwordVisibility) {
-      return <VisibilityOff onClick={handleChangeVisibility} />;
-    } else if (type === "password" && !passwordVisibility) {
-      return <Visibility onClick={handleChangeVisibility} />;
-    }
-    return null;
-  };
+  const handleChangeVisibility = useCallback(() => {
+    setPasswordVisibility(!passwordVisibility);
+  }, [passwordVisibility]);
 
   const handleChangeValue = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -69,20 +80,46 @@ const Input: FC<InputProps> = (props: InputProps) => {
     }
   };
 
+  const inputType = useMemo(() => {
+    if (type === "password" && !passwordVisibility) {
+      return "password";
+    }
+    if (type === "password" && passwordVisibility) {
+      return "text";
+    }
+    if (type) {
+      return type;
+    }
+    return "text";
+  }, [type, passwordVisibility]);
+
+  const shouldShowIcon =
+    (inputType === "text" && passwordVisibility) ||
+    (inputType === "password" && !passwordVisibility);
   return (
     <InputContainer>
-      <TextField
-        name={name}
-        onChange={handleChangeValue}
-        onBlur={field ? field.onBlur : onBlur}
-        label={placeholder}
-        autoFocus={autoFocus}
-        type={getInputType()}
-        value={inputValue}
-        placeholder={placeholder}
-      />
+      <InputFieldContainer>
+        <TextField
+          name={name}
+          onChange={handleChangeValue}
+          onBlur={field ? field.onBlur : onBlur}
+          label={placeholder}
+          autoFocus={autoFocus}
+          type={inputType}
+          value={inputValue}
+          placeholder={placeholder}
+          InputProps={{
+            endAdornment: shouldShowIcon && (
+              <PasswordVisibility
+                type={inputType}
+                passwordVisibility={passwordVisibility}
+                handleChangeVisibility={handleChangeVisibility}
+              />
+            )
+          }}
+        />
+      </InputFieldContainer>
       <Typography color="error">{error ? error : "\u00A0"}</Typography>
-      {<VisibilityContainer>{getPasswordVisibility()}</VisibilityContainer>}
     </InputContainer>
   );
 };
@@ -90,19 +127,14 @@ const Input: FC<InputProps> = (props: InputProps) => {
 export default Input;
 
 const InputContainer = styled.div`
-  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   margin-bottom: 0.01rem;
 `;
 
-const VisibilityContainer = styled.div`
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-90%);
-  &:hover {
-    cursor: pointer;
-  }
+const InputFieldContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 `;
