@@ -1,7 +1,7 @@
 import { AuthResult } from "../types/auth/AuthResult";
 import { LoginCredentials } from "../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../types/auth/RegistrationCredentials";
-import { SuccessResponse } from "../types/common/SuccessResponse";
+import { ServerResponse } from "../types/common/ServerResponse";
 import { POST_REQUEST } from "../utils/constants";
 import { customRequest } from "./helpers";
 
@@ -9,7 +9,7 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 const registerUser = async (
   credentials: RegistrationCredentials
-): Promise<AuthResult> => {
+): Promise<ServerResponse<AuthResult>> => {
   const response = await customRequest<RegistrationCredentials, AuthResult>(
     POST_REQUEST,
     `${url}auth/registration`,
@@ -20,17 +20,18 @@ const registerUser = async (
 
 const checkEmailAvailability = async (
   email: string
-): Promise<SuccessResponse<boolean>> => {
-  const response = await customRequest<
-    { email: string },
-    SuccessResponse<boolean>
-  >(POST_REQUEST, `${url}auth/available-email`, { email: email });
+): Promise<ServerResponse<boolean>> => {
+  const response = await customRequest<{ email: string }, boolean>(
+    POST_REQUEST,
+    `${url}auth/available-email`,
+    { email: email }
+  );
   return response;
 };
 
 const loginUser = async (
   credentials: LoginCredentials
-): Promise<AuthResult> => {
+): Promise<ServerResponse<AuthResult>> => {
   const response = await customRequest<LoginCredentials, AuthResult>(
     POST_REQUEST,
     `${url}auth/login`,

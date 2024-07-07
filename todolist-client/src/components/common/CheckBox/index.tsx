@@ -6,18 +6,18 @@ import { ChangeEvent } from "react";
 interface CheckBoxProps {
   label?: string;
   field?: FieldInputProps<string | number | boolean>;
-
+  isChecked?: boolean;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CheckBox = (props: CheckBoxProps) => {
-  const { label, field, onChange } = props;
+  const { label, field, onChange, isChecked } = props;
 
   const name = field ? field.name : "";
 
   return (
     <CheckBoxWrapper>
-      <MuiCheckbox name={name} onChange={onChange} />
+      <MuiCheckbox name={name} onChange={onChange} checked={isChecked} />
       {label ? <CheckBoxLabelTitle>{label}</CheckBoxLabelTitle> : <div></div>}
     </CheckBoxWrapper>
   );

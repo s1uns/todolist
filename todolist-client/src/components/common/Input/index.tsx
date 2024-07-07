@@ -39,11 +39,19 @@ const PasswordVisibility = memo(
     handleChangeVisibility
   }: PasswordVisibilityProps) => {
     if (type === "text" && passwordVisibility) {
-      return <VisibilityOff onClick={handleChangeVisibility} />;
+      return (
+        <VisibilityButtonContainer>
+          <VisibilityOff onClick={handleChangeVisibility} />
+        </VisibilityButtonContainer>
+      );
     }
 
     if (type === "password" && !passwordVisibility) {
-      return <Visibility onClick={handleChangeVisibility} />;
+      return (
+        <VisibilityButtonContainer>
+          <Visibility onClick={handleChangeVisibility} />{" "}
+        </VisibilityButtonContainer>
+      );
     }
     return null;
   }
@@ -137,4 +145,13 @@ const InputFieldContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+`;
+
+const VisibilityButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    cursor: pointer;
+  }
 `;

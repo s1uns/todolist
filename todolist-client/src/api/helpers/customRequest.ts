@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { ErrorResponse } from "../../types/common/ErrorResponse";
+import { ServerResponse } from "../../types/common/ServerResponse";
 
 axios.defaults.withCredentials = true;
 
@@ -7,7 +7,7 @@ const customRequest = async <TData, TResponse>(
   method: string,
   url: string,
   data?: TData
-): Promise<TResponse> => {
+): Promise<ServerResponse<TResponse>> => {
   try {
     const config: AxiosRequestConfig = {
       method,
@@ -16,7 +16,7 @@ const customRequest = async <TData, TResponse>(
     };
 
     const response = await axios(config);
-    return response.data as TResponse;
+    return response.data as ServerResponse<TResponse>;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
@@ -28,7 +28,7 @@ const customRequest = async <TData, TResponse>(
           code: error.response.data.code,
           message: error.response.data.message,
           success: false
-        } as TResponse;
+        } as ServerResponse<TResponse>;
       }
     }
 
@@ -36,7 +36,7 @@ const customRequest = async <TData, TResponse>(
       code: 500,
       message: "Couldn't send your request, try again later",
       success: false
-    } as TResponse;
+    } as ServerResponse<TResponse>;
   }
 };
 

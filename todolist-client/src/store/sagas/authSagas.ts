@@ -5,7 +5,7 @@ import { loginUser, logoutUser, registerUser } from "../../api";
 import { AuthResult } from "../../types/auth/AuthResult";
 import { LoginCredentials } from "../../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../../types/auth/RegistrationCredentials";
-import { SuccessResponse } from "../../types/common/SuccessResponse";
+import { ServerResponse } from "../../types/common/ServerResponse";
 import { logoutUserSuccess } from "../actions/authActions";
 import { actionRequestType } from "../actions/constants";
 import { authUserSuccess } from "../slices/authSlice";
@@ -13,7 +13,7 @@ import { authUserSuccess } from "../slices/authSlice";
 function* workRegisterUser({
   payload
 }: PayloadAction<RegistrationCredentials>) {
-  const response: SuccessResponse<AuthResult> = yield call(() =>
+  const response: ServerResponse<AuthResult> = yield call(() =>
     registerUser(payload)
   );
 
@@ -28,7 +28,7 @@ function* workRegisterUser({
 }
 
 function* workLoginUser({ payload }: PayloadAction<LoginCredentials>) {
-  const response: SuccessResponse<AuthResult> = yield call(() =>
+  const response: ServerResponse<AuthResult> = yield call(() =>
     loginUser(payload)
   );
 
@@ -47,7 +47,7 @@ function* workLoginUser({ payload }: PayloadAction<LoginCredentials>) {
 }
 
 function* workLogoutUser() {
-  const response: SuccessResponse<null> = yield call(() => logoutUser());
+  const response: ServerResponse<null> = yield call(() => logoutUser());
 
   if (response.success) {
     yield put(logoutUserSuccess());

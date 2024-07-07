@@ -2,14 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthResult } from "../../types/auth/AuthResult";
 import { RootState } from "../store";
 
-interface UserState {
+interface AuthState {
   userId: string | null;
   email: string;
   fullName: string;
   username: string;
 }
 
-const initialState: UserState = {
+const initialState: AuthState = {
   userId: "",
   email: "",
   fullName: "",

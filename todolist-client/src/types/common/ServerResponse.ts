@@ -1,4 +1,4 @@
-export type SuccessResponse<TData> = {
+export type ServerResponse<TData> = {
   code: number;
   message: string;
   data?: TData;

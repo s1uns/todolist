@@ -57,7 +57,7 @@ const theme = createTheme({
           padding: "1rem",
           border: "none",
           borderRadius: " 0.5rem",
-          backgroundColor: "#007bff",
+          backgroundColor: "#6b63ff",
           color: "white",
           fontSize: "2rem",
           cursor: "pointer",
@@ -65,7 +65,11 @@ const theme = createTheme({
           zIndex: 1000,
 
           "&:hover": {
-            backgroundColor: "#009bf3"
+            backgroundColor: "#4b42f2"
+          },
+
+          "&:active": {
+            backgroundColor: "#3931c5"
           },
           "&:disabled": {
             backgroundColor: "grey",

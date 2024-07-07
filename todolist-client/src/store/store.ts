@@ -6,9 +6,11 @@ import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/es/storage";
 import createSagaMiddleware from "redux-saga";
 import authReducer from "./slices/authSlice";
+import todosReducer from "./slices/todosSlice";
 
 const rootReducer = combineReducers({
-  user: authReducer
+  user: authReducer,
+  todos: todosReducer
 });
 
 const persistConfig = {
