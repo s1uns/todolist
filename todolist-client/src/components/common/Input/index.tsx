@@ -3,10 +3,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { TextField, Typography } from "@mui/material";
 import { FieldInputProps } from "formik";
 import {
+  ChangeEvent,
   FC,
   FocusEventHandler,
   HTMLInputTypeAttribute,
   memo,
+  ReactNode,
   useCallback,
   useMemo,
   useState
@@ -19,6 +21,7 @@ interface InputProps {
   placeholder: string;
   field?: FieldInputProps<string>;
   error?: string;
+  endAdornment?: ReactNode;
 
   onChange?: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -64,6 +67,7 @@ const Input: FC<InputProps> = (props: InputProps) => {
     placeholder,
     field,
     value,
+    endAdornment,
     onChange,
     onBlur,
     error
@@ -79,7 +83,7 @@ const Input: FC<InputProps> = (props: InputProps) => {
   }, [passwordVisibility]);
 
   const handleChangeValue = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     if (onChange) {
       onChange(e);
@@ -117,13 +121,15 @@ const Input: FC<InputProps> = (props: InputProps) => {
           value={inputValue}
           placeholder={placeholder}
           InputProps={{
-            endAdornment: shouldShowIcon && (
-              <PasswordVisibility
-                type={inputType}
-                passwordVisibility={passwordVisibility}
-                handleChangeVisibility={handleChangeVisibility}
-              />
-            )
+            endAdornment: endAdornment
+              ? endAdornment
+              : shouldShowIcon && (
+                  <PasswordVisibility
+                    type={inputType}
+                    passwordVisibility={passwordVisibility}
+                    handleChangeVisibility={handleChangeVisibility}
+                  />
+                )
           }}
         />
       </InputFieldContainer>

@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
   List,
@@ -128,7 +129,7 @@ const TodosPage = () => {
     <PageContainer>
       <FunctionsPanel>
         <InputContainer>
-          <Input placeholder="" />
+          <Input placeholder="" endAdornment={<SearchIcon />} />
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
