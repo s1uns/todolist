@@ -18,7 +18,7 @@ interface InputProps {
   autoFocus?: boolean;
   value?: string;
   type?: HTMLInputTypeAttribute;
-  placeholder: string;
+  placeholder?: string;
   field?: FieldInputProps<string>;
   error?: string;
   endAdornment?: ReactNode;

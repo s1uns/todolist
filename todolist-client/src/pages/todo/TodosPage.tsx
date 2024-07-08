@@ -11,12 +11,15 @@ import {
   Typography
 } from "@mui/material";
 import { MouseEvent, useState } from "react";
+import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
+import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import ToDoItem from "../../components/todo/ToDoItem";
 import { logoutUserRequest } from "../../store/actions/authActions";
+import { createTodoRequest } from "../../store/actions/todoActions";
+import { getTodos } from "../../store/slices/todosSlice";
 import { useAppDispatch } from "../../store/store";
-import { TodoItem } from "../../types/todo/TodoItem";
 
 const filterOptions = {
   0: "All",
@@ -86,44 +89,15 @@ const TodosFilterMenu = () => {
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
-  // const { list, totalTodos, activeTodos } = useSelector(getTodos);
+  const { list, totalTodos, activeTodos } = useSelector(getTodos);
 
   const handleLogout = () => {
     dispatch(logoutUserRequest());
   };
 
-  const [list, setList] = useState<TodoItem[]>([
-    {
-      id: "1",
-      creatorId: "9a6b80b0-d33b-447c-bb10-54e63190b681",
-      title: "1",
-      isCompleted: true,
-      isUpdated: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: "Author Author"
-    },
-    {
-      id: "3",
-      creatorId: "9a6b80b0-d33b-447c-bb10-54e63190b681",
-      title: "1",
-      isCompleted: false,
-      isUpdated: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: "Author Author"
-    },
-    {
-      id: "2",
-      creatorId: "123",
-      title: "1",
-      isCompleted: false,
-      isUpdated: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: "Author Author"
-    }
-  ]);
+  const handleAddTodo = (todoTitle: string) => {
+    dispatch(createTodoRequest(todoTitle));
+  };
 
   return (
     <PageContainer>
@@ -159,7 +133,10 @@ const TodosPage = () => {
           </ImgContainer>
         )}
       </TodosList>
-      <AddButton />
+      <CreateOrUpdateTodoDialog
+        onSubmit={handleAddTodo}
+        OpenButton={AddButton}
+      />
     </PageContainer>
   );
 };

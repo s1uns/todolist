@@ -21,10 +21,12 @@ const todosSlice = createSlice({
     createTodoSuccess: (state, action: PayloadAction<TodoItem>) => {
       const newList = [action.payload, ...state.list];
 
+      console.log("New list: ", newList);
+
       return {
         list: newList,
-        totalTodos: ++state.totalTodos,
-        activeTodos: ++state.activeTodos
+        totalTodos: state.totalTodos + 1,
+        activeTodos: state.activeTodos + 1
       };
     },
 
@@ -63,8 +65,8 @@ const todosSlice = createSlice({
         list: newList,
         totalTodos: state.totalTodos,
         activeTodos: action.payload.isCompleted
-          ? --state.activeTodos
-          : ++state.activeTodos
+          ? state.activeTodos - 1
+          : state.activeTodos + 1
       };
     },
 
@@ -81,8 +83,8 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: --state.totalTodos,
-        activeTodos: wasCompleted ? state.activeTodos : --state.activeTodos
+        totalTodos: state.totalTodos - 1,
+        activeTodos: wasCompleted ? state.activeTodos : state.activeTodos - 1
       };
     }
   }
