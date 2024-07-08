@@ -1,6 +1,14 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
-import { Button, List, Menu, MenuItem, Typography } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import {
+  Button,
+  List,
+  Menu,
+  MenuItem,
+  MenuProps,
+  Typography
+} from "@mui/material";
 import { MouseEvent, useState } from "react";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
@@ -33,17 +41,20 @@ const TodosFilterMenu = () => {
   };
 
   return (
-    <div>
+    <FilterSelectorContainer>
       <PanelButton
         id="menu-button"
         aria-controls={open ? "menu-list" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
+        variant="contained"
+        disableElevation
         onClick={handleClick}
+        endIcon={<KeyboardArrowDownIcon />}
       >
         {filterOptions[currentFilter]}
       </PanelButton>
-      <Menu
+      <StyledMenu
         id="menu-list"
         aria-labelledby="menu-button"
         anchorEl={anchorEl}
@@ -67,8 +78,8 @@ const TodosFilterMenu = () => {
         <MenuItem onClick={() => handleSetFilter(2)}>
           {filterOptions[2]}
         </MenuItem>
-      </Menu>
-    </div>
+      </StyledMenu>
+    </FilterSelectorContainer>
   );
 };
 
@@ -117,7 +128,7 @@ const TodosPage = () => {
     <PageContainer>
       <FunctionsPanel>
         <InputContainer>
-          <Input placeholder="Search todo..." />
+          <Input placeholder="" />
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
@@ -176,8 +187,8 @@ const PanelButton = styled(Button)`
   display: flex;
   flex-direction: row;
   margin: 0;
-  font-size: 1.2rem;
-  width: 8rem;
+  font-size: 1rem;
+  width: 9rem;
   height: 75%;
 `;
 
@@ -226,4 +237,43 @@ const AddButton = styled(AddCircleOutlinedIcon)`
     stroke-width: 0.05rem;
     color: #544bfc;
   }
+`;
+
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right"
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right"
+    }}
+    {...props}
+  />
+))(() => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    border: ".1rem solid #6b63ff",
+    color: "#6b63ff",
+    marginTop: "4.5rem",
+    zIndex: 1000000,
+    minWidth: 50,
+
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0"
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18
+      }
+    }
+  }
+}));
+
+const FilterSelectorContainer = styled.div`
+  height: 100%;
 `;
