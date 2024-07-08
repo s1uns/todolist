@@ -1,21 +1,102 @@
 import styled from "@emotion/styled";
-import { Button, List, Typography } from "@mui/material";
-import { useState } from "react";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import { Button, List, Menu, MenuItem, Typography } from "@mui/material";
+import { MouseEvent, useState } from "react";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
 import ToDoItem from "../../components/todo/ToDoItem";
+import { logoutUserRequest } from "../../store/actions/authActions";
+import { useAppDispatch } from "../../store/store";
 import { TodoItem } from "../../types/todo/TodoItem";
 
+const filterOptions = {
+  0: "All",
+  1: "Active",
+  2: "Completed"
+};
+
+const TodosFilterMenu = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [currentFilter, setCurrentFilter] = useState<0 | 1 | 2>(0);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleSetFilter = (value: 0 | 1 | 2) => {
+    setCurrentFilter(value);
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <PanelButton
+        id="menu-button"
+        aria-controls={open ? "menu-list" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        {filterOptions[currentFilter]}
+      </PanelButton>
+      <Menu
+        id="menu-list"
+        aria-labelledby="menu-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left"
+        }}
+      >
+        <MenuItem onClick={() => handleSetFilter(0)}>
+          {filterOptions[0]}
+        </MenuItem>
+        <MenuItem onClick={() => handleSetFilter(1)}>
+          {filterOptions[1]}
+        </MenuItem>
+        <MenuItem onClick={() => handleSetFilter(2)}>
+          {filterOptions[2]}
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+};
+
 const TodosPage = () => {
+  const dispatch = useAppDispatch();
   // const { list, totalTodos, activeTodos } = useSelector(getTodos);
+
+  const handleLogout = () => {
+    dispatch(logoutUserRequest());
+  };
 
   const [list, setList] = useState<TodoItem[]>([
     {
       id: "1",
-      creatorId: "123",
+      creatorId: "9a6b80b0-d33b-447c-bb10-54e63190b681",
+      title: "1",
+      isCompleted: true,
+      isUpdated: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      author: "Author Author"
+    },
+    {
+      id: "3",
+      creatorId: "9a6b80b0-d33b-447c-bb10-54e63190b681",
       title: "1",
       isCompleted: false,
-      isUpdated: false,
+      isUpdated: true,
       createdAt: new Date(),
       updatedAt: new Date(),
       author: "Author Author"
@@ -25,7 +106,7 @@ const TodosPage = () => {
       creatorId: "123",
       title: "1",
       isCompleted: false,
-      isUpdated: false,
+      isUpdated: true,
       createdAt: new Date(),
       updatedAt: new Date(),
       author: "Author Author"
@@ -39,15 +120,16 @@ const TodosPage = () => {
           <Input placeholder="Search todo..." />
         </InputContainer>
         <PanelButtons>
-          <PanelButton>All</PanelButton>
+          <TodosFilterMenu />
           <PanelButton>Share</PanelButton>
-          <PanelButton>Log Out</PanelButton>
+          <PanelButton onClick={handleLogout}>Log Out</PanelButton>
         </PanelButtons>
       </FunctionsPanel>
       <TodosList>
         {list.length ? (
           list.map((todo) => (
             <ToDoItem
+              key={todo.id}
               id={todo.id}
               creatorId={todo.creatorId}
               title={todo.title}
@@ -65,6 +147,7 @@ const TodosPage = () => {
           </ImgContainer>
         )}
       </TodosList>
+      <AddButton />
     </PageContainer>
   );
 };
@@ -86,7 +169,7 @@ const PanelButtons = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 0.5rem;
 `;
 
 const PanelButton = styled(Button)`
@@ -95,7 +178,7 @@ const PanelButton = styled(Button)`
   margin: 0;
   font-size: 1.2rem;
   width: 8rem;
-  height: 55%;
+  height: 75%;
 `;
 
 const FunctionsPanel = styled.div`
@@ -124,4 +207,23 @@ const ImgContainer = styled.div`
 
 const EmptyListImg = styled.img`
   width: 100%;
+`;
+
+const AddButton = styled(AddCircleOutlinedIcon)`
+  position: absolute;
+  color: #6b63ff;
+  font-size: 3rem;
+  stroke: transparent;
+  stroke-width: 0.05rem;
+  right: 25%;
+  top: 75%;
+
+  &:hover {
+    cursor: pointer;
+    border-radius: 100%;
+    padding: 0;
+    stroke: #271cfa;
+    stroke-width: 0.05rem;
+    color: #544bfc;
+  }
 `;

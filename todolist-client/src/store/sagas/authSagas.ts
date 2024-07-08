@@ -6,9 +6,8 @@ import { AuthResult } from "../../types/auth/AuthResult";
 import { LoginCredentials } from "../../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../../types/auth/RegistrationCredentials";
 import { ServerResponse } from "../../types/common/ServerResponse";
-import { logoutUserSuccess } from "../actions/authActions";
 import { actionRequestType } from "../actions/constants";
-import { authUserSuccess } from "../slices/authSlice";
+import { authUserSuccess, logoutUserSuccess } from "../slices/authSlice";
 
 function* workRegisterUser({
   payload
@@ -52,6 +51,7 @@ function* workLogoutUser() {
   if (response.success) {
     yield put(logoutUserSuccess());
   } else {
+    toast.error(response.message);
   }
 }
 

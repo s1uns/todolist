@@ -1,11 +1,13 @@
 import styled from "@emotion/styled";
-import { Avatar, ClickAwayListener, ListItem, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import { Avatar, ListItem, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../store/slices/authSlice";
 import { TodoItem } from "../../types/todo/TodoItem";
 import CheckBox from "../common/CheckBox";
-
+import Input from "../common/Input";
 const ToDoItem: FC<TodoItem> = ({
   id,
   title,
@@ -77,30 +79,14 @@ const ToDoItem: FC<TodoItem> = ({
   return (
     <TodoItemContainer
       id={id}
-      // isAuthor={isAuthor}
+      isAuthor={isAuthor}
       className={isCompleted ? "completed" : ""}
     >
-      <StyledCheckBox
-        isChecked={isCompleted}
-        onChange={checkTodo}
-      />
-
-      {isEditing ? (
-        <ClickAwayListener onClickAway={toggleEditing}>
-          <div>
-            Editing
-            {/* <UpdateTodoInput
-              autoFocus
-              defaultValue={title}
-              onKeyDown={updateTodo}
-            /> */}
-          </div>
-        </ClickAwayListener>
-      ) : (
-        <TodoTitle onDoubleClick={toggleEditing}>{title}</TodoTitle>
-      )}
-      <DeleteButton onClick={deleteTodo}>✖️</DeleteButton>
-      {isUpdated ? <UpdatedIcon>🖊</UpdatedIcon> : ""}
+      <StyledCheckBox isChecked={isCompleted} onChange={checkTodo} />
+      <TodoTitle>{title}</TodoTitle>
+      <UpdateButton />
+      <DeleteButton onClick={deleteTodo} />
+      {isUpdated ? <UpdatedText>updated</UpdatedText> : ""}
       {isAuthor ? (
         ""
       ) : (
@@ -112,14 +98,33 @@ const ToDoItem: FC<TodoItem> = ({
 
 export default ToDoItem;
 
-// const UpdateTodoInput = styled(Input)({
-//     "& .MuiInputBase-input": {
-//         marginLeft: "4rem",
-//         fontSize: "3rem",
-//         width: "100%",
-//         height: "100%",
-//     },
-// });
+const UpdateTodoInput = styled(Input)({
+  "& .MuiInputBase-input": {
+    marginLeft: "4rem",
+    fontSize: "3rem",
+    width: "100%",
+    height: "100%"
+  }
+});
+
+type TodoItemProps = {
+  isAuthor: boolean;
+};
+
+const TodoItemContainer = styled(ListItem)<TodoItemProps>(({ isAuthor }) => ({
+  position: "relative",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  width: "100%",
+  borderBottom: ".08rem solid #6b63ff",
+  backgroundColor: isAuthor ? "white" : "#F5F5F5",
+  height: isAuthor ? "4rem" : "6rem",
+  padding: 5,
+  "&:not(:last-child)": {
+    marginBottom: "0.5rem"
+  }
+}));
 
 const AuthorAvatar = styled(Avatar)({
   position: "absolute",
@@ -130,50 +135,29 @@ const AuthorAvatar = styled(Avatar)({
   height: "1.5rem"
 });
 
-const TodoItemContainer = styled(ListItem)(`
-  padding: 5;
-  position: relative;
-  display: flex;
-  flexDirection: row;
-  alignItems: center;
-  borderRadius: 0.5rem;
-  width: 100%;
-  border: 0.05rem dotted black;
-  backgroundColor: ${(props: { isAuthor: boolean }) => (props.isAuthor ? "white" : "#F5F5F5")};
-  height: ${(props: { isAuthor: boolean }) => (props.isAuthor ? "5rem" : "7rem")};
+const DeleteButton = styled(DeleteIcon)(`
+  position: absolute;
+  right: 0.5rem;
+  font-size: 1.5rem;
+  z-index: 1500;
 
-  &:not(:last-child): {
-    marginBottom: "0.5rem"
+  &:hover {
+    cursor: pointer;
+    color: red;
+    font-size: 1.7rem;
   }
 `);
 
-const DeleteButton = styled(Typography)({
-  position: "absolute",
-  right: "0.5rem",
-  fontSize: "2rem",
-  zIndex: 500,
-
-  "&:hover": { cursor: "pointer", fontSize: "2.1rem" }
-});
-
-const StyledCheckBox = styled(CheckBox)({
-  "& .MuiSvgIcon-root": {
-    width: "3rem",
-    height: "3rem",
-    fontSize: "50rem"
-  },
-  position: "absolute",
-  marginRight: "1.5rem",
-  zIndex: 500,
-  border: "none",
-
-  "& .Mui-checked": {
-    color: "red"
+const StyledCheckBox = styled(CheckBox)(`
+    background-color: red;
+  & .MuiSvgIcon-root {
+    width: 30rem;
+    height: 30rem;
+    fontSize: 500rem;
   }
-});
+`);
 
 const TodoTitle = styled(Typography)({
-  paddingLeft: "4rem",
   fontSize: "3rem",
   width: "100%",
 
@@ -184,12 +168,26 @@ const TodoTitle = styled(Typography)({
   }
 });
 
-const UpdatedIcon = styled(Typography)({
-  paddingLeft: "4rem",
-  fontSize: "3rem",
-  position: "absolute",
-  left: "75%",
-  ".completed &": {
-    opacity: 0.5
+const UpdateButton = styled(ModeEditOutlineOutlinedIcon)(`
+  position: absolute;
+  right: 3rem;
+  font-size: 1.5rem;
+  z-index: 1500;
+
+  &:hover {
+    cursor: pointer;
+    color: #6b63ff;
+    font-size: 1.7rem;
   }
-});
+`);
+
+const UpdatedText = styled(Typography)(`
+  font-size: 0.7rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 0.5;
+  .completed &: {
+    opacity: 0.3;
+  }
+`);

@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#085982"
+      main: "#6b63ff"
     },
     error: {
       main: "#d40808"
@@ -49,6 +49,18 @@ const theme = createTheme({
           }
         }
       ]
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          "& .MuiSvgIcon-root": {
+            width: "2rem",
+            height: "2rem",
+            color: "#6b63ff"
+          },
+          zIndex: 500
+        }
+      }
     },
     MuiButton: {
       styleOverrides: {
