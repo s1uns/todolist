@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, List, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
@@ -15,7 +15,6 @@ import { getTodosRequest } from "../../store/actions/todoActions";
 import { clearTodosSuccess, getTodos } from "../../store/slices/todosSlice";
 import { useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
-import { TODOS_LIMIT } from "../../utils/constants";
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +22,8 @@ const TodosPage = () => {
   const [open, setOpen] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1); //move to redux store
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
@@ -38,18 +39,37 @@ const TodosPage = () => {
     dispatch(logoutUserRequest());
   };
 
-  useEffect(() => {
-    dispatch(clearTodosSuccess());
-    fetchMoreTodos();
-  }, []);
-
   const fetchMoreTodos = () => {
     dispatch(getTodosRequest({ currentPage: currentPage, currentFilter: 0 }));
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
+  useEffect(() => {
+    dispatch(clearTodosSuccess());
+    fetchMoreTodos();
+  }, []);
+
+  useEffect(() => {
+    setHasMore(totalTodos > list.length);
+  }, [list]);
+
+  const lastElementRef = useCallback(
+    (node: Element | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          fetchMoreTodos();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [list, hasMore]
+  );
+
   return (
     <PageContainer>
+      {/* <StyledItemsCountBlock>Items count: {list.length}</StyledItemsCountBlock> */}
       <FunctionsPanel>
         <InputContainer>
           <Input endAdornment={<SearchIcon />} />
@@ -68,10 +88,10 @@ const TodosPage = () => {
             style={{ overflowY: "hidden" }}
             dataLength={list.length}
             next={fetchMoreTodos}
-            hasMore={currentPage <= Math.ceil(totalTodos / TODOS_LIMIT)}
+            hasMore={hasMore}
             loader={<div>Loading...</div>}
           >
-            {list.map((todo) => (
+            {list.map((todo, index) => (
               <ToDoItem
                 key={todo.id}
                 id={todo.id}
@@ -92,6 +112,7 @@ const TodosPage = () => {
             <Typography variant="h4">The todos list is empty</Typography>
           </ImgContainer>
         )}
+        <div ref={lastElementRef}></div>
       </TodosList>
       <AddButton onClick={handleOpenTodoModal} />
       {open || todoForEdit ? (
@@ -179,4 +200,11 @@ const AddButton = styled(AddCircleOutlinedIcon)`
     stroke-width: 0.05rem;
     color: #544bfc;
   }
+`;
+
+const StyledItemsCountBlock = styled.div`
+  position: fixed;
+  font-size: 15rem;
+  top: 10rem;
+  right: 10rem;
 `;
