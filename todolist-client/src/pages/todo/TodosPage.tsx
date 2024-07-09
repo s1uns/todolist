@@ -2,7 +2,8 @@ import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, List, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
@@ -10,15 +11,19 @@ import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDi
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
-import { getTodos } from "../../store/slices/todosSlice";
+import { getTodosRequest } from "../../store/actions/todoActions";
+import { clearTodosSuccess, getTodos } from "../../store/slices/todosSlice";
 import { useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
+import { TODOS_LIMIT } from "../../utils/constants";
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
   const { list, totalTodos, activeTodos } = useSelector(getTodos);
   const [open, setOpen] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1); //move to redux store
+  const observerTarget = useRef(null);
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
@@ -34,6 +39,42 @@ const TodosPage = () => {
     dispatch(logoutUserRequest());
   };
 
+  useEffect(() => {
+    dispatch(clearTodosSuccess());
+    fetchMoreTodos();
+  }, []);
+
+  const fetchMoreTodos = () => {
+    dispatch(getTodosRequest({ currentPage: currentPage, currentFilter: 0 }));
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        console.log("Entries: ", entries);
+        if (entries[0].isIntersecting) {
+          console.log("HEY");
+          dispatch(
+            getTodosRequest({ currentPage: currentPage, currentFilter: 0 })
+          );
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget]);
+
   return (
     <PageContainer>
       <FunctionsPanel>
@@ -42,26 +83,36 @@ const TodosPage = () => {
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
+          <PanelButton>Clear completed</PanelButton>
           <PanelButton>Share</PanelButton>
           <PanelButton onClick={handleLogout}>Log Out</PanelButton>
         </PanelButtons>
       </FunctionsPanel>
+
       <TodosList>
         {list.length ? (
-          list.map((todo) => (
-            <ToDoItem
-              key={todo.id}
-              id={todo.id}
-              creatorId={todo.creatorId}
-              title={todo.title}
-              isCompleted={todo.isCompleted}
-              isUpdated={todo.isUpdated}
-              createdAt={todo.createdAt}
-              updatedAt={todo.updatedAt}
-              author={todo.author}
-              onOpenUpdateModal={handleOpenUpdateTodoModal}
-            />
-          ))
+          <InfiniteScroll
+            style={{ overflowY: "hidden" }}
+            dataLength={list.length}
+            next={fetchMoreTodos}
+            hasMore={currentPage < Math.ceil(totalTodos / TODOS_LIMIT)}
+            loader={<div>Loading...</div>}
+          >
+            {list.map((todo) => (
+              <ToDoItem
+                key={todo.id}
+                id={todo.id}
+                creatorId={todo.creatorId}
+                title={todo.title}
+                isCompleted={todo.isCompleted}
+                isUpdated={todo.isUpdated}
+                createdAt={todo.createdAt}
+                updatedAt={todo.updatedAt}
+                author={todo.author}
+                onOpenUpdateModal={handleOpenUpdateTodoModal}
+              />
+            ))}
+          </InfiniteScroll>
         ) : (
           <ImgContainer>
             <EmptyListImg src={emptyTodosList} alt="empty todos list" />
@@ -139,13 +190,13 @@ const EmptyListImg = styled.img`
 `;
 
 const AddButton = styled(AddCircleOutlinedIcon)`
-  position: absolute;
+  position: fixed;
   color: #6b63ff;
   font-size: 3rem;
   stroke: transparent;
   stroke-width: 0.05rem;
   right: 25%;
-  top: 75%;
+  top: 90%;
 
   &:hover {
     cursor: pointer;

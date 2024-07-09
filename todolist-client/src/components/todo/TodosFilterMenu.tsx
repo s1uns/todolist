@@ -3,22 +3,27 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Button, Menu, MenuItem, MenuProps } from "@mui/material";
 import { MouseEvent, useState } from "react";
+import {
+  FILTER_ACTIVE,
+  FILTER_ALL,
+  FILTER_COMPLETED
+} from "../../utils/constants";
 
-const filterOptions = {
-  0: "All",
-  1: "Active",
-  2: "Completed"
-};
+const filterOptions = [
+  { value: FILTER_ALL, label: "All" },
+  { value: FILTER_ACTIVE, label: "Active" },
+  { value: FILTER_COMPLETED, label: "Completed" }
+];
 
 const TodosFilterMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [currentFilter, setCurrentFilter] = useState<0 | 1 | 2>(0);
+  const [currentFilter, setCurrentFilter] = useState<number>(FILTER_ALL);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleSetFilter = (value: 0 | 1 | 2) => {
+  const handleSetFilter = (value: number) => {
     setCurrentFilter(value);
     handleClose();
   };
@@ -39,7 +44,7 @@ const TodosFilterMenu = () => {
         onClick={handleClick}
         endIcon={open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       >
-        {filterOptions[currentFilter]}
+        {filterOptions[currentFilter].label}
       </PanelButton>
       <StyledMenu
         id="menu-list"
@@ -56,15 +61,14 @@ const TodosFilterMenu = () => {
           horizontal: "left"
         }}
       >
-        <MenuItem onClick={() => handleSetFilter(0)}>
-          {filterOptions[0]}
-        </MenuItem>
-        <MenuItem onClick={() => handleSetFilter(1)}>
-          {filterOptions[1]}
-        </MenuItem>
-        <MenuItem onClick={() => handleSetFilter(2)}>
-          {filterOptions[2]}
-        </MenuItem>
+        {filterOptions.map((option) => (
+          <MenuItem
+            key={option.value}
+            onClick={() => handleSetFilter(option.value)}
+          >
+            {option.label}
+          </MenuItem>
+        ))}
       </StyledMenu>
     </FilterSelectorContainer>
   );
