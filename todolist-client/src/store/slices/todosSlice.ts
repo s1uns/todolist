@@ -40,8 +40,6 @@ const todosSlice = createSlice({
     createTodoSuccess: (state, action: PayloadAction<TodoItem>) => {
       const newList = [action.payload, ...state.list];
 
-      console.log("New list: ", newList);
-
       return {
         list: newList,
         totalTodos: state.totalTodos + 1,

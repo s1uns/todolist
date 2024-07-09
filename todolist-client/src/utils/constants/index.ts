@@ -17,7 +17,7 @@ const PATCH_REQUEST = "PATCH";
 const DELETE_REQUEST = "DELETE";
 
 // limits
-const TODOS_LIMIT = 5;
+const TODOS_LIMIT = 10;
 const USERS_LIMIT = 3;
 
 // filters

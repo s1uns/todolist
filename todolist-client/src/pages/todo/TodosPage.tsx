@@ -23,7 +23,6 @@ const TodosPage = () => {
   const [open, setOpen] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1); //move to redux store
-  const observerTarget = useRef(null);
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
@@ -49,32 +48,6 @@ const TodosPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        console.log("Entries: ", entries);
-        if (entries[0].isIntersecting) {
-          console.log("HEY");
-          dispatch(
-            getTodosRequest({ currentPage: currentPage, currentFilter: 0 })
-          );
-          setCurrentPage((prevPage) => prevPage + 1);
-        }
-      },
-      { threshold: 1 }
-    );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
-      }
-    };
-  }, [observerTarget]);
-
   return (
     <PageContainer>
       <FunctionsPanel>
@@ -95,7 +68,7 @@ const TodosPage = () => {
             style={{ overflowY: "hidden" }}
             dataLength={list.length}
             next={fetchMoreTodos}
-            hasMore={currentPage < Math.ceil(totalTodos / TODOS_LIMIT)}
+            hasMore={currentPage <= Math.ceil(totalTodos / TODOS_LIMIT)}
             loader={<div>Loading...</div>}
           >
             {list.map((todo) => (
