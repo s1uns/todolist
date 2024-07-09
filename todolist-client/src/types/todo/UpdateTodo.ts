@@ -1,4 +1,4 @@
 export type UpdateTodo = {
   todoId: string;
-  newTitle: string;
+  title: string;
 };

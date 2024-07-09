@@ -2,26 +2,37 @@ import styled from "@emotion/styled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import { Avatar, ListItem, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   checkTodoRequest,
-  deleteTodoRequest,
-  updateTodoRequest
+  deleteTodoRequest
 } from "../../store/actions/todoActions";
 import { getUser } from "../../store/slices/authSlice";
-import { TodoItem } from "../../types/todo/TodoItem";
 import CheckBox from "../common/CheckBox";
 import Input from "../common/Input";
-import CreateOrUpdateTodoDialog from "./CreateOrUpdateTodoDialog";
-const ToDoItem: FC<TodoItem> = ({
+
+interface TodoItemProps {
+  id: string;
+  creatorId: string;
+  title: string;
+  isCompleted: boolean;
+  isUpdated: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  author: string;
+  onOpenUpdateModal: (todoId: string, title: string) => void;
+}
+
+const ToDoItem: FC<TodoItemProps> = ({
   id,
   title,
   isCompleted,
   isUpdated,
   creatorId,
-  author
-}: TodoItem) => {
+  author,
+  onOpenUpdateModal
+}: TodoItemProps) => {
   const dispatch = useDispatch();
   const { userId } = useSelector(getUser);
 
@@ -40,9 +51,9 @@ const ToDoItem: FC<TodoItem> = ({
     dispatch(checkTodoRequest(id));
   };
 
-  const handleUpdateTodo = (newTitle: string) => {
-    dispatch(updateTodoRequest({ todoId: id, newTitle: newTitle }));
-  };
+  const handleOpenUpdateModal = useCallback(() => {
+    onOpenUpdateModal(id, title);
+  }, [id, title]);
 
   return (
     <TodoItemContainer
@@ -52,14 +63,7 @@ const ToDoItem: FC<TodoItem> = ({
     >
       <StyledCheckBox isChecked={isCompleted} onChange={checkTodo} />
       <TodoTitle>{title}</TodoTitle>
-      <UpdateButtonContainer>
-        <CreateOrUpdateTodoDialog
-          todoId={id}
-          oldTitle={title}
-          onSubmit={handleUpdateTodo}
-          OpenButton={UpdateButton}
-        />
-      </UpdateButtonContainer>
+      <UpdateButton onClick={handleOpenUpdateModal} />
 
       <DeleteButton onClick={deleteTodo} />
       {isUpdated ? <UpdatedText>updated</UpdatedText> : ""}
@@ -83,24 +87,26 @@ const UpdateTodoInput = styled(Input)({
   }
 });
 
-type TodoItemProps = {
+type TodoItemContainerProps = {
   isAuthor: boolean;
 };
 
-const TodoItemContainer = styled(ListItem)<TodoItemProps>(({ isAuthor }) => ({
-  position: "relative",
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  width: "100%",
-  borderBottom: ".08rem solid #6b63ff",
-  backgroundColor: isAuthor ? "white" : "#F5F5F5",
-  height: isAuthor ? "4rem" : "6rem",
-  padding: 5,
-  "&:not(:last-child)": {
-    marginBottom: "0.5rem"
-  }
-}));
+const TodoItemContainer = styled(ListItem)<TodoItemContainerProps>(
+  ({ isAuthor }) => ({
+    position: "relative",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    borderBottom: ".08rem solid #6b63ff",
+    backgroundColor: isAuthor ? "white" : "#F5F5F5",
+    height: isAuthor ? "4rem" : "6rem",
+    padding: 5,
+    "&:not(:last-child)": {
+      marginBottom: "0.5rem"
+    }
+  })
+);
 
 const AuthorAvatar = styled(Avatar)({
   position: "absolute",
@@ -143,14 +149,9 @@ const TodoTitle = styled(Typography)({
     textDecoration: "line-through"
   }
 });
-
-const UpdateButtonContainer = styled.div`
+const UpdateButton = styled(ModeEditOutlineOutlinedIcon)(`
   position: absolute;
   right: 3rem;
-`;
-
-const UpdateButton = styled(ModeEditOutlineOutlinedIcon)(`
-  
   font-size: 1.5rem;
   z-index: 1500;
 

@@ -51,10 +51,10 @@ function* workCheckTodo({ payload }: PayloadAction<string>) {
 }
 
 function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
-  const { todoId, newTitle } = payload;
+  const { todoId, title } = payload;
 
   const response: ServerResponse<TodoItem> = yield call(() =>
-    updateTodo(todoId, newTitle)
+    updateTodo(todoId, title)
   );
 
   const newTodo = response.data;

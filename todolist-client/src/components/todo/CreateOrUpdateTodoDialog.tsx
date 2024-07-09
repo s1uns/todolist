@@ -7,31 +7,30 @@ import {
   DialogContentText,
   DialogTitle
 } from "@mui/material";
-import { ChangeEvent, ElementType, useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { createTodoRequest } from "../../store/actions/todoActions";
+import { useAppDispatch } from "../../store/store";
 import Input from "../common/Input";
 
 interface DialogProps {
   todoId?: string;
   oldTitle?: string;
-
-  onSubmit: (value: string) => void;
-  OpenButton: ElementType;
+  onClose: () => void;
 }
 
 const CreateOrUpdateTodoDialog = ({
   todoId,
   oldTitle,
-  onSubmit,
-  OpenButton
+  onClose
 }: DialogProps) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    setTodoTitle(oldTitle ? oldTitle : "");
-  };
+  const dispatch = useAppDispatch();
   const [inputErrors, setInputErrors] = useState<string>("");
   const [todoTitle, setTodoTitle] = useState<string>(oldTitle ? oldTitle : "");
+
+  const handleAddTodo = (dialogText: string) => {
+    dispatch(createTodoRequest(dialogText));
+    onClose();
+  };
 
   const handleChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -41,11 +40,10 @@ const CreateOrUpdateTodoDialog = ({
 
   const handleSubmit = () => {
     if (todoTitle) {
-      onSubmit(todoTitle);
+      handleAddTodo(todoTitle);
       if (!todoId) {
         setTodoTitle("");
       }
-      setOpen(false);
       setInputErrors("");
     } else {
       setInputErrors("Enter something first!");
@@ -54,8 +52,7 @@ const CreateOrUpdateTodoDialog = ({
 
   return (
     <div>
-      <OpenButton onClick={handleOpen} />
-      <StyledDialogBox open={open} onClose={handleClose}>
+      <StyledDialogBox open={true} onClose={onClose}>
         <DialogTitle>{todoId ? "Update todo" : "Create todo"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -68,7 +65,7 @@ const CreateOrUpdateTodoDialog = ({
           />
         </DialogContent>
         <DialogActions>
-          <DialogButton onClick={handleClose}>Cancel</DialogButton>
+          <DialogButton onClick={onClose}>Cancel</DialogButton>
           <DialogButton onClick={handleSubmit}>
             {todoId ? "Update" : "Create"} todo
           </DialogButton>

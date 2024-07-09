@@ -1,37 +1,36 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  Button,
-  List,
-  Menu,
-  MenuItem,
-  MenuProps,
-  Typography
-} from "@mui/material";
-import { MouseEvent, useState } from "react";
+import { Button, List, Typography } from "@mui/material";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import ToDoItem from "../../components/todo/ToDoItem";
+import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
-import { createTodoRequest } from "../../store/actions/todoActions";
 import { getTodos } from "../../store/slices/todosSlice";
 import { useAppDispatch } from "../../store/store";
-import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
-
+import { UpdateTodo } from "../../types/todo/UpdateTodo";
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
   const { list, totalTodos, activeTodos } = useSelector(getTodos);
+  const [open, setOpen] = useState(false);
+  const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
+
+  const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
+    setTodoForEdit({ todoId: todoId, title: title });
+  };
+  const handleOpenTodoModal = () => setOpen(true);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleLogout = () => {
     dispatch(logoutUserRequest());
-  };
-
-  const handleAddTodo = (todoTitle: string) => {
-    dispatch(createTodoRequest(todoTitle));
   };
 
   return (
@@ -59,6 +58,7 @@ const TodosPage = () => {
               createdAt={todo.createdAt}
               updatedAt={todo.updatedAt}
               author={todo.author}
+              onOpenUpdateModal={handleOpenUpdateTodoModal}
             />
           ))
         ) : (
@@ -68,10 +68,10 @@ const TodosPage = () => {
           </ImgContainer>
         )}
       </TodosList>
-      <CreateOrUpdateTodoDialog
-        onSubmit={handleAddTodo}
-        OpenButton={AddButton}
-      />
+      <AddButton onClick={handleOpenTodoModal} />
+      {open || todoForEdit ? (
+        <CreateOrUpdateTodoDialog onClose={handleClose} />
+      ) : null}
     </PageContainer>
   );
 };
@@ -151,4 +151,3 @@ const AddButton = styled(AddCircleOutlinedIcon)`
     color: #544bfc;
   }
 `;
-
