@@ -8,7 +8,10 @@ import {
   DialogTitle
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
-import { createTodoRequest } from "../../store/actions/todoActions";
+import {
+  createTodoRequest,
+  updateTodoRequest
+} from "../../store/actions/todoActions";
 import { useAppDispatch } from "../../store/store";
 import Input from "../common/Input";
 
@@ -27,6 +30,11 @@ const CreateOrUpdateTodoDialog = ({
   const [inputErrors, setInputErrors] = useState<string>("");
   const [todoTitle, setTodoTitle] = useState<string>(oldTitle ? oldTitle : "");
 
+  const handleUpdateTodo = (todoId: string, dialogText: string) => {
+    dispatch(updateTodoRequest({ todoId: todoId, title: dialogText }));
+    onClose();
+  };
+
   const handleAddTodo = (dialogText: string) => {
     dispatch(createTodoRequest(dialogText));
     onClose();
@@ -39,12 +47,18 @@ const CreateOrUpdateTodoDialog = ({
   };
 
   const handleSubmit = () => {
-    if (todoTitle) {
-      handleAddTodo(todoTitle);
-      if (!todoId) {
-        setTodoTitle("");
+    const dialogText = todoTitle.trim();
+
+    if (dialogText) {
+      if (todoId) {
+        if (dialogText != oldTitle) {
+          handleUpdateTodo(todoId, dialogText);
+        } else {
+          setInputErrors("Update something in the title first!");
+        }
+      } else {
+        handleAddTodo(dialogText);
       }
-      setInputErrors("");
     } else {
       setInputErrors("Enter something first!");
     }

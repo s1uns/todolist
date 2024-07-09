@@ -27,6 +27,7 @@ const TodosPage = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setTodoForEdit(null);
   };
 
   const handleLogout = () => {
@@ -37,7 +38,7 @@ const TodosPage = () => {
     <PageContainer>
       <FunctionsPanel>
         <InputContainer>
-          <Input placeholder="" endAdornment={<SearchIcon />} />
+          <Input endAdornment={<SearchIcon />} />
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
@@ -70,7 +71,11 @@ const TodosPage = () => {
       </TodosList>
       <AddButton onClick={handleOpenTodoModal} />
       {open || todoForEdit ? (
-        <CreateOrUpdateTodoDialog onClose={handleClose} />
+        <CreateOrUpdateTodoDialog
+          todoId={todoForEdit?.todoId}
+          oldTitle={todoForEdit?.title}
+          onClose={handleClose}
+        />
       ) : null}
     </PageContainer>
   );
