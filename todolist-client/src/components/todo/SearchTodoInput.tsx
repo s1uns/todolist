@@ -1,5 +1,5 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { setSearchQueryRequest } from "../../store/actions/queryActions";
 import { useAppDispatch } from "../../store/store";
 import useDebounce from "../../utils/hooks/useDebounce";
@@ -7,6 +7,7 @@ import Input from "../common/Input";
 
 const SearchTodoInput = () => {
   const [inputValue, setInputValue] = useState<string>("");
+  const debouncedQuery = useDebounce(inputValue);
   const dispatch = useAppDispatch();
 
   const handleChangeSearchQuery = (
@@ -14,14 +15,11 @@ const SearchTodoInput = () => {
   ) => {
     const searchQuery = e.target.value.trim();
     setInputValue(searchQuery);
-    sendRequest();
   };
 
-  const updateInputValue = () => {
-    dispatch(setSearchQueryRequest(inputValue));
-  };
-
-  const sendRequest = useDebounce(updateInputValue, 300);
+  useEffect(() => {
+    dispatch(setSearchQueryRequest(debouncedQuery));
+  }, [debouncedQuery]);
 
   return (
     <Input

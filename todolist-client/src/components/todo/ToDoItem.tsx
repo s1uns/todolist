@@ -121,8 +121,6 @@ const DeleteButton = styled(DeleteIcon)(`
   position: absolute;
   right: 0.5rem;
   font-size: 1.5rem;
-  z-index: 1500;
-
   &:hover {
     cursor: pointer;
     color: red;
@@ -153,7 +151,6 @@ const UpdateButton = styled(ModeEditOutlineOutlinedIcon)(`
   position: absolute;
   right: 3rem;
   font-size: 1.5rem;
-  z-index: 1500;
 
   &:hover {
     cursor: pointer;

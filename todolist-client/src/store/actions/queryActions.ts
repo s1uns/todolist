@@ -1,3 +1,4 @@
+import { Query } from "../../types/query/Query";
 import { actionRequestType } from "./constants";
 
 const setFilterRequest = (payload: number) => ({
@@ -19,9 +20,15 @@ const incrementPageRequest = () => ({
   type: actionRequestType.INCREMENT_PAGE_REQUEST
 });
 
+const setQueryRequest = (payload: Query) => ({
+  type: actionRequestType.SET_QUERY_REQUEST,
+  payload: payload
+});
+
 export {
   incrementPageRequest,
   setCurrentPageRequest,
   setFilterRequest,
+  setQueryRequest,
   setSearchQueryRequest
 };

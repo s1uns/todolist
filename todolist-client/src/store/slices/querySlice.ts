@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Query } from "../../types/query/Query";
 import { FILTER_ALL } from "../../utils/constants";
 import { RootState } from "../store";
 
@@ -23,6 +24,15 @@ const querySlice = createSlice({
         currentFilter: action.payload,
         currentPage: 1,
         searchQuery: ""
+      };
+    },
+    setQuerySuccess: (state, action: PayloadAction<Query>) => {
+      const { currenFilter, currentPage, searchQuery } = action.payload;
+
+      return {
+        currentFilter: currenFilter,
+        currentPage: currentPage,
+        searchQuery: searchQuery
       };
     },
     setPageSuccess: (state, action: PayloadAction<number>) => {
@@ -54,6 +64,7 @@ export const {
   setFilterSuccess,
   setPageSuccess,
   incrementPageSuccess,
-  setSearchQuerySuccess
+  setSearchQuerySuccess,
+  setQuerySuccess
 } = querySlice.actions;
 export default querySlice.reducer;

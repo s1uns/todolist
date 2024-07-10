@@ -1,11 +1,13 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { put, takeEvery } from "redux-saga/effects";
 
+import { Query } from "../../types/query/Query";
 import { actionRequestType } from "../actions/constants";
 import {
   incrementPageSuccess,
   setFilterSuccess,
   setPageSuccess,
+  setQuerySuccess,
   setSearchQuerySuccess
 } from "../slices/querySlice";
 
@@ -19,6 +21,10 @@ function* workSetCurrentPage({ payload }: PayloadAction<number>) {
 
 function* workSetSearchQuery({ payload }: PayloadAction<string>) {
   yield put(setSearchQuerySuccess(payload));
+}
+
+function* workSetQuery({ payload }: PayloadAction<Query>) {
+  yield put(setQuerySuccess(payload));
 }
 
 function* workIncrementPage() {
@@ -39,6 +45,7 @@ function* querySagas() {
     actionRequestType.SET_SEARCH_QUERY_REQUEST,
     workSetSearchQuery
   );
+  yield takeEvery(actionRequestType.SET_QUERY_REQUEST, workSetQuery);
 }
 
 export default querySagas;

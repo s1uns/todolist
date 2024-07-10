@@ -7,6 +7,7 @@ import emptyTodosList from "../../assets/EmptyTodosList.png";
 import IntersectionObserverComponent from "../../components/common/IntersectionObserverComponent";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import SearchTodoInput from "../../components/todo/SearchTodoInput";
+import ShareTodosModal from "../../components/todo/ShareTodosModal";
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
@@ -23,18 +24,24 @@ const TodosPage = () => {
     (state: RootState) => state.query
   );
   const { list, totalTodos, activeTodos } = useSelector(getTodos);
-  const [open, setOpen] = useState(false);
+  const [openTodoModal, setOpenTodoModal] = useState(false);
+  const [openUsersModal, setOpenUsersModal] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
   };
 
-  const handleOpenTodoModal = () => setOpen(true);
+  const handleOpenTodoModal = () => setOpenTodoModal(true);
+  const handleOpenUsersModal = () => setOpenUsersModal(true);
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseTodoModal = () => {
+    setOpenTodoModal(false);
     setTodoForEdit(null);
+  };
+
+  const handleCloseUsersModal = () => {
+    setOpenUsersModal(false);
   };
 
   const handleLogout = () => {
@@ -63,7 +70,7 @@ const TodosPage = () => {
         <PanelButtons>
           <TodosFilterMenu />
           <PanelButton>Clear completed</PanelButton>
-          <PanelButton>Share</PanelButton>
+          <PanelButton onClick={handleOpenUsersModal}>Share</PanelButton>
           <PanelButton onClick={handleLogout}>Log Out</PanelButton>
         </PanelButtons>
       </FunctionsPanel>
@@ -98,13 +105,14 @@ const TodosPage = () => {
         </TodosList>
       </ListContainer>
       <AddButton onClick={handleOpenTodoModal} />
-      {open || todoForEdit ? (
+      {openTodoModal || todoForEdit ? (
         <CreateOrUpdateTodoDialog
           todoId={todoForEdit?.todoId}
           oldTitle={todoForEdit?.title}
-          onClose={handleClose}
+          onClose={handleCloseTodoModal}
         />
       ) : null}
+      <ShareTodosModal open={openUsersModal} onClose={handleCloseUsersModal} />
     </PageContainer>
   );
 };
