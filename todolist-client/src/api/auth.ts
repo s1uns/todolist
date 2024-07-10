@@ -1,9 +1,9 @@
+import { customRequest } from "../lib/axios";
 import { AuthResult } from "../types/auth/AuthResult";
 import { LoginCredentials } from "../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../types/auth/RegistrationCredentials";
 import { ServerResponse } from "../types/common/ServerResponse";
 import { POST_REQUEST } from "../utils/constants";
-import { customRequest } from "./helpers";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 

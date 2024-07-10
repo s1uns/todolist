@@ -1,4 +1,5 @@
 import axios from "axios";
+import { customRequest } from "../lib/axios";
 import { ServerResponse } from "../types/common/ServerResponse";
 import { TodoItem } from "../types/todo/TodoItem";
 import { TodosCollection } from "../types/todo/TodosCollection";
@@ -10,7 +11,6 @@ import {
   PUT_REQUEST,
   TODOS_LIMIT
 } from "../utils/constants";
-import { customRequest } from "./helpers";
 
 axios.defaults.withCredentials = true;
 const url = process.env.REACT_APP_BACKEND_URL;

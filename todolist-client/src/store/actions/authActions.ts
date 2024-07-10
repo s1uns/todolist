@@ -16,9 +16,4 @@ const logoutUserRequest = () => ({
   type: actionRequestType.LOGOUT_USER_REQUEST
 });
 
-
-export {
-  loginUserRequest,
-  logoutUserRequest,
-  registerUserRequest
-};
+export { loginUserRequest, logoutUserRequest, registerUserRequest };

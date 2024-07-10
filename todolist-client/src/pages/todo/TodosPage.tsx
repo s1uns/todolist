@@ -49,7 +49,6 @@ const TodosPage = () => {
     dispatch(getTodosRequest());
   }, [currentFilter, currentPage]);
 
-
   const hasMore = useMemo(
     () => currentPage < Math.ceil(totalTodos / TODOS_LIMIT),
     [currentPage, totalTodos]
@@ -194,4 +193,3 @@ const AddButton = styled(AddCircleOutlinedIcon)`
     color: #544bfc;
   }
 `;
-

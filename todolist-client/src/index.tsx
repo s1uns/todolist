@@ -34,7 +34,6 @@ root.render(
             theme="light"
             transition={Bounce}
           />
-          <ToastContainer />
           <App />
         </PersistGate>
       </Provider>
