@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, List, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
@@ -11,7 +11,10 @@ import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDi
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
-import { incrementPageRequest } from "../../store/actions/queryActions";
+import {
+  incrementPageRequest,
+  setSearchQueryRequest
+} from "../../store/actions/queryActions";
 import { getTodosRequest } from "../../store/actions/todoActions";
 import { getTodos } from "../../store/slices/todosSlice";
 import { RootState, useAppDispatch } from "../../store/store";
@@ -20,16 +23,25 @@ import { TODOS_LIMIT } from "../../utils/constants";
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
-  const { currentFilter, currentPage } = useSelector(
+  const { currentFilter, currentPage, searchQuery } = useSelector(
     (state: RootState) => state.query
   );
   const { list, totalTodos, activeTodos } = useSelector(getTodos);
   const [open, setOpen] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
 
+  const handleChangeSearchQuery = (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    const searchQuery = e.target.value.trim();
+
+    dispatch(setSearchQueryRequest(searchQuery));
+  };
+
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
   };
+
   const handleOpenTodoModal = () => setOpen(true);
 
   const handleClose = () => {
@@ -47,7 +59,7 @@ const TodosPage = () => {
 
   useEffect(() => {
     dispatch(getTodosRequest());
-  }, [currentFilter, currentPage]);
+  }, [currentFilter, currentPage, searchQuery]);
 
   const hasMore = useMemo(
     () => currentPage < Math.ceil(totalTodos / TODOS_LIMIT),
@@ -58,7 +70,12 @@ const TodosPage = () => {
     <PageContainer>
       <FunctionsPanel>
         <InputContainer>
-          <Input endAdornment={<SearchIcon />} ignoreErrors={true} />
+          <Input
+            endAdornment={<SearchIcon />}
+            ignoreErrors={true}
+            value={searchQuery}
+            onChange={handleChangeSearchQuery}
+          />
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />

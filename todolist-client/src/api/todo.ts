@@ -55,10 +55,14 @@ const updateTodo = async (todoId: string, newTitle: string) => {
   return response;
 };
 
-const getTodos = async (currentPage: number, currentFilter: number) => {
+const getTodos = async (
+  currentPage: number,
+  currentFilter: number,
+  search: string
+) => {
   const response: ServerResponse<TodosCollection> = await customRequest(
     GET_REQUEST,
-    `${url}todos?page=${currentPage}&limit=${TODOS_LIMIT}&filter=${currentFilter}`
+    `${url}todos?page=${currentPage}&limit=${TODOS_LIMIT}&filter=${currentFilter}&search=${search}`
   );
 
   return response;

@@ -76,12 +76,12 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
 }
 
 function* workFetchTodos() {
-  const { currentPage, currentFilter } = yield select(
+  const { currentPage, currentFilter, searchQuery } = yield select(
     (state: RootState) => state.query
   );
 
   const response: ServerResponse<TodosCollection> = yield call(() =>
-    getTodos(currentPage, currentFilter)
+    getTodos(currentPage, currentFilter, searchQuery)
   );
 
   const fetchedTodos = response.data;

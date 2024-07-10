@@ -5,7 +5,8 @@ import { actionRequestType } from "../actions/constants";
 import {
   incrementPageSuccess,
   setFilterSuccess,
-  setPageSuccess
+  setPageSuccess,
+  setSearchQuerySuccess
 } from "../slices/querySlice";
 
 function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
@@ -14,6 +15,10 @@ function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
 
 function* workSetCurrentPage({ payload }: PayloadAction<number>) {
   yield put(setPageSuccess(payload));
+}
+
+function* workSetSearchQuery({ payload }: PayloadAction<string>) {
+  yield put(setSearchQuerySuccess(payload));
 }
 
 function* workIncrementPage() {
@@ -30,6 +35,10 @@ function* querySagas() {
     workSetCurrentPage
   );
   yield takeEvery(actionRequestType.INCREMENT_PAGE_REQUEST, workIncrementPage);
+  yield takeEvery(
+    actionRequestType.SET_SEARCH_QUERY_REQUEST,
+    workSetSearchQuery
+  );
 }
 
 export default querySagas;

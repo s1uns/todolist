@@ -5,11 +5,13 @@ import { RootState } from "../store";
 interface QueryState {
   currentFilter: number;
   currentPage: number;
+  searchQuery: string;
 }
 
 const initialState: QueryState = {
   currentFilter: FILTER_ALL,
-  currentPage: 1
+  currentPage: 1,
+  searchQuery: ""
 };
 
 const querySlice = createSlice({
@@ -19,25 +21,39 @@ const querySlice = createSlice({
     setFilterSuccess: (state, action: PayloadAction<number>) => {
       return {
         currentFilter: action.payload,
-        currentPage: 1
+        currentPage: 1,
+        searchQuery: ""
       };
     },
     setPageSuccess: (state, action: PayloadAction<number>) => {
       return {
         currentFilter: state.currentFilter,
-        currentPage: action.payload
+        currentPage: action.payload,
+        searchQuery: state.searchQuery
+      };
+    },
+    setSearchQuerySuccess: (state, action: PayloadAction<string>) => {
+      return {
+        currentFilter: state.currentFilter,
+        currentPage: state.currentPage,
+        searchQuery: action.payload
       };
     },
     incrementPageSuccess: (state) => {
       return {
         currentFilter: state.currentFilter,
-        currentPage: state.currentPage + 1
+        currentPage: state.currentPage + 1,
+        searchQuery: state.searchQuery
       };
     }
   }
 });
 
 export const getCurrentFilter = (state: RootState) => state.query.currentFilter;
-export const { setFilterSuccess, setPageSuccess, incrementPageSuccess } =
-  querySlice.actions;
+export const {
+  setFilterSuccess,
+  setPageSuccess,
+  incrementPageSuccess,
+  setSearchQuerySuccess
+} = querySlice.actions;
 export default querySlice.reducer;

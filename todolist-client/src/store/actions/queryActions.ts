@@ -10,8 +10,18 @@ const setCurrentPageRequest = (payload: number) => ({
   payload: payload
 });
 
+const setSearchQueryRequest = (payload: string) => ({
+  type: actionRequestType.SET_SEARCH_QUERY_REQUEST,
+  payload: payload
+});
+
 const incrementPageRequest = () => ({
   type: actionRequestType.INCREMENT_PAGE_REQUEST
 });
 
-export { incrementPageRequest, setCurrentPageRequest, setFilterRequest };
+export {
+  incrementPageRequest,
+  setCurrentPageRequest,
+  setFilterRequest,
+  setSearchQueryRequest
+};
