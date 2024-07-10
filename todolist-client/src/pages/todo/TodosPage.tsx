@@ -112,7 +112,12 @@ const TodosPage = () => {
           onClose={handleCloseTodoModal}
         />
       ) : null}
-      <ShareTodosModal open={openUsersModal} onClose={handleCloseUsersModal} />
+      {openUsersModal ? (
+        <ShareTodosModal
+          open={openUsersModal}
+          onClose={handleCloseUsersModal}
+        />
+      ) : null}
     </PageContainer>
   );
 };

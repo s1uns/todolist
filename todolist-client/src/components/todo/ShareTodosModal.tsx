@@ -46,15 +46,6 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
     setCurrentPage(newPage);
   };
 
-  const handleClose = () => {
-    setCurrentPage(0);
-    setTotalPages(0);
-    setUsers([]);
-    setInputValue("");
-
-    onClose();
-  };
-
   const getAvailableUsers = async (page: number, searchQuery: string) => {
     const response = await getAvailableUsersAsync(page, searchQuery);
 
@@ -63,8 +54,8 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
 
       console.log("Response: ", response.data);
 
-      setUsers((prevUsers) => list);
-      setTotalPages((prevTotalPages) => totalPages);
+      setUsers(list);
+      setTotalPages(totalPages);
     } else {
       toast.error(response.message);
     }
@@ -85,7 +76,7 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
