@@ -22,6 +22,7 @@ interface InputProps {
   field?: FieldInputProps<string>;
   error?: string;
   endAdornment?: ReactNode;
+  ignoreErrors?: boolean;
 
   onChange?: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -68,6 +69,7 @@ const Input: FC<InputProps> = (props: InputProps) => {
     field,
     value,
     endAdornment,
+    ignoreErrors,
     onChange,
     onBlur,
     error
@@ -133,7 +135,10 @@ const Input: FC<InputProps> = (props: InputProps) => {
           }}
         />
       </InputFieldContainer>
-      <Typography color="error">{error ? error : "\u00A0"}</Typography>
+
+      {ignoreErrors ? null : (
+        <Typography color="error">{error ? error : "\u00A0"}</Typography>
+      )}
     </InputContainer>
   );
 };

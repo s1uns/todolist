@@ -2,28 +2,30 @@ import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, List, Typography } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import Input from "../../components/common/Input";
+import IntersectionObserverComponent from "../../components/common/IntersectionObserverComponent";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
+import { incrementPageRequest } from "../../store/actions/queryActions";
 import { getTodosRequest } from "../../store/actions/todoActions";
-import { clearTodosSuccess, getTodos } from "../../store/slices/todosSlice";
-import { useAppDispatch } from "../../store/store";
+import { getTodos } from "../../store/slices/todosSlice";
+import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
+import { TODOS_LIMIT } from "../../utils/constants";
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
+  const { currentFilter, currentPage } = useSelector(
+    (state: RootState) => state.query
+  );
   const { list, totalTodos, activeTodos } = useSelector(getTodos);
   const [open, setOpen] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1); //move to redux store
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const observer = useRef<IntersectionObserver | null>(null);
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
@@ -40,39 +42,24 @@ const TodosPage = () => {
   };
 
   const fetchMoreTodos = () => {
-    dispatch(getTodosRequest({ currentPage: currentPage, currentFilter: 0 }));
-    setCurrentPage((prevPage) => prevPage + 1);
+    dispatch(incrementPageRequest());
   };
 
   useEffect(() => {
-    dispatch(clearTodosSuccess());
-    fetchMoreTodos();
-  }, []);
+    dispatch(getTodosRequest());
+  }, [currentFilter, currentPage]);
 
-  useEffect(() => {
-    setHasMore(totalTodos > list.length);
-  }, [list]);
 
-  const lastElementRef = useCallback(
-    (node: Element | null) => {
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          fetchMoreTodos();
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [list, hasMore]
+  const hasMore = useMemo(
+    () => currentPage < Math.ceil(totalTodos / TODOS_LIMIT),
+    [currentPage, totalTodos]
   );
 
   return (
     <PageContainer>
-      {/* <StyledItemsCountBlock>Items count: {list.length}</StyledItemsCountBlock> */}
       <FunctionsPanel>
         <InputContainer>
-          <Input endAdornment={<SearchIcon />} />
+          <Input endAdornment={<SearchIcon />} ignoreErrors={true} />
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
@@ -82,16 +69,10 @@ const TodosPage = () => {
         </PanelButtons>
       </FunctionsPanel>
 
-      <TodosList>
-        {list.length ? (
-          <InfiniteScroll
-            style={{ overflowY: "hidden" }}
-            dataLength={list.length}
-            next={fetchMoreTodos}
-            hasMore={hasMore}
-            loader={<div>Loading...</div>}
-          >
-            {list.map((todo, index) => (
+      <ListContainer>
+        <TodosList>
+          {list.length ? (
+            list.map((todo, index) => (
               <ToDoItem
                 key={todo.id}
                 id={todo.id}
@@ -104,16 +85,19 @@ const TodosPage = () => {
                 author={todo.author}
                 onOpenUpdateModal={handleOpenUpdateTodoModal}
               />
-            ))}
-          </InfiniteScroll>
-        ) : (
-          <ImgContainer>
-            <EmptyListImg src={emptyTodosList} alt="empty todos list" />
-            <Typography variant="h4">The todos list is empty</Typography>
-          </ImgContainer>
-        )}
-        <div ref={lastElementRef}></div>
-      </TodosList>
+            ))
+          ) : (
+            <ImgContainer>
+              <EmptyListImg src={emptyTodosList} alt="empty todos list" />
+              <Typography variant="h4">The todos list is empty</Typography>
+            </ImgContainer>
+          )}
+          <IntersectionObserverComponent
+            hasMore={hasMore}
+            fetchMore={fetchMoreTodos}
+          />
+        </TodosList>
+      </ListContainer>
       <AddButton onClick={handleOpenTodoModal} />
       {open || todoForEdit ? (
         <CreateOrUpdateTodoDialog
@@ -130,19 +114,19 @@ export default TodosPage;
 
 const PageContainer = styled.div`
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   display: flex;
-  padding-top: 15rem;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  overflow-y: hidden;
 `;
 
 const PanelButtons = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.5rem;
 `;
 
@@ -151,17 +135,26 @@ const PanelButton = styled(Button)`
   flex-direction: row;
   margin: 0;
   font-size: 1rem;
-  width: 9rem;
-  height: 75%;
 `;
 
 const FunctionsPanel = styled.div`
+  margin-top: 1rem;
   width: 100%;
+  max-height: 100px;
   display: flex;
+  flex: 1;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 3rem;
+`;
+
+const ListContainer = styled.div`
+  display: flex;
+  flex: 1;
+  width: 100%;
+  justify-content: center;
+  overflow-y: scroll;
 `;
 
 const InputContainer = styled.div`
@@ -202,9 +195,3 @@ const AddButton = styled(AddCircleOutlinedIcon)`
   }
 `;
 
-const StyledItemsCountBlock = styled.div`
-  position: fixed;
-  font-size: 15rem;
-  top: 10rem;
-  right: 10rem;
-`;

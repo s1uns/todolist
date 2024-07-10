@@ -6,11 +6,13 @@ import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/es/storage";
 import createSagaMiddleware from "redux-saga";
 import authReducer from "./slices/authSlice";
+import queryReducer from "./slices/querySlice";
 import todosReducer from "./slices/todosSlice";
 
 const rootReducer = combineReducers({
   user: authReducer,
-  todos: todosReducer
+  todos: todosReducer,
+  query: queryReducer
 });
 
 const persistConfig = {
@@ -18,11 +20,11 @@ const persistConfig = {
   storage
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, authReducer);
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: { user: persistedReducer, todos: todosReducer, query: queryReducer },
   devTools: true,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

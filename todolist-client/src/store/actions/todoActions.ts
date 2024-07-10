@@ -1,4 +1,3 @@
-import { GetTodosQuery } from "../../types/todo/GetTodosQuery";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
 import { actionRequestType } from "./constants";
 
@@ -22,9 +21,8 @@ const updateTodoRequest = (payload: UpdateTodo) => ({
   payload: payload
 });
 
-const getTodosRequest = (payload: GetTodosQuery) => ({
-  type: actionRequestType.GET_TODOS_REQUEST,
-  payload: payload
+const getTodosRequest = () => ({
+  type: actionRequestType.GET_TODOS_REQUEST
 });
 
 export {

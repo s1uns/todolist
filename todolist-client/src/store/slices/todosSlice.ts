@@ -20,7 +20,9 @@ const todosSlice = createSlice({
   initialState,
   reducers: {
     setTodosSuccess: (state, action: PayloadAction<TodosCollection>) => {
-      const newList = [...state.list, ...action.payload.list];
+      const newList = action.payload.overwrite
+        ? action.payload.list
+        : [...state.list, ...action.payload.list];
 
       return {
         list: newList,

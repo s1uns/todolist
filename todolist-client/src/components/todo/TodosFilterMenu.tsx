@@ -3,6 +3,10 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Button, Menu, MenuItem, MenuProps } from "@mui/material";
 import { MouseEvent, useState } from "react";
+import { useSelector } from "react-redux";
+import { setFilterRequest } from "../../store/actions/queryActions";
+import { getCurrentFilter } from "../../store/slices/querySlice";
+import { useAppDispatch } from "../../store/store";
 import {
   FILTER_ACTIVE,
   FILTER_ALL,
@@ -17,14 +21,15 @@ const filterOptions = [
 
 const TodosFilterMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [currentFilter, setCurrentFilter] = useState<number>(FILTER_ALL);
+  const currentFilter = useSelector(getCurrentFilter);
+  const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleSetFilter = (value: number) => {
-    setCurrentFilter(value);
+    dispatch(setFilterRequest(value));
     handleClose();
   };
 
@@ -113,13 +118,15 @@ const StyledMenu = styled((props: MenuProps) => (
 
 const FilterSelectorContainer = styled.div`
   height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const PanelButton = styled(Button)`
   display: flex;
   flex-direction: row;
   margin: 0;
+  min-width: 10rem;
+  padding: 1rem;
   font-size: 1rem;
-  width: 9rem;
-  height: 75%;
 `;

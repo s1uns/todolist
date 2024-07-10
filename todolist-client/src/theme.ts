@@ -65,7 +65,7 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          width: "calc(100% - 2rem)",
+          minWidth: "10rem",
           padding: "1rem",
           border: "none",
           borderRadius: " 0.5rem",

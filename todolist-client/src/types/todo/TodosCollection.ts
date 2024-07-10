@@ -4,4 +4,5 @@ export type TodosCollection = {
   list: TodoItem[];
   totalTodos: number;
   activeTodos: number;
+  overwrite: boolean;
 };

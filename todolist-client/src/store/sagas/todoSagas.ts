@@ -1,6 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { call, put, takeEvery } from "redux-saga/effects";
+import { call, put, select, takeEvery } from "redux-saga/effects";
 import {
   checkTodo,
   createTodo,
@@ -9,7 +9,6 @@ import {
   updateTodo
 } from "../../api/todo";
 import { ServerResponse } from "../../types/common/ServerResponse";
-import { GetTodosQuery } from "../../types/todo/GetTodosQuery";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
@@ -21,6 +20,7 @@ import {
   setTodosSuccess,
   updateTodoSuccess
 } from "../slices/todosSlice";
+import { RootState } from "../store";
 
 function* workAddTodo({ payload }: PayloadAction<string>) {
   const response: ServerResponse<TodoItem> = yield call(() =>
@@ -75,8 +75,10 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   }
 }
 
-function* workFetchTodos({ payload }: PayloadAction<GetTodosQuery>) {
-  const { currentPage, currentFilter } = payload;
+function* workFetchTodos() {
+  const { currentPage, currentFilter } = yield select(
+    (state: RootState) => state.query
+  );
 
   const response: ServerResponse<TodosCollection> = yield call(() =>
     getTodos(currentPage, currentFilter)
@@ -84,8 +86,10 @@ function* workFetchTodos({ payload }: PayloadAction<GetTodosQuery>) {
 
   const fetchedTodos = response.data;
 
+  const overwrite = currentPage === 1;
+
   if (response.success) {
-    yield put(setTodosSuccess(fetchedTodos!));
+    yield put(setTodosSuccess({ ...fetchedTodos!, overwrite }));
   } else {
     toast.error(response.message);
   }
