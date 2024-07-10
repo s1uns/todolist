@@ -1,20 +1,16 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
-import SearchIcon from "@mui/icons-material/Search";
 import { Button, List, Typography } from "@mui/material";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
-import Input from "../../components/common/Input";
 import IntersectionObserverComponent from "../../components/common/IntersectionObserverComponent";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
+import SearchTodoInput from "../../components/todo/SearchTodoInput";
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
-import {
-  incrementPageRequest,
-  setSearchQueryRequest
-} from "../../store/actions/queryActions";
+import { incrementPageRequest } from "../../store/actions/queryActions";
 import { getTodosRequest } from "../../store/actions/todoActions";
 import { getTodos } from "../../store/slices/todosSlice";
 import { RootState, useAppDispatch } from "../../store/store";
@@ -29,14 +25,6 @@ const TodosPage = () => {
   const { list, totalTodos, activeTodos } = useSelector(getTodos);
   const [open, setOpen] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
-
-  const handleChangeSearchQuery = (
-    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    const searchQuery = e.target.value.trim();
-
-    dispatch(setSearchQueryRequest(searchQuery));
-  };
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
@@ -70,12 +58,7 @@ const TodosPage = () => {
     <PageContainer>
       <FunctionsPanel>
         <InputContainer>
-          <Input
-            endAdornment={<SearchIcon />}
-            ignoreErrors={true}
-            value={searchQuery}
-            onChange={handleChangeSearchQuery}
-          />
+          <SearchTodoInput />
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
