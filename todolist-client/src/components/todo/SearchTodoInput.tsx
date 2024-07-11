@@ -1,8 +1,8 @@
 import SearchIcon from "@mui/icons-material/Search";
 import { ChangeEvent, useEffect, useState } from "react";
+import useDebounce from "../../hooks/common/useDebounce";
 import { setSearchQueryRequest } from "../../store/actions/queryActions";
 import { useAppDispatch } from "../../store/store";
-import useDebounce from "../../utils/hooks/useDebounce";
 import Input from "../common/Input";
 
 const SearchTodoInput = () => {

@@ -13,8 +13,8 @@ import {
 import { toast } from "react-toastify";
 import { manageShared } from "../../api/shared";
 import { getAvailableUsers as getAvailableUsersAsync } from "../../api/user";
+import useDebounce from "../../hooks/common/useDebounce";
 import { UserInfo } from "../../types/user/UserInfo";
-import useDebounce from "../../utils/hooks/useDebounce";
 import Input from "../common/Input";
 
 interface ShareTodosModalProps {
@@ -51,8 +51,6 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
 
     if (response.success) {
       const { list, totalPages } = response.data!;
-
-      console.log("Response: ", response.data);
 
       setUsers(list);
       setTotalPages(totalPages);

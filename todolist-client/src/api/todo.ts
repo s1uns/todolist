@@ -1,5 +1,6 @@
 import axios from "axios";
 import { customRequest } from "../lib/axios";
+import socket from "../notifications/socket";
 import { ServerResponse } from "../types/common/ServerResponse";
 import { TodoItem } from "../types/todo/TodoItem";
 import { TodosCollection } from "../types/todo/TodosCollection";
@@ -17,9 +18,9 @@ const url = process.env.REACT_APP_BACKEND_URL;
 
 const createTodo = async (title: string) => {
   const response: ServerResponse<TodoItem> = await customRequest<
-    { title: string },
+    { title: string; socketId: string },
     TodoItem
-  >(POST_REQUEST, `${url}todos`, { title: title });
+  >(POST_REQUEST, `${url}todos`, { title: title, socketId: socket.id! });
 
   return response;
 };
@@ -48,7 +49,8 @@ const updateTodo = async (todoId: string, newTitle: string) => {
     `${url}todos`,
     {
       id: todoId,
-      newTitle: newTitle
+      newTitle: newTitle,
+      socketId: socket.id
     }
   );
 

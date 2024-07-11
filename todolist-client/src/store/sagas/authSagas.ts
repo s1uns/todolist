@@ -2,11 +2,16 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { call, put, takeEvery } from "redux-saga/effects";
 import { loginUser, logoutUser, registerUser } from "../../api";
+import {
+  authAction,
+  logoutAction
+} from "../../notifications/notificationActions";
+import socket from "../../notifications/socket";
 import { AuthResult } from "../../types/auth/AuthResult";
 import { LoginCredentials } from "../../types/auth/LoginCredentials";
 import { RegistrationCredentials } from "../../types/auth/RegistrationCredentials";
 import { ServerResponse } from "../../types/common/ServerResponse";
-import { FILTER_ALL } from "../../utils/constants";
+import { FILTER_ALL, SOCKET_ACTION } from "../../utils/constants";
 import { actionRequestType } from "../actions/constants";
 import { setQueryRequest } from "../actions/queryActions";
 import { authUserSuccess, logoutUserSuccess } from "../slices/authSlice";
@@ -30,6 +35,7 @@ function* workRegisterUser({
         searchQuery: ""
       })
     );
+    socket.emit(SOCKET_ACTION, authAction(userId));
   } else {
     if (response.code === 500) {
       toast.error(response.message);
@@ -53,6 +59,7 @@ function* workLoginUser({ payload }: PayloadAction<LoginCredentials>) {
         searchQuery: ""
       })
     );
+    socket.emit(SOCKET_ACTION, authAction(userId));
   } else {
     if (response.code === 500) {
       toast.error(response.message);
@@ -69,6 +76,7 @@ function* workLogoutUser() {
 
   if (response.success) {
     yield put(logoutUserSuccess());
+    socket.emit(SOCKET_ACTION, logoutAction());
   } else {
     toast.error(response.message);
   }
