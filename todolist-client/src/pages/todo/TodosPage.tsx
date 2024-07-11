@@ -12,7 +12,10 @@ import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
 import { incrementPageRequest } from "../../store/actions/queryActions";
-import { getTodosRequest } from "../../store/actions/todoActions";
+import {
+  clearCompletedRequest,
+  getTodosRequest
+} from "../../store/actions/todoActions";
 import { getTodos } from "../../store/slices/todosSlice";
 import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
@@ -44,6 +47,10 @@ const TodosPage = () => {
     setOpenUsersModal(false);
   };
 
+  const handleClearCompleted = () => {
+    dispatch(clearCompletedRequest());
+  };
+
   const handleLogout = () => {
     dispatch(logoutUserRequest());
   };
@@ -69,7 +76,9 @@ const TodosPage = () => {
         </InputContainer>
         <PanelButtons>
           <TodosFilterMenu />
-          <PanelButton>Clear completed</PanelButton>
+          <PanelButton onClick={handleClearCompleted}>
+            Clear completed
+          </PanelButton>
           <PanelButton onClick={handleOpenUsersModal}>Share</PanelButton>
           <PanelButton onClick={handleLogout}>Log Out</PanelButton>
         </PanelButtons>

@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { call, put, select, takeEvery } from "redux-saga/effects";
 import {
   checkTodo,
+  clearCompleted,
   createTodo,
   deleteTodo,
   getTodos,
@@ -12,7 +13,10 @@ import { ServerResponse } from "../../types/common/ServerResponse";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
+import { FILTER_ALL } from "../../utils/constants";
 import { actionRequestType } from "../actions/constants";
+import { setQueryRequest } from "../actions/queryActions";
+import { getUser } from "../slices/authSlice";
 import {
   checkTodoSuccess,
   createTodoSuccess,
@@ -30,6 +34,34 @@ function* workAddTodo({ payload }: PayloadAction<string>) {
 
   if (response.success) {
     yield put(createTodoSuccess(newTodo!));
+  } else {
+    toast.error(response.message);
+  }
+}
+
+function* workClearCompleted({ payload }: PayloadAction<string>) {
+  const { currentFilter, currentPage, searchQuery } = yield select(
+    (state: RootState) => state.query
+  );
+
+  const response: ServerResponse<TodosCollection> = yield call(clearCompleted);
+
+  if (response.success) {
+    if (
+      currentFilter === FILTER_ALL &&
+      currentPage === 1 &&
+      searchQuery === ""
+    ) {
+      yield put(setTodosSuccess({ ...response.data!, overwrite: true }));
+    } else {
+      yield put(
+        setQueryRequest({
+          currenFilter: FILTER_ALL,
+          currentPage: 1,
+          searchQuery: ""
+        })
+      );
+    }
   } else {
     toast.error(response.message);
   }
@@ -103,6 +135,10 @@ function* todosSagas() {
   yield takeEvery(actionRequestType.CHECK_TODO_REQUEST, workCheckTodo);
   yield takeEvery(actionRequestType.EDIT_TODO_REQUEST, workUpdateTodo);
   yield takeEvery(actionRequestType.GET_TODOS_REQUEST, workFetchTodos);
+  yield takeEvery(
+    actionRequestType.CLEAR_COMPLETED_REQUEST,
+    workClearCompleted
+  );
 }
 
 export default todosSagas;

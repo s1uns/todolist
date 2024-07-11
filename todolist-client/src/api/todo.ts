@@ -55,6 +55,15 @@ const updateTodo = async (todoId: string, newTitle: string) => {
   return response;
 };
 
+const clearCompleted = async () => {
+  const response: ServerResponse<TodosCollection> = await customRequest(
+    PATCH_REQUEST,
+    `${url}todos/clear-completed`
+  );
+
+  return response;
+};
+
 const getTodos = async (
   currentPage: number,
   currentFilter: number,
@@ -68,4 +77,11 @@ const getTodos = async (
   return response;
 };
 
-export { checkTodo, createTodo, deleteTodo, getTodos, updateTodo };
+export {
+  checkTodo,
+  clearCompleted,
+  createTodo,
+  deleteTodo,
+  getTodos,
+  updateTodo
+};

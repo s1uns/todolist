@@ -25,8 +25,13 @@ const getTodosRequest = () => ({
   type: actionRequestType.GET_TODOS_REQUEST
 });
 
+const clearCompletedRequest = () => ({
+  type: actionRequestType.CLEAR_COMPLETED_REQUEST
+});
+
 export {
   checkTodoRequest,
+  clearCompletedRequest,
   createTodoRequest,
   deleteTodoRequest,
   getTodosRequest,

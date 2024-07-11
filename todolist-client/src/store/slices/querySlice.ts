@@ -45,7 +45,7 @@ const querySlice = createSlice({
     setSearchQuerySuccess: (state, action: PayloadAction<string>) => {
       return {
         currentFilter: state.currentFilter,
-        currentPage: state.currentPage,
+        currentPage: 1,
         searchQuery: action.payload
       };
     },
