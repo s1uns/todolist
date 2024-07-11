@@ -13,12 +13,12 @@ import { ServerResponse } from "../../types/common/ServerResponse";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
-import { FILTER_ALL } from "../../utils/constants";
 import { actionRequestType } from "../actions/constants";
-import { setQueryRequest } from "../actions/queryActions";
+import { setCurrentPageRequest } from "../actions/queryActions";
 import { getUser } from "../slices/authSlice";
 import {
   checkTodoSuccess,
+  clearCompletedSuccess,
   createTodoSuccess,
   deleteTodoSuccess,
   setTodosSuccess,
@@ -40,27 +40,20 @@ function* workAddTodo({ payload }: PayloadAction<string>) {
 }
 
 function* workClearCompleted({ payload }: PayloadAction<string>) {
-  const { currentFilter, currentPage, searchQuery } = yield select(
+  const { userId } = yield select(getUser);
+  const { currentPage, currentFilter, searchQuery } = yield select(
     (state: RootState) => state.query
   );
 
-  const response: ServerResponse<TodosCollection> = yield call(clearCompleted);
+  const response: ServerResponse<string> = yield call(clearCompleted);
 
   if (response.success) {
-    if (
-      currentFilter === FILTER_ALL &&
-      currentPage === 1 &&
-      searchQuery === ""
-    ) {
-      yield put(setTodosSuccess({ ...response.data!, overwrite: true }));
+    if (currentPage > 1) {
+      yield put(setCurrentPageRequest(1));
     } else {
-      yield put(
-        setQueryRequest({
-          currenFilter: FILTER_ALL,
-          currentPage: 1,
-          searchQuery: ""
-        })
-      );
+      yield put(clearCompletedSuccess(userId));
+
+      toast.success(response.data!);
     }
   } else {
     toast.error(response.message);

@@ -31,6 +31,22 @@ const todosSlice = createSlice({
       };
     },
 
+    clearCompletedSuccess: (state, action: PayloadAction<string>) => {
+      const newList = state.list.filter((todo) => {
+        if (todo.creatorId === action.payload && todo.isCompleted) {
+          return false;
+        }
+
+        return true;
+      });
+
+      return {
+        list: newList,
+        totalTodos: state.totalTodos,
+        activeTodos: state.activeTodos
+      };
+    },
+
     clearTodosSuccess: (state) => {
       return {
         list: [],
@@ -112,6 +128,7 @@ const todosSlice = createSlice({
 export const getTodos = (state: RootState) => state.todos;
 
 export const {
+  clearCompletedSuccess,
   setTodosSuccess,
   clearTodosSuccess,
   createTodoSuccess,

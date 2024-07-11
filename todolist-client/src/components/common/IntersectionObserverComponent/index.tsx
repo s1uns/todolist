@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-
 interface IntersectionObserverProps {
   hasMore: boolean;
   fetchMore: () => void;
@@ -7,7 +6,6 @@ interface IntersectionObserverProps {
 
 const IntersectionObserverComponent = (props: IntersectionObserverProps) => {
   const { hasMore, fetchMore } = props;
-
   if (!hasMore) {
     return null;
   }
@@ -35,7 +33,7 @@ const IntersectionObserverComponent = (props: IntersectionObserverProps) => {
     };
   }, [observerTarget]);
 
-  return <div ref={observerTarget}>Spinner</div>;
+  return <div ref={observerTarget}>Loading...</div>;
 };
 
 export default IntersectionObserverComponent;

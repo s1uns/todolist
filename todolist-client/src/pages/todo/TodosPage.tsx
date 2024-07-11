@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import { Button, List, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import IntersectionObserverComponent from "../../components/common/IntersectionObserverComponent";
@@ -30,6 +30,7 @@ const TodosPage = () => {
   const [openTodoModal, setOpenTodoModal] = useState(false);
   const [openUsersModal, setOpenUsersModal] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
+  const todosContainerRef = useRef<HTMLDivElement>(null);
 
   const handleOpenUpdateTodoModal = (todoId: string, title: string) => {
     setTodoForEdit({ todoId: todoId, title: title });
@@ -63,6 +64,10 @@ const TodosPage = () => {
     dispatch(getTodosRequest());
   }, [currentFilter, currentPage, searchQuery]);
 
+  useEffect(() => {
+    todosContainerRef.current?.scroll(0, 0);
+  }, [currentFilter, searchQuery]);
+
   const hasMore = useMemo(
     () => currentPage < Math.ceil(totalTodos / TODOS_LIMIT),
     [currentPage, totalTodos]
@@ -84,7 +89,7 @@ const TodosPage = () => {
         </PanelButtons>
       </FunctionsPanel>
 
-      <ListContainer>
+      <ListContainer ref={todosContainerRef}>
         <TodosList>
           {list.length ? (
             list.map((todo, index) => (
