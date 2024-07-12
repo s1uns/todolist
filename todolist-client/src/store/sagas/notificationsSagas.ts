@@ -28,7 +28,8 @@ import {
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
   createTodoSuccess,
-  deleteTodoSuccess
+  deleteTodoSuccess,
+  updateTodoSuccess
 } from "../slices/todosSlice";
 import { RootState } from "../store";
 
@@ -76,6 +77,8 @@ function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
     !payload.title.includes(searchQuery)
   ) {
     yield put(deleteTodoSuccess(payload.id));
+  } else {
+    yield put(updateTodoSuccess(payload));
   }
 
   if (payload.creatorId !== userId) {
