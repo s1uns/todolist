@@ -6,13 +6,11 @@ import { RootState } from "../store";
 interface TodosState {
   list: TodoItem[];
   totalTodos: number;
-  activeTodos: number;
 }
 
 const initialState: TodosState = {
   list: [],
-  totalTodos: 0,
-  activeTodos: 0
+  totalTodos: 0
 };
 
 const todosSlice = createSlice({
@@ -26,8 +24,7 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: action.payload.totalTodos,
-        activeTodos: action.payload.activeTodos
+        totalTodos: action.payload.totalTodos
       };
     },
 
@@ -45,23 +42,16 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos - todosToBeDeleted,
-        activeTodos: state.activeTodos
+        totalTodos: state.totalTodos - todosToBeDeleted
       };
     },
 
     clearAuthorsTodosSuccess: (state, action: PayloadAction<string>) => {
       let todosToBeDeleted = 0;
-      let activeTodos = 0;
-
       const newList = state.list.filter((todo) => {
         if (todo.creatorId === action.payload) {
           todosToBeDeleted++;
           return false;
-        }
-
-        if (!todo.isCompleted) {
-          activeTodos++;
         }
 
         return true;
@@ -69,16 +59,14 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos - todosToBeDeleted,
-        activeTodos: activeTodos
+        totalTodos: state.totalTodos - todosToBeDeleted
       };
     },
 
     clearTodosSuccess: (state) => {
       return {
         list: [],
-        totalTodos: 0,
-        activeTodos: 0
+        totalTodos: 0
       };
     },
 
@@ -87,8 +75,7 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos + 1,
-        activeTodos: state.activeTodos + 1
+        totalTodos: state.totalTodos + 1
       };
     },
 
@@ -106,8 +93,7 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos,
-        activeTodos: state.activeTodos
+        totalTodos: state.totalTodos
       };
     },
 
@@ -125,18 +111,13 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos,
-        activeTodos: action.payload.isCompleted
-          ? state.activeTodos - 1
-          : state.activeTodos + 1
+        totalTodos: state.totalTodos
       };
     },
 
     deleteTodoSuccess: (state, action: PayloadAction<string>) => {
-      let wasCompleted;
       const newList = state.list.filter((todo) => {
         if (todo.id === action.payload) {
-          wasCompleted = todo.isCompleted;
           return false;
         }
 
@@ -145,8 +126,10 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos - 1,
-        activeTodos: wasCompleted ? state.activeTodos : state.activeTodos - 1
+        totalTodos:
+          newList.length < state.list.length
+            ? state.totalTodos - 1
+            : state.totalTodos
       };
     }
   }

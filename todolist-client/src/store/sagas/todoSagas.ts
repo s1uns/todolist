@@ -13,6 +13,7 @@ import { ServerResponse } from "../../types/common/ServerResponse";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
+import { FILTER_ALL, FILTER_COMPLETED } from "../../utils/constants";
 import { actionRequestType } from "../actions/constants";
 import { setCurrentPageRequest } from "../actions/queryActions";
 import { getUser } from "../slices/authSlice";
@@ -30,10 +31,18 @@ function* workAddTodo({ payload }: PayloadAction<string>) {
   const response: ServerResponse<TodoItem> = yield call(() =>
     createTodo(payload)
   );
+  const { currentFilter, searchQuery } = yield select(
+    (state: RootState) => state.query
+  );
   const newTodo = response.data;
 
   if (response.success) {
-    yield put(createTodoSuccess(newTodo!));
+    if (
+      currentFilter !== FILTER_COMPLETED &&
+      (searchQuery === "" || searchQuery.includes(newTodo?.title))
+    ) {
+      yield put(createTodoSuccess(newTodo!));
+    }
   } else {
     toast.error(response.message);
   }
@@ -48,12 +57,14 @@ function* workClearCompleted() {
   const response: ServerResponse<string> = yield call(clearCompleted);
 
   if (response.success) {
+
     if (currentPage > 1) {
       yield put(setCurrentPageRequest(1));
     } else {
       yield put(clearCompletedSuccess(userId));
       toast.success(response.data!);
     }
+    
   } else {
     toast.error(response.message);
   }
@@ -73,11 +84,17 @@ function* workCheckTodo({ payload }: PayloadAction<string>) {
   const response: ServerResponse<TodoItem> = yield call(() =>
     checkTodo(payload)
   );
-
+  const { currentFilter } = yield select((state: RootState) => state.query);
   const newTodo = response.data;
 
   if (response.success) {
-    yield put(checkTodoSuccess(newTodo!));
+
+    if (currentFilter !== FILTER_ALL) {
+      yield put(deleteTodoSuccess(newTodo?.id!));
+    } else {
+      yield put(checkTodoSuccess(newTodo!));
+    }
+
   } else {
     toast.error(response.message);
   }
@@ -85,6 +102,7 @@ function* workCheckTodo({ payload }: PayloadAction<string>) {
 
 function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   const { todoId, title } = payload;
+  const { searchQuery } = yield select((state: RootState) => state.query);
 
   const response: ServerResponse<TodoItem> = yield call(() =>
     updateTodo(todoId, title)
@@ -93,7 +111,13 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   const newTodo = response.data;
 
   if (response.success) {
-    yield put(updateTodoSuccess(newTodo!));
+
+    if (!newTodo?.title.includes(searchQuery)) {
+      yield put(deleteTodoSuccess(newTodo?.id!));
+    } else {
+      yield put(updateTodoSuccess(newTodo!));
+    }
+
   } else {
     toast.error(response.message);
   }

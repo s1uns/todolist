@@ -2,6 +2,8 @@ import { put, select, takeEvery } from "redux-saga/effects";
 import { authAction } from "../../notifications/notificationActions";
 import socket from "../../notifications/socket";
 import {
+  FILTER_ACTIVE,
+  FILTER_ALL,
   FILTER_COMPLETED,
   SOCKET_ACTION,
   SOCKET_CONNECTION_REFRESH,
@@ -15,6 +17,7 @@ import {
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import ReloadMessage from "../../components/shared/ReloadMessage";
 import { SocketClearCompletedPayload } from "../../types/socket/SocketClearCompletedPayload";
 import { SocketDeleteTodoPayload } from "../../types/socket/SocketDeleteTodoPayload";
 import { SocketShareTodosPayload } from "../../types/socket/SocketShareTodosPayload";
@@ -26,13 +29,13 @@ import {
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
   createTodoSuccess,
-  deleteTodoSuccess,
-  updateTodoSuccess
+  deleteTodoSuccess
 } from "../slices/todosSlice";
 import { RootState } from "../store";
 
 function* workRefreshConnection() {
   const { userId } = yield select(getUser);
+
   if (userId) {
     socket.emit(SOCKET_ACTION, authAction(userId));
   }
@@ -44,7 +47,10 @@ function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
   );
   const { userId } = yield select(getUser);
 
-  if (currentFilter !== FILTER_COMPLETED && searchQuery === "") {
+  if (
+    currentFilter !== FILTER_COMPLETED &&
+    (searchQuery === "" || payload.title.includes(searchQuery))
+  ) {
     yield put(createTodoSuccess(payload));
   }
 
@@ -55,16 +61,50 @@ function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
 
 function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
+  const { list } = yield select((state: RootState) => state.todos);
+  const { currentFilter, searchQuery } = yield select(
+    (state: RootState) => state.query
+  );
 
-  yield put(updateTodoSuccess(payload));
+  if (
+    !list.filter((todo: TodoItem) => todo.id === payload.id).length &&
+    (searchQuery === "" || payload.title.includes(searchQuery))
+  ) {
+    yield put(createTodoSuccess(payload));
+  } else if (
+    list.filter((todo: TodoItem) => todo.id === payload.id).length &&
+    searchQuery !== "" &&
+    !payload.title.includes(searchQuery)
+  ) {
+    yield put(deleteTodoSuccess(payload.id));
+  }
+
   if (payload.creatorId !== userId) {
     toast.info(`${payload.author} updated his todo!`);
   }
 }
 function* workTodoCheck({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
+  const { currentFilter } = yield select((state: RootState) => state.query);
 
-  yield put(checkTodoSuccess(payload));
+  if (
+    (currentFilter === FILTER_COMPLETED && payload.isCompleted) ||
+    (currentFilter === FILTER_ACTIVE && !payload.isCompleted)
+  ) {
+    yield put(createTodoSuccess(payload));
+  }
+
+  if (
+    (currentFilter === FILTER_COMPLETED && !payload.isCompleted) ||
+    (currentFilter === FILTER_ACTIVE && payload.isCompleted)
+  ) {
+    yield put(deleteTodoSuccess(payload.id));
+  }
+
+  if (currentFilter === FILTER_ALL) {
+    yield put(checkTodoSuccess(payload));
+  }
+
   if (payload.creatorId !== userId) {
     toast.info(
       `${payload.author} changed the status of "${payload.title}" to "${payload.isCompleted ? "completed" : "active"}"!`
@@ -76,6 +116,7 @@ function* workTodoDelete({ payload }: PayloadAction<SocketDeleteTodoPayload>) {
   const { userId } = yield select(getUser);
 
   yield put(deleteTodoSuccess(payload.todoId));
+
   if (payload.creatorId !== userId) {
     toast.info(`${payload.author} deleted his todo!`);
   }
@@ -87,6 +128,7 @@ function* workClearCompleted({
   const { userId } = yield select(getUser);
 
   yield put(clearCompletedSuccess(payload.userId));
+  
   if (payload.userId !== userId) {
     toast.info(`${payload.author} cleared his completed todos!`);
   }
@@ -99,7 +141,9 @@ function* workChangeSharedStatus({
 
   if (payload.isShared) {
     yield put(getTodosRequest());
-    toast.info(`${payload.author} shared his todos with you!`);
+    toast.info(
+      ReloadMessage({ message: `${payload.author} shared his todos with you!` })
+    );
   } else {
     yield put(clearAuthorsTodosSuccess(payload.userId));
     toast.info(`${payload.author} stopped sharing his todos with you!`);

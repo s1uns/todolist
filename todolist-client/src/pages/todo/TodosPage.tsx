@@ -25,7 +25,7 @@ const TodosPage = () => {
   const { currentFilter, currentPage, searchQuery } = useSelector(
     (state: RootState) => state.query
   );
-  const { list, totalTodos, activeTodos } = useSelector(getTodos);
+  const { list, totalTodos } = useSelector(getTodos);
   const [openTodoModal, setOpenTodoModal] = useState(false);
   const [openUsersModal, setOpenUsersModal] = useState(false);
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);

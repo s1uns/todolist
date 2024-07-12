@@ -23,7 +23,7 @@ const querySlice = createSlice({
       return {
         currentFilter: action.payload,
         currentPage: 1,
-        searchQuery: ""
+        searchQuery: state.searchQuery
       };
     },
     setQuerySuccess: (state, action: PayloadAction<Query>) => {
