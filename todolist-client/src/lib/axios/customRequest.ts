@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { logoutUserRequest } from "../../store/actions/authActions";
+import { store } from "../../store/store";
 import { ServerResponse } from "../../types/common/ServerResponse";
 
 axios.defaults.withCredentials = true;
@@ -21,7 +23,7 @@ const customRequest = async <TData, TResponse>(
     if (axios.isAxiosError(error)) {
       if (error.response) {
         if (error.response.status === 401) {
-          // store.dispatch(logoutUserRequest());
+          store.dispatch(logoutUserRequest());
         }
 
         return {

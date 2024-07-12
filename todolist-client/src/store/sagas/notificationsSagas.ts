@@ -5,6 +5,7 @@ import {
   FILTER_COMPLETED,
   SOCKET_ACTION,
   SOCKET_CONNECTION_REFRESH,
+  SOCKET_TODO_CHECK,
   SOCKET_TODO_CREATION,
   SOCKET_TODO_DELETE,
   SOCKET_TODO_UPDATE
@@ -16,6 +17,7 @@ import { SocketDeleteTodoPayload } from "../../types/socket/SocketDeleteTodoPayl
 import { TodoItem } from "../../types/todo/TodoItem";
 import { getUser } from "../slices/authSlice";
 import {
+  checkTodoSuccess,
   createTodoSuccess,
   deleteTodoSuccess,
   updateTodoSuccess
@@ -45,14 +47,21 @@ function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
 }
 
 function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
-  //   const { currentFilter, searchQuery } = yield select(
-  //     (state: RootState) => state.query
-  //   );
   const { userId } = yield select(getUser);
 
   yield put(updateTodoSuccess(payload));
   if (payload.creatorId !== userId) {
     toast.info(`${payload.author} updated his todo!`);
+  }
+}
+function* workTodoCheck({ payload }: PayloadAction<TodoItem>) {
+  const { userId } = yield select(getUser);
+
+  yield put(checkTodoSuccess(payload));
+  if (payload.creatorId !== userId) {
+    toast.info(
+      `${payload.author} changed the status of "${payload.title}" to "${payload.isCompleted ? "completed" : "active"}"!`
+    );
   }
 }
 
@@ -70,6 +79,7 @@ function* notificationsSagas() {
   yield takeEvery(SOCKET_TODO_CREATION, workTodoCreation);
   yield takeEvery(SOCKET_TODO_UPDATE, workTodoUpdate);
   yield takeEvery(SOCKET_TODO_DELETE, workTodoDelete);
+  yield takeEvery(SOCKET_TODO_CHECK, workTodoCheck);
 }
 
 export default notificationsSagas;
