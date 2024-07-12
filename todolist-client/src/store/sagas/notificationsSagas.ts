@@ -22,7 +22,6 @@ import { SocketClearCompletedPayload } from "../../types/socket/SocketClearCompl
 import { SocketDeleteTodoPayload } from "../../types/socket/SocketDeleteTodoPayload";
 import { SocketShareTodosPayload } from "../../types/socket/SocketShareTodosPayload";
 import { TodoItem } from "../../types/todo/TodoItem";
-import { getTodosRequest } from "../actions/todoActions";
 import { getUser } from "../slices/authSlice";
 import {
   checkTodoSuccess,
@@ -128,7 +127,7 @@ function* workClearCompleted({
   const { userId } = yield select(getUser);
 
   yield put(clearCompletedSuccess(payload.userId));
-  
+
   if (payload.userId !== userId) {
     toast.info(`${payload.author} cleared his completed todos!`);
   }
@@ -137,10 +136,7 @@ function* workClearCompleted({
 function* workChangeSharedStatus({
   payload
 }: PayloadAction<SocketShareTodosPayload>) {
-  const { userId } = yield select(getUser);
-
   if (payload.isShared) {
-    yield put(getTodosRequest());
     toast.info(
       ReloadMessage({ message: `${payload.author} shared his todos with you!` })
     );
