@@ -19,7 +19,6 @@ import {
 import { getTodos } from "../../store/slices/todosSlice";
 import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
-import { TODOS_LIMIT } from "../../utils/constants";
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
@@ -69,7 +68,7 @@ const TodosPage = () => {
   }, [currentFilter, searchQuery]);
 
   const hasMore = useMemo(
-    () => currentPage < Math.ceil(totalTodos / TODOS_LIMIT),
+    () => list.length < totalTodos,
     [currentPage, totalTodos]
   );
 
