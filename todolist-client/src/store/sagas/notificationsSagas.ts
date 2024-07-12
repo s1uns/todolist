@@ -23,6 +23,7 @@ import { getTodosRequest } from "../actions/todoActions";
 import { getUser } from "../slices/authSlice";
 import {
   checkTodoSuccess,
+  clearAuthorsTodosSuccess,
   clearCompletedSuccess,
   createTodoSuccess,
   deleteTodoSuccess,
@@ -96,17 +97,13 @@ function* workChangeSharedStatus({
 }: PayloadAction<SocketShareTodosPayload>) {
   const { userId } = yield select(getUser);
 
-  console.log("Payload: ", payload);
-
   if (payload.isShared) {
     yield put(getTodosRequest());
     toast.info(`${payload.author} shared his todos with you!`);
+  } else {
+    yield put(clearAuthorsTodosSuccess(payload.userId));
+    toast.info(`${payload.author} stopped sharing his todos with you!`);
   }
-
-  // yield put(clearCompletedSuccess(payload.userId));
-  // if (payload.userId !== userId) {
-  //   toast.info(`${payload.author} cleared his completed todos!`);
-  // }
 }
 
 function* notificationsSagas() {

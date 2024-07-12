@@ -91,6 +91,7 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
           ignoreErrors={true}
           value={inputValue}
           onChange={handleChangeSearchQuery}
+          autoFocus={true}
         />
         <UsersList>
           {users.map((user) => (

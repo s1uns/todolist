@@ -50,6 +50,30 @@ const todosSlice = createSlice({
       };
     },
 
+    clearAuthorsTodosSuccess: (state, action: PayloadAction<string>) => {
+      let todosToBeDeleted = 0;
+      let activeTodos = 0;
+
+      const newList = state.list.filter((todo) => {
+        if (todo.creatorId === action.payload) {
+          todosToBeDeleted++;
+          return false;
+        }
+
+        if (!todo.isCompleted) {
+          activeTodos++;
+        }
+
+        return true;
+      });
+
+      return {
+        list: newList,
+        totalTodos: state.totalTodos - todosToBeDeleted,
+        activeTodos: activeTodos
+      };
+    },
+
     clearTodosSuccess: (state) => {
       return {
         list: [],
@@ -137,6 +161,7 @@ export const {
   createTodoSuccess,
   updateTodoSuccess,
   checkTodoSuccess,
-  deleteTodoSuccess
+  deleteTodoSuccess,
+  clearAuthorsTodosSuccess
 } = todosSlice.actions;
 export default todosSlice.reducer;

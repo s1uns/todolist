@@ -76,6 +76,7 @@ const CreateOrUpdateTodoDialog = ({
             value={todoTitle}
             onChange={handleChange}
             error={inputErrors}
+            autoFocus={true}
           />
         </DialogContent>
         <DialogActions>
