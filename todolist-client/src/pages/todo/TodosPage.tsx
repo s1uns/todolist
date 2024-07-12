@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { Button, List, Typography } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import emptyTodosList from "../../assets/EmptyTodosList.png";
 import IntersectionObserverComponent from "../../components/common/IntersectionObserverComponent";
+import Sidebar from "../../components/common/Sidebar";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import SearchTodoInput from "../../components/todo/SearchTodoInput";
 import ShareTodosModal from "../../components/todo/ShareTodosModal";
@@ -19,7 +21,6 @@ import {
 import { getTodos } from "../../store/slices/todosSlice";
 import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
-
 const TodosPage = () => {
   const dispatch = useAppDispatch();
   const { currentFilter, currentPage, searchQuery } = useSelector(
@@ -28,6 +29,8 @@ const TodosPage = () => {
   const { list, totalTodos } = useSelector(getTodos);
   const [openTodoModal, setOpenTodoModal] = useState(false);
   const [openUsersModal, setOpenUsersModal] = useState(false);
+  const [openSortingToolbar, setOpenSortingToolbar] = useState(false);
+
   const [todoForEdit, setTodoForEdit] = useState<UpdateTodo | null>(null);
   const todosContainerRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +40,7 @@ const TodosPage = () => {
 
   const handleOpenTodoModal = () => setOpenTodoModal(true);
   const handleOpenUsersModal = () => setOpenUsersModal(true);
+  const handleOpenSortingToolbar = () => setOpenSortingToolbar(true);
 
   const handleCloseTodoModal = () => {
     setOpenTodoModal(false);
@@ -45,6 +49,10 @@ const TodosPage = () => {
 
   const handleCloseUsersModal = () => {
     setOpenUsersModal(false);
+  };
+
+  const handleCloseSortingToolbar = () => {
+    setOpenSortingToolbar(false);
   };
 
   const handleClearCompleted = () => {
@@ -83,8 +91,10 @@ const TodosPage = () => {
           <PanelButton onClick={handleClearCompleted}>
             Clear completed
           </PanelButton>
+
           <PanelButton onClick={handleOpenUsersModal}>Share</PanelButton>
           <PanelButton onClick={handleLogout}>Log Out</PanelButton>
+          <SortButton onClick={handleOpenSortingToolbar} />
         </PanelButtons>
       </FunctionsPanel>
 
@@ -131,12 +141,36 @@ const TodosPage = () => {
           onClose={handleCloseUsersModal}
         />
       ) : null}
+
+      <Sidebar
+        anchor="right"
+        isOpen={openSortingToolbar}
+        onClose={handleCloseSortingToolbar}
+      >
+        <div>toolbar</div>
+        <div>toolbar</div>
+      </Sidebar>
     </PageContainer>
   );
 };
 
 export default TodosPage;
 
+const SortButton = styled(FilterAltIcon)`
+  position: absolute;
+  right: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 2rem;
+  background-color: #6b63ff;
+  fill: white;
+
+  &:hover {
+    font-size: 3rem;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+`;
 const PageContainer = styled.div`
   width: 100vw;
   height: 100vh;
@@ -172,6 +206,7 @@ const FunctionsPanel = styled.div`
   justify-content: center;
   align-items: center;
   gap: 3rem;
+  position: relative;
 `;
 
 const ListContainer = styled.div`
