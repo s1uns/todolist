@@ -5,7 +5,9 @@ import {
   FILTER_COMPLETED,
   SOCKET_ACTION,
   SOCKET_CONNECTION_REFRESH,
+  SOCKET_SHARE_TODOS,
   SOCKET_TODO_CHECK,
+  SOCKET_TODO_CLEAR_COMPLETED,
   SOCKET_TODO_CREATION,
   SOCKET_TODO_DELETE,
   SOCKET_TODO_UPDATE
@@ -13,11 +15,15 @@ import {
 
 import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { SocketClearCompletedPayload } from "../../types/socket/SocketClearCompletedPayload";
 import { SocketDeleteTodoPayload } from "../../types/socket/SocketDeleteTodoPayload";
+import { SocketShareTodosPayload } from "../../types/socket/SocketShareTodosPayload";
 import { TodoItem } from "../../types/todo/TodoItem";
+import { getTodosRequest } from "../actions/todoActions";
 import { getUser } from "../slices/authSlice";
 import {
   checkTodoSuccess,
+  clearCompletedSuccess,
   createTodoSuccess,
   deleteTodoSuccess,
   updateTodoSuccess
@@ -74,12 +80,43 @@ function* workTodoDelete({ payload }: PayloadAction<SocketDeleteTodoPayload>) {
   }
 }
 
+function* workClearCompleted({
+  payload
+}: PayloadAction<SocketClearCompletedPayload>) {
+  const { userId } = yield select(getUser);
+
+  yield put(clearCompletedSuccess(payload.userId));
+  if (payload.userId !== userId) {
+    toast.info(`${payload.author} cleared his completed todos!`);
+  }
+}
+
+function* workChangeSharedStatus({
+  payload
+}: PayloadAction<SocketShareTodosPayload>) {
+  const { userId } = yield select(getUser);
+
+  console.log("Payload: ", payload);
+
+  if (payload.isShared) {
+    yield put(getTodosRequest());
+    toast.info(`${payload.author} shared his todos with you!`);
+  }
+
+  // yield put(clearCompletedSuccess(payload.userId));
+  // if (payload.userId !== userId) {
+  //   toast.info(`${payload.author} cleared his completed todos!`);
+  // }
+}
+
 function* notificationsSagas() {
   yield takeEvery(SOCKET_CONNECTION_REFRESH, workRefreshConnection);
   yield takeEvery(SOCKET_TODO_CREATION, workTodoCreation);
   yield takeEvery(SOCKET_TODO_UPDATE, workTodoUpdate);
   yield takeEvery(SOCKET_TODO_DELETE, workTodoDelete);
   yield takeEvery(SOCKET_TODO_CHECK, workTodoCheck);
+  yield takeEvery(SOCKET_TODO_CLEAR_COMPLETED, workClearCompleted);
+  yield takeEvery(SOCKET_SHARE_TODOS, workChangeSharedStatus);
 }
 
 export default notificationsSagas;

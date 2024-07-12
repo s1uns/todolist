@@ -1,7 +1,10 @@
+import { SocketClearCompletedPayload } from "../types/socket/SocketClearCompletedPayload";
 import { SocketDeleteTodoPayload } from "../types/socket/SocketDeleteTodoPayload";
+import { SocketShareTodosPayload } from "../types/socket/SocketShareTodosPayload";
 import { TodoItem } from "../types/todo/TodoItem";
 import {
   SOCKET_CONNECTION_REFRESH,
+  SOCKET_SHARE_TODOS,
   SOCKET_TODO_CHECK,
   SOCKET_TODO_CLEAR_COMPLETED,
   SOCKET_TODO_CREATION,
@@ -40,18 +43,25 @@ const todoCheckAction = (payload: TodoItem) => ({
   payload: payload
 });
 
-const todoClearCompletedAction = () => ({
-  type: SOCKET_TODO_CLEAR_COMPLETED
+const todoClearCompletedAction = (payload: SocketClearCompletedPayload) => ({
+  type: SOCKET_TODO_CLEAR_COMPLETED,
+  payload: payload
 });
 
 const connectionRefreshAction = () => ({
   type: SOCKET_CONNECTION_REFRESH
 });
 
+const sharedTodosActions = (payload: SocketShareTodosPayload) => ({
+  type: SOCKET_SHARE_TODOS,
+  payload: payload
+});
+
 export {
   authAction,
   connectionRefreshAction,
   logoutAction,
+  sharedTodosActions,
   todoCheckAction,
   todoClearCompletedAction,
   todoCreationAction,

@@ -39,7 +39,7 @@ function* workAddTodo({ payload }: PayloadAction<string>) {
   }
 }
 
-function* workClearCompleted({ payload }: PayloadAction<string>) {
+function* workClearCompleted() {
   const { userId } = yield select(getUser);
   const { currentPage, currentFilter, searchQuery } = yield select(
     (state: RootState) => state.query
@@ -52,7 +52,6 @@ function* workClearCompleted({ payload }: PayloadAction<string>) {
       yield put(setCurrentPageRequest(1));
     } else {
       yield put(clearCompletedSuccess(userId));
-
       toast.success(response.data!);
     }
   } else {

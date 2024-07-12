@@ -32,8 +32,11 @@ const todosSlice = createSlice({
     },
 
     clearCompletedSuccess: (state, action: PayloadAction<string>) => {
+      let todosToBeDeleted = 0;
+
       const newList = state.list.filter((todo) => {
         if (todo.creatorId === action.payload && todo.isCompleted) {
+          todosToBeDeleted++;
           return false;
         }
 
@@ -42,7 +45,7 @@ const todosSlice = createSlice({
 
       return {
         list: newList,
-        totalTodos: state.totalTodos,
+        totalTodos: state.totalTodos - todosToBeDeleted,
         activeTodos: state.activeTodos
       };
     },

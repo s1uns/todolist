@@ -6,5 +6,8 @@ export type SocketAction = {
     socketId: string;
     todoId?: string;
     newTodo?: TodoItem;
+    userId?: string;
+    author?: string;
+    isShared?: boolean;
   };
 };
