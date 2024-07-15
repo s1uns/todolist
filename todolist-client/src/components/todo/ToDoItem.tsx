@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import { Avatar, ListItem, Typography } from "@mui/material";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   checkTodoRequest,
@@ -42,10 +42,10 @@ const ToDoItem: FC<TodoItemProps> = ({
     dispatch(deleteTodoRequest(id));
   };
 
-  const getTodoAuthor = (authorFullname: string) => {
-    const fullName = authorFullname.split(" ");
+  const authorInitials = useMemo(() => {
+    const fullName = author.split(" ");
     return `${fullName[0][0]} ${fullName[1][0]}`;
-  };
+  }, [author]);
 
   const checkTodo = () => {
     dispatch(checkTodoRequest(id));
@@ -70,7 +70,7 @@ const ToDoItem: FC<TodoItemProps> = ({
       {isAuthor ? (
         ""
       ) : (
-        <AuthorAvatar title={author}>{getTodoAuthor(author)}</AuthorAvatar>
+        <AuthorAvatar title={author}>{authorInitials}</AuthorAvatar>
       )}
     </TodoItemContainer>
   );

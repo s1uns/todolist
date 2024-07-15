@@ -22,6 +22,35 @@ interface ShareTodosModalProps {
   onClose: () => void;
 }
 
+interface SharedUserProps {
+  id: string;
+  fullName: string;
+  username: string;
+  isShared: boolean;
+  onClose: () => void;
+}
+
+const SharedUser = (props: SharedUserProps) => {
+  const { id, username, isShared, onClose, fullName } = props;
+
+  const manageSharedWithUser = async () => {
+    const response = await manageShared(id);
+
+    if (response.success) {
+      toast.success(response.data);
+      onClose();
+    } else {
+      toast.error(response.data);
+    }
+  };
+
+  return (
+    <UserInfoContainer onClick={manageSharedWithUser}>
+      {username} ({fullName}){isShared ? <SharedIcon>shared</SharedIcon> : ""}
+    </UserInfoContainer>
+  );
+};
+
 const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -59,18 +88,6 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
     }
   };
 
-  const manageSharedWithUser = async (userId: string) => {
-    const response = await manageShared(userId);
-
-    if (response.success) {
-      toast.success(response.data);
-      setInputValue("");
-      onClose();
-    } else {
-      toast.success(response.data);
-    }
-  };
-
   return (
     <Modal
       open={open}
@@ -95,13 +112,14 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
         />
         <UsersList>
           {users.map((user) => (
-            <UserInfoContainer
+            <SharedUser
               key={user.id}
-              onClick={() => manageSharedWithUser(user.id)}
-            >
-              {user.username} ({user.fullName})
-              {user.isShared ? <SharedIcon>shared</SharedIcon> : ""}
-            </UserInfoContainer>
+              id={user.id}
+              fullName={user.fullName}
+              username={user.username}
+              isShared={user.isShared}
+              onClose={onClose}
+            />
           ))}
         </UsersList>
         <UsersPagination

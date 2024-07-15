@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Button, Menu, MenuItem, MenuProps } from "@mui/material";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { setFilterRequest } from "../../store/actions/queryActions";
 import { getCurrentFilter } from "../../store/slices/querySlice";
@@ -19,6 +19,10 @@ const filterOptions = [
   { value: FILTER_COMPLETED, label: "Completed" }
 ];
 
+const TodoFilterItem = () => {
+  
+}
+
 const TodosFilterMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const currentFilter = useSelector(getCurrentFilter);
@@ -28,10 +32,13 @@ const TodosFilterMenu = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleSetFilter = (value: number) => {
-    dispatch(setFilterRequest(value));
-    handleClose();
-  };
+  const handleSetFilter = useCallback(
+    (value: number) => {
+      dispatch(setFilterRequest(value));
+      handleClose();
+    },
+    [currentFilter]
+  ); //ask mentor
 
   const handleClose = () => {
     setAnchorEl(null);
