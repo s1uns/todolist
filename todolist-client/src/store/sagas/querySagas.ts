@@ -8,7 +8,8 @@ import {
   setFilterSuccess,
   setPageSuccess,
   setQuerySuccess,
-  setSearchQuerySuccess
+  setSearchQuerySuccess,
+  setSortingSuccess
 } from "../slices/querySlice";
 
 function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
@@ -25,6 +26,10 @@ function* workSetSearchQuery({ payload }: PayloadAction<string>) {
 
 function* workSetQuery({ payload }: PayloadAction<Query>) {
   yield put(setQuerySuccess(payload));
+}
+
+function* workSetSorting({ payload }: PayloadAction<number>) {
+  yield put(setSortingSuccess(payload));
 }
 
 function* workIncrementPage() {
@@ -46,6 +51,7 @@ function* querySagas() {
     workSetSearchQuery
   );
   yield takeEvery(actionRequestType.SET_QUERY_REQUEST, workSetQuery);
+  yield takeEvery(actionRequestType.SET_SORTING_REQUEST, workSetSorting);
 }
 
 export default querySagas;

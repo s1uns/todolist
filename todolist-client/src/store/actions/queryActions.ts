@@ -16,6 +16,11 @@ const setSearchQueryRequest = (payload: string) => ({
   payload: payload
 });
 
+const setSortingRequest = (payload: number) => ({
+  type: actionRequestType.SET_SORTING_REQUEST,
+  payload: payload
+});
+
 const incrementPageRequest = () => ({
   type: actionRequestType.INCREMENT_PAGE_REQUEST
 });
@@ -30,5 +35,6 @@ export {
   setCurrentPageRequest,
   setFilterRequest,
   setQueryRequest,
-  setSearchQueryRequest
+  setSearchQueryRequest,
+  setSortingRequest
 };

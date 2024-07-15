@@ -57,14 +57,12 @@ function* workClearCompleted() {
   const response: ServerResponse<string> = yield call(clearCompleted);
 
   if (response.success) {
-
     if (currentPage > 1) {
       yield put(setCurrentPageRequest(1));
     } else {
       yield put(clearCompletedSuccess(userId));
       toast.success(response.data!);
     }
-    
   } else {
     toast.error(response.message);
   }
@@ -88,13 +86,11 @@ function* workCheckTodo({ payload }: PayloadAction<string>) {
   const newTodo = response.data;
 
   if (response.success) {
-
     if (currentFilter !== FILTER_ALL) {
       yield put(deleteTodoSuccess(newTodo?.id!));
     } else {
       yield put(checkTodoSuccess(newTodo!));
     }
-
   } else {
     toast.error(response.message);
   }
@@ -111,25 +107,22 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   const newTodo = response.data;
 
   if (response.success) {
-
     if (!newTodo?.title.includes(searchQuery)) {
       yield put(deleteTodoSuccess(newTodo?.id!));
     } else {
       yield put(updateTodoSuccess(newTodo!));
     }
-
   } else {
     toast.error(response.message);
   }
 }
 
 function* workFetchTodos() {
-  const { currentPage, currentFilter, searchQuery } = yield select(
-    (state: RootState) => state.query
-  );
+  const { currentPage, currentFilter, searchQuery, sortBy, isAscending } =
+    yield select((state: RootState) => state.query);
 
   const response: ServerResponse<TodosCollection> = yield call(() =>
-    getTodos(currentPage, currentFilter, searchQuery)
+    getTodos(currentPage, currentFilter, searchQuery, sortBy, isAscending)
   );
 
   const fetchedTodos = response.data;
@@ -142,8 +135,6 @@ function* workFetchTodos() {
     toast.error(response.message);
   }
 }
-
-//get todos with lazy load
 
 function* todosSagas() {
   yield takeEvery(actionRequestType.ADD_TODO_REQUEST, workAddTodo);

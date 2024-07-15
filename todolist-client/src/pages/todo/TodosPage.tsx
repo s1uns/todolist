@@ -10,6 +10,7 @@ import Sidebar from "../../components/common/Sidebar";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import SearchTodoInput from "../../components/todo/SearchTodoInput";
 import ShareTodosModal from "../../components/todo/ShareTodosModal";
+import SortingPanel from "../../components/todo/SortingPanel";
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
@@ -23,9 +24,8 @@ import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
 const TodosPage = () => {
   const dispatch = useAppDispatch();
-  const { currentFilter, currentPage, searchQuery } = useSelector(
-    (state: RootState) => state.query
-  );
+  const { currentFilter, currentPage, searchQuery, sortBy, isAscending } =
+    useSelector((state: RootState) => state.query);
   const { list, totalTodos } = useSelector(getTodos);
   const [openTodoModal, setOpenTodoModal] = useState(false);
   const [openUsersModal, setOpenUsersModal] = useState(false);
@@ -69,7 +69,7 @@ const TodosPage = () => {
 
   useEffect(() => {
     dispatch(getTodosRequest());
-  }, [currentFilter, currentPage, searchQuery]);
+  }, [currentFilter, currentPage, searchQuery, sortBy, isAscending]);
 
   useEffect(() => {
     todosContainerRef.current?.scroll(0, 0);
@@ -147,7 +147,7 @@ const TodosPage = () => {
         isOpen={openSortingToolbar}
         onClose={handleCloseSortingToolbar}
       >
-        <div>toolbar</div>
+        <SortingPanel />
         <div>toolbar</div>
       </Sidebar>
     </PageContainer>
