@@ -1,7 +1,8 @@
-import { put, select, takeEvery } from "redux-saga/effects";
+import { call, put, select, takeEvery } from "redux-saga/effects";
 import { authAction } from "../../notifications/notificationActions";
 import socket from "../../notifications/socket";
 import {
+  CREATE_TODO,
   FILTER_ACTIVE,
   FILTER_ALL,
   FILTER_COMPLETED,
@@ -12,7 +13,8 @@ import {
   SOCKET_TODO_CLEAR_COMPLETED,
   SOCKET_TODO_CREATION,
   SOCKET_TODO_DELETE,
-  SOCKET_TODO_UPDATE
+  SOCKET_TODO_UPDATE,
+  SORT_UPDATED_AT
 } from "../../utils/constants";
 
 import { PayloadAction } from "@reduxjs/toolkit";
@@ -22,14 +24,14 @@ import { SocketClearCompletedPayload } from "../../types/socket/SocketClearCompl
 import { SocketDeleteTodoPayload } from "../../types/socket/SocketDeleteTodoPayload";
 import { SocketShareTodosPayload } from "../../types/socket/SocketShareTodosPayload";
 import { TodoItem } from "../../types/todo/TodoItem";
+import handleTodo from "../../utils/helpers/handleTodo";
 import { getUser } from "../slices/authSlice";
 import {
   checkTodoSuccess,
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
   createTodoSuccess,
-  deleteTodoSuccess,
-  updateTodoSuccess
+  deleteTodoSuccess
 } from "../slices/todosSlice";
 import { RootState } from "../store";
 
@@ -42,17 +44,9 @@ function* workRefreshConnection() {
 }
 
 function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
-  const { currentFilter, searchQuery } = yield select(
-    (state: RootState) => state.query
-  );
   const { userId } = yield select(getUser);
 
-  if (
-    currentFilter !== FILTER_COMPLETED &&
-    (searchQuery === "" || payload.title.includes(searchQuery))
-  ) {
-    yield put(createTodoSuccess(payload));
-  }
+  yield call(() => handleTodo(payload, CREATE_TODO));
 
   if (payload.creatorId !== userId) {
     toast.info(`${payload.author} created new todo "${payload.title}"!`);
@@ -62,7 +56,7 @@ function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
 function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
   const { list } = yield select((state: RootState) => state.todos);
-  const { currentFilter, searchQuery } = yield select(
+  const { searchQuery, sortBy, isAscending } = yield select(
     (state: RootState) => state.query
   );
 
@@ -70,7 +64,13 @@ function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
     !list.filter((todo: TodoItem) => todo.id === payload.id).length &&
     (searchQuery === "" || payload.title.includes(searchQuery))
   ) {
-    yield put(createTodoSuccess(payload));
+    yield put(
+      createTodoSuccess({
+        todo: payload,
+        sortBy: sortBy,
+        isAscending: isAscending
+      })
+    );
   } else if (
     list.filter((todo: TodoItem) => todo.id === payload.id).length &&
     searchQuery !== "" &&
@@ -78,7 +78,15 @@ function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
   ) {
     yield put(deleteTodoSuccess(payload.id));
   } else {
-    yield put(updateTodoSuccess(payload));
+    yield put(deleteTodoSuccess(payload.id));
+
+    yield put(
+      createTodoSuccess({
+        todo: payload,
+        sortBy: sortBy,
+        isAscending: isAscending
+      })
+    );
   }
 
   if (payload.creatorId !== userId) {
@@ -87,13 +95,21 @@ function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
 }
 function* workTodoCheck({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
-  const { currentFilter } = yield select((state: RootState) => state.query);
+  const { currentFilter, sortBy, isAscending } = yield select(
+    (state: RootState) => state.query
+  );
 
   if (
     (currentFilter === FILTER_COMPLETED && payload.isCompleted) ||
     (currentFilter === FILTER_ACTIVE && !payload.isCompleted)
   ) {
-    yield put(createTodoSuccess(payload));
+    yield put(
+      createTodoSuccess({
+        todo: payload,
+        sortBy: sortBy,
+        isAscending: isAscending
+      })
+    );
   }
 
   if (
@@ -104,7 +120,19 @@ function* workTodoCheck({ payload }: PayloadAction<TodoItem>) {
   }
 
   if (currentFilter === FILTER_ALL) {
-    yield put(checkTodoSuccess(payload));
+    if (sortBy !== SORT_UPDATED_AT) {
+      yield put(checkTodoSuccess(payload));
+    } else {
+      yield put(deleteTodoSuccess(payload.id));
+
+      yield put(
+        createTodoSuccess({
+          todo: payload,
+          sortBy: sortBy,
+          isAscending: isAscending
+        })
+      );
+    }
   }
 
   if (payload.creatorId !== userId) {

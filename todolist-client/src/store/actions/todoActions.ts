@@ -29,11 +29,16 @@ const clearCompletedRequest = () => ({
   type: actionRequestType.CLEAR_COMPLETED_REQUEST
 });
 
+const incrementTodosNumberRequest = () => ({
+  type: actionRequestType.INCREMENT_TODOS_NUMBER
+});
+
 export {
   checkTodoRequest,
   clearCompletedRequest,
   createTodoRequest,
   deleteTodoRequest,
   getTodosRequest,
+  incrementTodosNumberRequest,
   updateTodoRequest
 };

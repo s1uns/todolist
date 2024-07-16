@@ -37,7 +37,8 @@ const deleteTodo = async (todoId: string) => {
 const checkTodo = async (todoId: string) => {
   const response: ServerResponse<TodoItem> = await customRequest(
     PATCH_REQUEST,
-    `${url}todos/${todoId}/check`
+    `${url}todos/${todoId}/check`,
+    { socketId: socket.id }
   );
 
   return response;

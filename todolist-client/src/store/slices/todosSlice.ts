@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CreateTodoPayload } from "../../types/todo/CreateTodoPayload";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { RootState } from "../store";
@@ -17,6 +18,12 @@ const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
+    incrementTodosNumberSuccess: (state) => {
+      return {
+        list: state.list,
+        totalTodos: state.totalTodos + 1
+      };
+    },
     setTodosSuccess: (state, action: PayloadAction<TodosCollection>) => {
       const newList = action.payload.overwrite
         ? action.payload.list
@@ -70,8 +77,22 @@ const todosSlice = createSlice({
       };
     },
 
-    createTodoSuccess: (state, action: PayloadAction<TodoItem>) => {
-      const newList = [action.payload, ...state.list];
+    createTodoSuccess: (state, action: PayloadAction<CreateTodoPayload>) => {
+      const { todo, todoIndex } = action.payload;
+      let newList: TodoItem[] = [];
+
+      if (todoIndex === null) {
+        newList = [...state.list, todo];
+      } else if (state.totalTodos === state.list.length) {
+        newList = [...state.list];
+        newList.splice(todoIndex!, 0, todo);
+      } else {
+        newList = [...state.list];
+        newList.splice(todoIndex!, 0, todo);
+        newList.pop();
+      }
+
+      console.log("New list: ", newList);
 
       return {
         list: newList,
@@ -138,6 +159,7 @@ const todosSlice = createSlice({
 export const getTodos = (state: RootState) => state.todos;
 
 export const {
+  incrementTodosNumberSuccess,
   clearCompletedSuccess,
   setTodosSuccess,
   clearTodosSuccess,

@@ -47,7 +47,11 @@ const SortingPanel = () => {
   return (
     <>
       {sortingOptions.map((option) => (
-        <SortingItem value={option.value} label={option.label} />
+        <SortingItem
+          key={option.value}
+          value={option.value}
+          label={option.label}
+        />
       ))}
     </>
   );

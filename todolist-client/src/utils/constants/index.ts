@@ -30,6 +30,11 @@ const SORT_CREATED_AT = 0;
 const SORT_UPDATED_AT = 1;
 const SORT_TITLE = 2;
 
+//todo handler action
+const CREATE_TODO = 0;
+const UPDATE_TODO = 1;
+const CHECK_TODO = 2;
+
 // socket actions
 
 const SOCKET_ACTION = "SOCKET_ACTION";
@@ -44,6 +49,8 @@ const SOCKET_CONNECTION_REFRESH = "SOCKET_CONNECTION_REFRESH";
 const SOCKET_SHARE_TODOS = "SOCKET_SHARE_TODOS";
 
 export {
+  CHECK_TODO,
+  CREATE_TODO,
   DELETE_REQUEST,
   FILTER_ACTIVE,
   FILTER_ALL,
@@ -73,5 +80,6 @@ export {
   SORT_TITLE,
   SORT_UPDATED_AT,
   TODOS_LIMIT,
+  UPDATE_TODO,
   USERS_LIMIT
 };

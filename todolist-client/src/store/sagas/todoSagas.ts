@@ -13,7 +13,13 @@ import { ServerResponse } from "../../types/common/ServerResponse";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
-import { FILTER_ALL, FILTER_COMPLETED } from "../../utils/constants";
+import {
+  CREATE_TODO,
+  FILTER_ALL,
+  SORT_CREATED_AT,
+  SORT_UPDATED_AT
+} from "../../utils/constants";
+import handleTodo from "../../utils/helpers/handleTodo";
 import { actionRequestType } from "../actions/constants";
 import { setCurrentPageRequest } from "../actions/queryActions";
 import { getUser } from "../slices/authSlice";
@@ -22,6 +28,7 @@ import {
   clearCompletedSuccess,
   createTodoSuccess,
   deleteTodoSuccess,
+  incrementTodosNumberSuccess,
   setTodosSuccess,
   updateTodoSuccess
 } from "../slices/todosSlice";
@@ -31,18 +38,13 @@ function* workAddTodo({ payload }: PayloadAction<string>) {
   const response: ServerResponse<TodoItem> = yield call(() =>
     createTodo(payload)
   );
-  const { currentFilter, searchQuery } = yield select(
+  const { currentFilter, searchQuery, sortBy, isAscending } = yield select(
     (state: RootState) => state.query
   );
   const newTodo = response.data;
 
   if (response.success) {
-    if (
-      currentFilter !== FILTER_COMPLETED &&
-      (searchQuery === "" || searchQuery.includes(newTodo?.title))
-    ) {
-      yield put(createTodoSuccess(newTodo!));
-    }
+    yield call(() => handleTodo(newTodo!, CREATE_TODO));
   } else {
     toast.error(response.message);
   }
@@ -82,14 +84,28 @@ function* workCheckTodo({ payload }: PayloadAction<string>) {
   const response: ServerResponse<TodoItem> = yield call(() =>
     checkTodo(payload)
   );
-  const { currentFilter } = yield select((state: RootState) => state.query);
+  const { currentFilter, sortBy, isAscending } = yield select(
+    (state: RootState) => state.query
+  );
   const newTodo = response.data;
 
   if (response.success) {
     if (currentFilter !== FILTER_ALL) {
       yield put(deleteTodoSuccess(newTodo?.id!));
     } else {
-      yield put(checkTodoSuccess(newTodo!));
+      if (sortBy !== SORT_UPDATED_AT) {
+        yield put(checkTodoSuccess(newTodo!));
+      } else {
+        yield put(deleteTodoSuccess(newTodo?.id!));
+
+        yield put(
+          createTodoSuccess({
+            todo: newTodo!,
+            sortBy: sortBy,
+            isAscending: isAscending
+          })
+        );
+      }
     }
   } else {
     toast.error(response.message);
@@ -98,7 +114,9 @@ function* workCheckTodo({ payload }: PayloadAction<string>) {
 
 function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   const { todoId, title } = payload;
-  const { searchQuery } = yield select((state: RootState) => state.query);
+  const { searchQuery, sortBy, isAscending } = yield select(
+    (state: RootState) => state.query
+  );
 
   const response: ServerResponse<TodoItem> = yield call(() =>
     updateTodo(todoId, title)
@@ -110,11 +128,27 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
     if (!newTodo?.title.includes(searchQuery)) {
       yield put(deleteTodoSuccess(newTodo?.id!));
     } else {
-      yield put(updateTodoSuccess(newTodo!));
+      if (sortBy === SORT_CREATED_AT) {
+        yield put(updateTodoSuccess(newTodo!));
+      } else {
+        yield put(deleteTodoSuccess(newTodo?.id!));
+
+        yield put(
+          createTodoSuccess({
+            todo: newTodo!,
+            sortBy: sortBy,
+            isAscending: isAscending
+          })
+        );
+      }
     }
   } else {
     toast.error(response.message);
   }
+}
+
+function* workIncrementTodosNumber() {
+  yield put(incrementTodosNumberSuccess());
 }
 
 function* workFetchTodos() {
@@ -145,6 +179,10 @@ function* todosSagas() {
   yield takeEvery(
     actionRequestType.CLEAR_COMPLETED_REQUEST,
     workClearCompleted
+  );
+  yield takeEvery(
+    actionRequestType.INCREMENT_TODOS_NUMBER,
+    workIncrementTodosNumber
   );
 }
 
