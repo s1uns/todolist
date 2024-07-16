@@ -32,7 +32,6 @@ const socket = io(url, {
 });
 
 socket.on(SOCKET_ACTION, (action: SocketAction) => {
-  console.log(`${socket.id} - ${action.data.socketId}`);
   if (socket.id !== action.data.socketId) {
     const { type, data } = action;
 

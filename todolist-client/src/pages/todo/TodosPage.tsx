@@ -75,11 +75,8 @@ const TodosPage = () => {
     todosContainerRef.current?.scroll(0, 0);
   }, [currentFilter, searchQuery]);
 
-  console.log("List length: ", list.length);
-  console.log("Total todos: ", totalTodos);
   const hasMore = useMemo(() => list.length < totalTodos, [list, totalTodos]);
 
-  console.log("Has more: ", hasMore);
 
   return (
     <PageContainer>
