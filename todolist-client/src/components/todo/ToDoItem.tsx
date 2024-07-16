@@ -33,6 +33,7 @@ const ToDoItem: FC<TodoItemProps> = ({
   author,
   onOpenUpdateModal
 }: TodoItemProps) => {
+  console.log("Todo rerender: ", title);
   const dispatch = useDispatch();
   const { userId } = useSelector(getUser);
 

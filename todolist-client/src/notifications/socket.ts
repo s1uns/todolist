@@ -32,46 +32,42 @@ const socket = io(url, {
 });
 
 socket.on(SOCKET_ACTION, (action: SocketAction) => {
-  if (socket.id !== action.data.socketId) {
-    const { type, data } = action;
+  const { type, data } = action;
 
-    switch (type) {
-      case SOCKET_TODO_CREATION:
-        store.dispatch(todoCreationAction(data.newTodo!));
-        break;
+  switch (type) {
+    case SOCKET_TODO_CREATION:
+      store.dispatch(todoCreationAction(data.newTodo!));
+      break;
 
-      case SOCKET_TODO_DELETE:
-        store.dispatch(
-          todoDeleteAction(data as unknown as SocketDeleteTodoPayload)
-        );
-        break;
+    case SOCKET_TODO_DELETE:
+      store.dispatch(
+        todoDeleteAction(data as unknown as SocketDeleteTodoPayload)
+      );
+      break;
 
-      case SOCKET_TODO_UPDATE:
-        store.dispatch(todoUpdateAction(data.newTodo!));
-        break;
+    case SOCKET_TODO_UPDATE:
+      store.dispatch(todoUpdateAction(data.newTodo!));
+      break;
 
-      case SOCKET_TODO_CHECK:
-        store.dispatch(todoCheckAction(data.newTodo!));
-        break;
+    case SOCKET_TODO_CHECK:
+      store.dispatch(todoCheckAction(data.newTodo!));
+      break;
 
-      case SOCKET_TODO_CLEAR_COMPLETED:
-        store.dispatch(
-          todoClearCompletedAction(
-            data as unknown as SocketClearCompletedPayload
-          )
-        );
-        break;
+    case SOCKET_TODO_CLEAR_COMPLETED:
+      store.dispatch(
+        todoClearCompletedAction(data as unknown as SocketClearCompletedPayload)
+      );
+      break;
 
-      case SOCKET_SHARE_TODOS:
-        store.dispatch(
-          sharedTodosActions(data as unknown as SocketShareTodosPayload)
-        );
-        break;
+    case SOCKET_SHARE_TODOS:
+      store.dispatch(
+        sharedTodosActions(data as unknown as SocketShareTodosPayload)
+      );
+      break;
 
-      default:
-        toast.error("Unknown action type catched on the socket.");
-        break;
-    }
+    default:
+      toast.error("Unknown action type catched on the socket.");
+      break;
   }
 });
 

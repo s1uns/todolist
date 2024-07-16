@@ -40,7 +40,6 @@ function* workRefreshConnection() {
 
 function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
-
   yield call(() => handleTodo(payload, CREATE_TODO));
 
   if (payload.creatorId !== userId) {

@@ -9,6 +9,7 @@ import {
   CREATE_TODO,
   FILTER_COMPLETED,
   SORT_TITLE,
+  SORT_UPDATED_AT,
   UPDATE_TODO
 } from "../constants";
 
@@ -34,7 +35,7 @@ const handleTodo = async (todo: TodoItem, action: number) => {
     let newTodoIndex = null;
     const filteredList = list.filter((todoItem) => todoItem.id !== todo.id);
     if (sortBy !== SORT_TITLE) {
-      if (!isAscending) {
+      if (!isAscending && sortBy === SORT_UPDATED_AT) {
         newTodoIndex = 0;
       }
     } else {
@@ -82,9 +83,9 @@ const handleTodo = async (todo: TodoItem, action: number) => {
       }
     }
 
-    if (newTodoIndex === null && list.length < totalTodos) {
-      return;
-    }
+    // if (newTodoIndex === null && list.length < totalTodos) {
+    //   return;
+    // }
 
     if (action === CREATE_TODO && currentFilter !== FILTER_COMPLETED) {
       createTodo(todo, newTodoIndex);
