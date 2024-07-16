@@ -92,8 +92,6 @@ const todosSlice = createSlice({
         newList.pop();
       }
 
-      console.log("New list: ", newList);
-
       return {
         list: newList,
         totalTodos: state.totalTodos + 1

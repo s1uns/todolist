@@ -2,10 +2,8 @@ import { call, put, select, takeEvery } from "redux-saga/effects";
 import { authAction } from "../../notifications/notificationActions";
 import socket from "../../notifications/socket";
 import {
+  CHECK_TODO,
   CREATE_TODO,
-  FILTER_ACTIVE,
-  FILTER_ALL,
-  FILTER_COMPLETED,
   SOCKET_ACTION,
   SOCKET_CONNECTION_REFRESH,
   SOCKET_SHARE_TODOS,
@@ -14,7 +12,7 @@ import {
   SOCKET_TODO_CREATION,
   SOCKET_TODO_DELETE,
   SOCKET_TODO_UPDATE,
-  SORT_UPDATED_AT
+  UPDATE_TODO
 } from "../../utils/constants";
 
 import { PayloadAction } from "@reduxjs/toolkit";
@@ -27,13 +25,10 @@ import { TodoItem } from "../../types/todo/TodoItem";
 import handleTodo from "../../utils/helpers/handleTodo";
 import { getUser } from "../slices/authSlice";
 import {
-  checkTodoSuccess,
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
-  createTodoSuccess,
   deleteTodoSuccess
 } from "../slices/todosSlice";
-import { RootState } from "../store";
 
 function* workRefreshConnection() {
   const { userId } = yield select(getUser);
@@ -55,39 +50,8 @@ function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
 
 function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
-  const { list } = yield select((state: RootState) => state.todos);
-  const { searchQuery, sortBy, isAscending } = yield select(
-    (state: RootState) => state.query
-  );
 
-  if (
-    !list.filter((todo: TodoItem) => todo.id === payload.id).length &&
-    (searchQuery === "" || payload.title.includes(searchQuery))
-  ) {
-    yield put(
-      createTodoSuccess({
-        todo: payload,
-        sortBy: sortBy,
-        isAscending: isAscending
-      })
-    );
-  } else if (
-    list.filter((todo: TodoItem) => todo.id === payload.id).length &&
-    searchQuery !== "" &&
-    !payload.title.includes(searchQuery)
-  ) {
-    yield put(deleteTodoSuccess(payload.id));
-  } else {
-    yield put(deleteTodoSuccess(payload.id));
-
-    yield put(
-      createTodoSuccess({
-        todo: payload,
-        sortBy: sortBy,
-        isAscending: isAscending
-      })
-    );
-  }
+  yield call(() => handleTodo(payload, UPDATE_TODO));
 
   if (payload.creatorId !== userId) {
     toast.info(`${payload.author} updated his todo!`);
@@ -95,45 +59,8 @@ function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
 }
 function* workTodoCheck({ payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
-  const { currentFilter, sortBy, isAscending } = yield select(
-    (state: RootState) => state.query
-  );
 
-  if (
-    (currentFilter === FILTER_COMPLETED && payload.isCompleted) ||
-    (currentFilter === FILTER_ACTIVE && !payload.isCompleted)
-  ) {
-    yield put(
-      createTodoSuccess({
-        todo: payload,
-        sortBy: sortBy,
-        isAscending: isAscending
-      })
-    );
-  }
-
-  if (
-    (currentFilter === FILTER_COMPLETED && !payload.isCompleted) ||
-    (currentFilter === FILTER_ACTIVE && payload.isCompleted)
-  ) {
-    yield put(deleteTodoSuccess(payload.id));
-  }
-
-  if (currentFilter === FILTER_ALL) {
-    if (sortBy !== SORT_UPDATED_AT) {
-      yield put(checkTodoSuccess(payload));
-    } else {
-      yield put(deleteTodoSuccess(payload.id));
-
-      yield put(
-        createTodoSuccess({
-          todo: payload,
-          sortBy: sortBy,
-          isAscending: isAscending
-        })
-      );
-    }
-  }
+  yield call(() => handleTodo(payload, CHECK_TODO));
 
   if (payload.creatorId !== userId) {
     toast.info(
