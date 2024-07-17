@@ -77,7 +77,6 @@ const TodosPage = () => {
 
   const hasMore = useMemo(() => list.length < totalTodos, [list, totalTodos]);
 
-
   return (
     <PageContainer>
       <FunctionsPanel>

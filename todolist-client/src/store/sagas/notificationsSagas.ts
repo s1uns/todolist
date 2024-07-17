@@ -1,9 +1,7 @@
-import { call, put, select, takeEvery } from "redux-saga/effects";
+import { put, select, takeEvery } from "redux-saga/effects";
 import { authAction } from "../../notifications/notificationActions";
 import socket from "../../notifications/socket";
 import {
-  CHECK_TODO,
-  CREATE_TODO,
   SOCKET_ACTION,
   SOCKET_CONNECTION_REFRESH,
   SOCKET_SHARE_TODOS,
@@ -11,8 +9,7 @@ import {
   SOCKET_TODO_CLEAR_COMPLETED,
   SOCKET_TODO_CREATION,
   SOCKET_TODO_DELETE,
-  SOCKET_TODO_UPDATE,
-  UPDATE_TODO
+  SOCKET_TODO_UPDATE
 } from "../../utils/constants";
 
 import { PayloadAction } from "@reduxjs/toolkit";
@@ -22,49 +19,23 @@ import { SocketClearCompletedPayload } from "../../types/socket/SocketClearCompl
 import { SocketDeleteTodoPayload } from "../../types/socket/SocketDeleteTodoPayload";
 import { SocketShareTodosPayload } from "../../types/socket/SocketShareTodosPayload";
 import { TodoItem } from "../../types/todo/TodoItem";
-import handleTodo from "../../utils/helpers/handleTodo";
+import findTodoIndex from "../../utils/helpers/findTodoIndex";
+import getTodoToDelete from "../../utils/helpers/getTodoToDelete";
+import isFitFilters from "../../utils/helpers/isFitFilters";
 import { getUser } from "../slices/authSlice";
 import {
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
-  deleteTodoSuccess
+  deleteTodoSuccess,
+  handleTodoSuccess
 } from "../slices/todosSlice";
+import { RootState } from "../store";
 
 function* workRefreshConnection() {
   const { userId } = yield select(getUser);
 
   if (userId) {
     socket.emit(SOCKET_ACTION, authAction(userId));
-  }
-}
-
-function* workTodoCreation({ payload }: PayloadAction<TodoItem>) {
-  const { userId } = yield select(getUser);
-  yield call(() => handleTodo(payload, CREATE_TODO));
-
-  if (payload.creatorId !== userId) {
-    toast.info(`${payload.author} created new todo "${payload.title}"!`);
-  }
-}
-
-function* workTodoUpdate({ payload }: PayloadAction<TodoItem>) {
-  const { userId } = yield select(getUser);
-
-  yield call(() => handleTodo(payload, UPDATE_TODO));
-
-  if (payload.creatorId !== userId) {
-    toast.info(`${payload.author} updated his todo!`);
-  }
-}
-function* workTodoCheck({ payload }: PayloadAction<TodoItem>) {
-  const { userId } = yield select(getUser);
-
-  yield call(() => handleTodo(payload, CHECK_TODO));
-
-  if (payload.creatorId !== userId) {
-    toast.info(
-      `${payload.author} changed the status of "${payload.title}" to "${payload.isCompleted ? "completed" : "active"}"!`
-    );
   }
 }
 
@@ -103,12 +74,59 @@ function* workChangeSharedStatus({
   }
 }
 
+function* workHandleTodo({ type, payload }: PayloadAction<TodoItem>) {
+  const { list } = yield select((state: RootState) => state.todos);
+  const { userId } = yield select(getUser);
+
+  const todoExists = list.find((todo: TodoItem) => todo.id === payload.id);
+  const fitFilters = isFitFilters(payload);
+
+  if (todoExists && fitFilters) {
+    const todoIndex = findTodoIndex(payload);
+    yield put(handleTodoSuccess({ todo: payload, todoIndex: todoIndex }));
+  }
+
+  if (todoExists && !fitFilters) {
+    yield put(deleteTodoSuccess(payload.id));
+  }
+
+  if (!todoExists && fitFilters) {
+    const todoIndex = findTodoIndex(payload);
+    const todoToBeDeletedId = getTodoToDelete(todoIndex, payload.id);
+    if (!todoToBeDeletedId) {
+      yield put(handleTodoSuccess({ todo: payload, todoIndex: todoIndex }));
+    }
+
+    if (todoToBeDeletedId && todoToBeDeletedId !== payload.id) {
+      yield put(deleteTodoSuccess(todoToBeDeletedId));
+      yield put(handleTodoSuccess({ todo: payload, todoIndex: todoIndex }));
+    }
+  }
+
+  if (payload.creatorId !== userId) {
+    if (type === SOCKET_TODO_CHECK) {
+      toast.info(
+        `${payload.author} changed the status of "${payload.title}" to "${payload.isCompleted ? "completed" : "active"}"!`
+      );
+    }
+
+    if (type === SOCKET_TODO_CREATION) {
+      toast.info(`${payload.author} created new todo "${payload.title}"!`);
+    }
+
+    if (type === SOCKET_TODO_UPDATE) {
+      toast.info(`${payload.author} updated his todo!`);
+    }
+  }
+}
+
 function* notificationsSagas() {
   yield takeEvery(SOCKET_CONNECTION_REFRESH, workRefreshConnection);
-  yield takeEvery(SOCKET_TODO_CREATION, workTodoCreation);
-  yield takeEvery(SOCKET_TODO_UPDATE, workTodoUpdate);
+  yield takeEvery(
+    [SOCKET_TODO_CREATION, SOCKET_TODO_UPDATE, SOCKET_TODO_CHECK],
+    workHandleTodo
+  );
   yield takeEvery(SOCKET_TODO_DELETE, workTodoDelete);
-  yield takeEvery(SOCKET_TODO_CHECK, workTodoCheck);
   yield takeEvery(SOCKET_TODO_CLEAR_COMPLETED, workClearCompleted);
   yield takeEvery(SOCKET_SHARE_TODOS, workChangeSharedStatus);
 }

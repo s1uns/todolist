@@ -1,13 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CreateTodoPayload } from "../../types/todo/CreateTodoPayload";
 import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
+import { UpdateTodoPayload } from "../../types/todo/UpdateTodoPayload";
 import { RootState } from "../store";
 
 interface TodosState {
   list: TodoItem[];
   totalTodos: number;
 }
+
+const moveTodo = (todoList: TodoItem[], todo: TodoItem, todoIndex: number) => {
+  const oldIndex = todoList.findIndex((todoItem) => todoItem.id === todo.id);
+  if (oldIndex !== -1) {
+    if (oldIndex === todoIndex) {
+      todoList[oldIndex] = todo;
+      return todoList;
+    }
+
+    todoList.splice(oldIndex, 1);
+    todoList.splice(todoIndex, 0, todo);
+    return todoList;
+  }
+
+  todoList.splice(todoIndex, 0, todo);
+  return todoList;
+};
 
 const initialState: TodosState = {
   list: [],
@@ -77,42 +94,16 @@ const todosSlice = createSlice({
       };
     },
 
-    createTodoSuccess: (state, action: PayloadAction<CreateTodoPayload>) => {
+    handleTodoSuccess: (state, action: PayloadAction<UpdateTodoPayload>) => {
       const { todo, todoIndex } = action.payload;
-      let newList: TodoItem[] = [];
-
-      if (todoIndex === null) {
-        newList = [...state.list, todo];
-      } else if (state.totalTodos === state.list.length) {
-        newList = [...state.list];
-        newList.splice(todoIndex!, 0, todo);
-      } else {
-        newList = [...state.list];
-        newList.splice(todoIndex!, 0, todo);
-        newList.pop();
-      }
+      const newList = moveTodo([...state.list], todo, todoIndex);
 
       return {
         list: newList,
-        totalTodos: state.totalTodos + 1
-      };
-    },
-
-    updateTodoSuccess: (state, action: PayloadAction<TodoItem>) => {
-      const newList = state.list.map((todo) =>
-        todo.id === action.payload.id
-          ? {
-              ...todo,
-              title: action.payload.title,
-              isUpdated: action.payload.isUpdated,
-              updatedAt: action.payload.updatedAt
-            }
-          : todo
-      );
-
-      return {
-        list: newList,
-        totalTodos: state.totalTodos
+        totalTodos:
+          state.list.length === newList.length
+            ? state.totalTodos
+            : state.totalTodos + 1
       };
     },
 
@@ -161,8 +152,7 @@ export const {
   clearCompletedSuccess,
   setTodosSuccess,
   clearTodosSuccess,
-  createTodoSuccess,
-  updateTodoSuccess,
+  handleTodoSuccess,
   checkTodoSuccess,
   deleteTodoSuccess,
   clearAuthorsTodosSuccess
