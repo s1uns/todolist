@@ -65,7 +65,7 @@ const clearCompleted = async () => {
 };
 
 const getTodos = async (
-  currentPage: number,
+  offset: number,
   currentFilter: number,
   search: string,
   sortBy: number,
@@ -73,7 +73,7 @@ const getTodos = async (
 ) => {
   const response: ServerResponse<TodosCollection> = await customRequest(
     GET_REQUEST,
-    `${url}todos?page=${currentPage}&limit=${TODOS_LIMIT}&filter=${currentFilter}&search=${search}&sortBy=${sortBy}${isAscending ? "&isAscending=true" : ""}`
+    `${url}todos?offset=${offset}&limit=${TODOS_LIMIT}&filter=${currentFilter}&search=${search}&sortBy=${sortBy}${isAscending ? "&isAscending=true" : ""}`
   );
 
   return response;

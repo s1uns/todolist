@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { put, takeEvery } from "redux-saga/effects";
+import { put, select, takeEvery } from "redux-saga/effects";
 
 import { Query } from "../../types/query/Query";
 import { actionRequestType } from "../actions/constants";
@@ -11,9 +11,16 @@ import {
   setSearchQuerySuccess,
   setSortingSuccess
 } from "../slices/querySlice";
+import { clearTodosSuccess } from "../slices/todosSlice";
+import { RootState } from "../store";
 
 function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
-  yield put(setFilterSuccess(payload));
+  const { currenFilter } = yield select((state: RootState) => state.query);
+
+  if (currenFilter !== payload) {
+    yield put(clearTodosSuccess());
+    yield put(setFilterSuccess(payload));
+  }
 }
 
 function* workSetCurrentPage({ payload }: PayloadAction<number>) {
@@ -21,14 +28,21 @@ function* workSetCurrentPage({ payload }: PayloadAction<number>) {
 }
 
 function* workSetSearchQuery({ payload }: PayloadAction<string>) {
-  yield put(setSearchQuerySuccess(payload));
+  const { searchQuery } = yield select((state: RootState) => state.query);
+  if (searchQuery !== payload) {
+    yield put(clearTodosSuccess());
+    yield put(setSearchQuerySuccess(payload));
+  }
 }
 
 function* workSetQuery({ payload }: PayloadAction<Query>) {
+  yield put(clearTodosSuccess());
+
   yield put(setQuerySuccess(payload));
 }
 
 function* workSetSorting({ payload }: PayloadAction<number>) {
+  yield put(clearTodosSuccess());
   yield put(setSortingSuccess(payload));
 }
 

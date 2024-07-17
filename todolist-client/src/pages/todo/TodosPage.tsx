@@ -14,7 +14,6 @@ import SortingPanel from "../../components/todo/SortingPanel";
 import ToDoItem from "../../components/todo/ToDoItem";
 import TodosFilterMenu from "../../components/todo/TodosFilterMenu";
 import { logoutUserRequest } from "../../store/actions/authActions";
-import { incrementPageRequest } from "../../store/actions/queryActions";
 import {
   clearCompletedRequest,
   getTodosRequest
@@ -24,8 +23,9 @@ import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
 const TodosPage = () => {
   const dispatch = useAppDispatch();
-  const { currentFilter, currentPage, searchQuery, sortBy, isAscending } =
-    useSelector((state: RootState) => state.query);
+  const { currentFilter, searchQuery, sortBy, isAscending } = useSelector(
+    (state: RootState) => state.query
+  );
   const { list, totalTodos } = useSelector(getTodos);
   const [openTodoModal, setOpenTodoModal] = useState(false);
   const [openUsersModal, setOpenUsersModal] = useState(false);
@@ -64,16 +64,16 @@ const TodosPage = () => {
   };
 
   const fetchMoreTodos = () => {
-    dispatch(incrementPageRequest());
+    dispatch(getTodosRequest());
   };
 
   useEffect(() => {
     dispatch(getTodosRequest());
-  }, [currentFilter, currentPage, searchQuery, sortBy, isAscending]);
+  }, [currentFilter, searchQuery, sortBy, isAscending]);
 
   useEffect(() => {
     todosContainerRef.current?.scroll(0, 0);
-  }, [currentFilter, searchQuery]);
+  }, [currentFilter, searchQuery, sortBy, isAscending]);
 
   const hasMore = useMemo(() => list.length < totalTodos, [list, totalTodos]);
 

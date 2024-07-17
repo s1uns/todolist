@@ -72,19 +72,18 @@ function* workIncrementTodosNumber() {
 }
 
 function* workFetchTodos() {
-  const { currentPage, currentFilter, searchQuery, sortBy, isAscending } =
-    yield select((state: RootState) => state.query);
-
+  const { currentFilter, searchQuery, sortBy, isAscending } = yield select(
+    (state: RootState) => state.query
+  );
+  const { list } = yield select((state: RootState) => state.todos);
   const response: ServerResponse<TodosCollection> = yield call(() =>
-    getTodos(currentPage, currentFilter, searchQuery, sortBy, isAscending)
+    getTodos(list.length, currentFilter, searchQuery, sortBy, isAscending)
   );
 
   const fetchedTodos = response.data;
 
-  const overwrite = currentPage === 1;
-
   if (response.success) {
-    yield put(setTodosSuccess({ ...fetchedTodos!, overwrite }));
+    yield put(setTodosSuccess({ ...fetchedTodos! }));
   } else {
     toast.error(response.message);
   }

@@ -5,7 +5,6 @@ import { RootState } from "../store";
 
 interface QueryState {
   currentFilter: number;
-  currentPage: number;
   searchQuery: string;
   sortBy: number;
   isAscending: boolean;
@@ -13,7 +12,6 @@ interface QueryState {
 
 const initialState: QueryState = {
   currentFilter: FILTER_ALL,
-  currentPage: 1,
   searchQuery: "",
   sortBy: SORT_CREATED_AT,
   isAscending: false
@@ -26,18 +24,16 @@ const querySlice = createSlice({
     setFilterSuccess: (state, action: PayloadAction<number>) => {
       return {
         currentFilter: action.payload,
-        currentPage: 1,
         searchQuery: state.searchQuery,
         sortBy: state.sortBy,
         isAscending: state.isAscending
       };
     },
     setQuerySuccess: (state, action: PayloadAction<Query>) => {
-      const { currenFilter, currentPage, searchQuery } = action.payload;
+      const { currenFilter, searchQuery } = action.payload;
 
       return {
         currentFilter: currenFilter,
-        currentPage: currentPage,
         searchQuery: searchQuery,
         sortBy: state.sortBy,
         isAscending: state.isAscending
@@ -46,7 +42,6 @@ const querySlice = createSlice({
     setPageSuccess: (state, action: PayloadAction<number>) => {
       return {
         currentFilter: state.currentFilter,
-        currentPage: action.payload,
         searchQuery: state.searchQuery,
         sortBy: state.sortBy,
         isAscending: state.isAscending
@@ -55,7 +50,6 @@ const querySlice = createSlice({
     setSearchQuerySuccess: (state, action: PayloadAction<string>) => {
       return {
         currentFilter: state.currentFilter,
-        currentPage: 1,
         searchQuery: action.payload,
         sortBy: state.sortBy,
         isAscending: state.isAscending
@@ -64,7 +58,6 @@ const querySlice = createSlice({
     incrementPageSuccess: (state) => {
       return {
         currentFilter: state.currentFilter,
-        currentPage: state.currentPage + 1,
         searchQuery: state.searchQuery,
         sortBy: state.sortBy,
         isAscending: state.isAscending
@@ -76,7 +69,6 @@ const querySlice = createSlice({
 
       return {
         currentFilter: state.currentFilter,
-        currentPage: 1,
         searchQuery: state.searchQuery,
         sortBy: sortingValue,
         isAscending: shouldToggleOrder ? !state.isAscending : true

@@ -1,4 +1,4 @@
-import { put, select, takeEvery } from "redux-saga/effects";
+import { call, put, select, takeEvery } from "redux-saga/effects";
 import { authAction } from "../../notifications/notificationActions";
 import socket from "../../notifications/socket";
 import {
@@ -22,12 +22,14 @@ import { TodoItem } from "../../types/todo/TodoItem";
 import findTodoIndex from "../../utils/helpers/findTodoIndex";
 import getTodoToDelete from "../../utils/helpers/getTodoToDelete";
 import isFitFilters from "../../utils/helpers/isFitFilters";
+import shouldMoveTodo from "../../utils/helpers/shouldMoveTodo";
 import { getUser } from "../slices/authSlice";
 import {
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
   deleteTodoSuccess,
-  handleTodoSuccess
+  handleTodoSuccess,
+  updateTodoSuccess
 } from "../slices/todosSlice";
 import { RootState } from "../store";
 
@@ -78,19 +80,28 @@ function* workHandleTodo({ type, payload }: PayloadAction<TodoItem>) {
   const { list } = yield select((state: RootState) => state.todos);
   const { userId } = yield select(getUser);
 
-  const todoExists = list.find((todo: TodoItem) => todo.id === payload.id);
+  const oldTodo = list.find((todo: TodoItem) => todo.id === payload.id);
+  console.log("Todo exists: ", oldTodo);
   const fitFilters = isFitFilters(payload);
 
-  if (todoExists && fitFilters) {
-    const todoIndex = findTodoIndex(payload);
-    yield put(handleTodoSuccess({ todo: payload, todoIndex: todoIndex }));
+  if (oldTodo && fitFilters) {
+    const shouldBeMoved: boolean = yield call(() =>
+      shouldMoveTodo(oldTodo, payload)
+    );
+    if (shouldBeMoved) {
+      const todoIndex = findTodoIndex(payload);
+      yield put(handleTodoSuccess({ todo: payload, todoIndex: todoIndex }));
+      return;
+    }
+
+    yield put(updateTodoSuccess(payload));
   }
 
-  if (todoExists && !fitFilters) {
+  if (oldTodo && !fitFilters) {
     yield put(deleteTodoSuccess(payload.id));
   }
 
-  if (!todoExists && fitFilters) {
+  if (!oldTodo && fitFilters) {
     const todoIndex = findTodoIndex(payload);
     const todoToBeDeletedId = getTodoToDelete(todoIndex, payload.id);
     if (!todoToBeDeletedId) {

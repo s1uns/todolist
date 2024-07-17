@@ -11,6 +11,8 @@ interface TodosState {
 
 const moveTodo = (todoList: TodoItem[], todo: TodoItem, todoIndex: number) => {
   const oldIndex = todoList.findIndex((todoItem) => todoItem.id === todo.id);
+  console.log(`Old index: ${oldIndex} - New index: ${todoIndex}`);
+
   if (oldIndex !== -1) {
     if (oldIndex === todoIndex) {
       todoList[oldIndex] = todo;
@@ -42,9 +44,7 @@ const todosSlice = createSlice({
       };
     },
     setTodosSuccess: (state, action: PayloadAction<TodosCollection>) => {
-      const newList = action.payload.overwrite
-        ? action.payload.list
-        : [...state.list, ...action.payload.list];
+      const newList = [...state.list, ...action.payload.list];
 
       return {
         list: newList,
@@ -107,11 +107,12 @@ const todosSlice = createSlice({
       };
     },
 
-    checkTodoSuccess: (state, action: PayloadAction<TodoItem>) => {
+    updateTodoSuccess: (state, action: PayloadAction<TodoItem>) => {
       const newList = state.list.map((todo) =>
         todo.id === action.payload.id
           ? {
               ...todo,
+              title: action.payload.title,
               isCompleted: action.payload.isCompleted,
               isUpdated: action.payload.isUpdated,
               updatedAt: action.payload.updatedAt
@@ -153,7 +154,7 @@ export const {
   setTodosSuccess,
   clearTodosSuccess,
   handleTodoSuccess,
-  checkTodoSuccess,
+  updateTodoSuccess,
   deleteTodoSuccess,
   clearAuthorsTodosSuccess
 } = todosSlice.actions;
