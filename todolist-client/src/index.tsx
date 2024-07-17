@@ -1,18 +1,44 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import theme from "./theme";
 import { ThemeProvider } from "@emotion/react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { Bounce, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PersistGate } from "redux-persist/integration/react";
+import App from "./App";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import rootSaga from "./store/sagas/rootSaga";
+import { persistor, sagaMiddleware, store } from "./store/store";
+import theme from "./theme";
 
+sagaMiddleware.run(rootSaga);
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>
+  <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
+          <App />
+        </PersistGate>
+      </Provider>
+    </ThemeProvider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
