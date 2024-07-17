@@ -107,9 +107,13 @@ const Input: FC<InputProps> = (props: InputProps) => {
     return "text";
   }, [type, passwordVisibility]);
 
-  const shouldShowIcon =
-    (inputType === "text" && passwordVisibility) ||
-    (inputType === "password" && !passwordVisibility);
+  const shouldShowIcon = useMemo(
+    () =>
+      (inputType === "text" && passwordVisibility) ||
+      (inputType === "password" && !passwordVisibility),
+    [inputType, passwordVisibility]
+  );
+
   return (
     <InputContainer>
       <InputFieldContainer>

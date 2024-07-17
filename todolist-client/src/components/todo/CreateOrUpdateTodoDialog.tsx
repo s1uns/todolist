@@ -70,7 +70,7 @@ const CreateOrUpdateTodoDialog = ({
         <DialogTitle>{todoId ? "Update todo" : "Create todo"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Enter the {todoId ? "new" : ""} todos title
+            Enter the {todoId ? "new" : null} todos title
           </DialogContentText>
           <Input
             value={todoTitle}

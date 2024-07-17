@@ -19,10 +19,6 @@ const filterOptions = [
   { value: FILTER_COMPLETED, label: "Completed" }
 ];
 
-const TodoFilterItem = () => {
-  
-}
-
 const TodosFilterMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const currentFilter = useSelector(getCurrentFilter);

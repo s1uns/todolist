@@ -10,7 +10,6 @@ import {
 } from "../../store/actions/todoActions";
 import { getUser } from "../../store/slices/authSlice";
 import CheckBox from "../common/CheckBox";
-import Input from "../common/Input";
 
 interface TodoItemProps {
   id: string;
@@ -42,11 +41,6 @@ const ToDoItem: FC<TodoItemProps> = ({
     dispatch(deleteTodoRequest(id));
   };
 
-  const authorInitials = useMemo(() => {
-    const fullName = author.split(" ");
-    return `${fullName[0][0]} ${fullName[1][0]}`;
-  }, [author]);
-
   const checkTodo = () => {
     dispatch(checkTodoRequest(id));
   };
@@ -54,6 +48,11 @@ const ToDoItem: FC<TodoItemProps> = ({
   const handleOpenUpdateModal = useCallback(() => {
     onOpenUpdateModal(id, title);
   }, [id, title]);
+
+  const authorInitials = useMemo(() => {
+    const fullName = author.split(" ");
+    return `${fullName[0][0]} ${fullName[1][0]}`;
+  }, [author]);
 
   return (
     <TodoItemContainer
@@ -66,7 +65,7 @@ const ToDoItem: FC<TodoItemProps> = ({
       <UpdateButton onClick={handleOpenUpdateModal} />
 
       <DeleteButton onClick={deleteTodo} />
-      {isUpdated ? <UpdatedText>updated</UpdatedText> : ""}
+      {isUpdated ? <UpdatedText>updated</UpdatedText> : null}
       {isAuthor ? (
         ""
       ) : (
@@ -77,15 +76,6 @@ const ToDoItem: FC<TodoItemProps> = ({
 };
 
 export default ToDoItem;
-
-const UpdateTodoInput = styled(Input)({
-  "& .MuiInputBase-input": {
-    marginLeft: "4rem",
-    fontSize: "3rem",
-    width: "100%",
-    height: "100%"
-  }
-});
 
 type TodoItemContainerProps = {
   isAuthor: boolean;

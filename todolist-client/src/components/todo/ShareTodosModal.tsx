@@ -46,7 +46,7 @@ const SharedUser = (props: SharedUserProps) => {
 
   return (
     <UserInfoContainer onClick={manageSharedWithUser}>
-      {username} ({fullName}){isShared ? <SharedIcon>shared</SharedIcon> : ""}
+      {username} ({fullName}){isShared ? <SharedIcon>shared</SharedIcon> : null}
     </UserInfoContainer>
   );
 };

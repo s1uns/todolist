@@ -68,11 +68,9 @@ const TodosPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getTodosRequest());
-  }, [currentFilter, searchQuery, sortBy, isAscending]);
-
-  useEffect(() => {
     todosContainerRef.current?.scroll(0, 0);
+
+    dispatch(getTodosRequest());
   }, [currentFilter, searchQuery, sortBy, isAscending]);
 
   const hasMore = useMemo(() => list.length < totalTodos, [list, totalTodos]);

@@ -28,8 +28,6 @@ const SortingItem = (props: SortingItemProps) => {
   );
   const isSelected = useMemo(() => value === sortBy, [sortBy]);
 
-  const orderSymbol = isSelected && (isAscending ? "↑" : "↓");
-
   const dispatch = useAppDispatch();
 
   const handleSetSortingItem = () => {
@@ -38,7 +36,7 @@ const SortingItem = (props: SortingItemProps) => {
 
   return (
     <StyledSortingItem onClick={handleSetSortingItem} isSelected={isSelected}>
-      {label} {orderSymbol}
+      {label} {isSelected && (isAscending ? "↑" : "↓")}
     </StyledSortingItem>
   );
 };
