@@ -11,6 +11,7 @@ import {
   PUT_REQUEST,
   TODOS_LIMIT
 } from "../utils/constants";
+import getTodosSharersQueryParam from "../utils/helpers/getTodosSharersQueryParam";
 
 axios.defaults.withCredentials = true;
 const url = process.env.REACT_APP_BACKEND_URL;
@@ -73,7 +74,7 @@ const getTodos = async (
 ) => {
   const response: ServerResponse<TodosCollection> = await customRequest(
     GET_REQUEST,
-    `${url}todos?offset=${offset}&limit=${TODOS_LIMIT}&filter=${currentFilter}&search=${search}&sortBy=${sortBy}${isAscending ? "&isAscending=true" : ""}`
+    `${url}todos?offset=${offset}&limit=${TODOS_LIMIT}&filter=${currentFilter}&search=${search}&sortBy=${sortBy}${isAscending ? "&isAscending=true" : ""}${getTodosSharersQueryParam()}`
   );
 
   return response;

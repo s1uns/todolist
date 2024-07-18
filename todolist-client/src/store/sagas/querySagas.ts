@@ -4,9 +4,8 @@ import { put, select, takeEvery } from "redux-saga/effects";
 import { Query } from "../../types/query/Query";
 import { actionRequestType } from "../actions/constants";
 import {
-  incrementPageSuccess,
+  handleTodosSharerSuccess,
   setFilterSuccess,
-  setPageSuccess,
   setQuerySuccess,
   setSearchQuerySuccess,
   setSortingSuccess
@@ -21,10 +20,6 @@ function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
     yield put(clearTodosSuccess());
     yield put(setFilterSuccess(payload));
   }
-}
-
-function* workSetCurrentPage({ payload }: PayloadAction<number>) {
-  yield put(setPageSuccess(payload));
 }
 
 function* workSetSearchQuery({ payload }: PayloadAction<string>) {
@@ -46,8 +41,9 @@ function* workSetSorting({ payload }: PayloadAction<number>) {
   yield put(setSortingSuccess(payload));
 }
 
-function* workIncrementPage() {
-  yield put(incrementPageSuccess());
+function* workHandleSharedUser({ payload }: PayloadAction<string>) {
+  yield put(clearTodosSuccess());
+  yield put(handleTodosSharerSuccess(payload));
 }
 
 function* querySagas() {
@@ -56,16 +52,15 @@ function* querySagas() {
     workSetCurrentFilter
   );
   yield takeEvery(
-    actionRequestType.SET_CURRENT_PAGE_REQUEST,
-    workSetCurrentPage
-  );
-  yield takeEvery(actionRequestType.INCREMENT_PAGE_REQUEST, workIncrementPage);
-  yield takeEvery(
     actionRequestType.SET_SEARCH_QUERY_REQUEST,
     workSetSearchQuery
   );
   yield takeEvery(actionRequestType.SET_QUERY_REQUEST, workSetQuery);
   yield takeEvery(actionRequestType.SET_SORTING_REQUEST, workSetSorting);
+  yield takeEvery(
+    actionRequestType.HANDLE_SHARED_USER_REQUEST,
+    workHandleSharedUser
+  );
 }
 
 export default querySagas;

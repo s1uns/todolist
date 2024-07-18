@@ -117,7 +117,7 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
               id={user.id}
               fullName={user.fullName}
               username={user.username}
-              isShared={user.isShared}
+              isShared={user.isShared ? user.isShared : false}
               onClose={onClose}
             />
           ))}

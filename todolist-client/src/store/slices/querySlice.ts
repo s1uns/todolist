@@ -8,13 +8,15 @@ interface QueryState {
   searchQuery: string;
   sortBy: number;
   isAscending: boolean;
+  selectedSharers: string[];
 }
 
 const initialState: QueryState = {
   currentFilter: FILTER_ALL,
   searchQuery: "",
   sortBy: SORT_CREATED_AT,
-  isAscending: false
+  isAscending: false,
+  selectedSharers: []
 };
 
 const querySlice = createSlice({
@@ -26,9 +28,28 @@ const querySlice = createSlice({
         currentFilter: action.payload,
         searchQuery: state.searchQuery,
         sortBy: state.sortBy,
-        isAscending: state.isAscending
+        isAscending: state.isAscending,
+        selectedSharers: state.selectedSharers
       };
     },
+
+    handleTodosSharerSuccess: (state, action: PayloadAction<string>) => {
+      const newUserId = action.payload;
+
+      const newSelectedUsersList =
+        state.selectedSharers.indexOf(newUserId) > -1
+          ? [...state.selectedSharers].filter((userId) => userId !== newUserId)
+          : [newUserId, ...state.selectedSharers];
+
+      return {
+        currentFilter: state.currentFilter,
+        searchQuery: state.searchQuery,
+        sortBy: state.sortBy,
+        isAscending: state.isAscending,
+        selectedSharers: newSelectedUsersList
+      };
+    },
+
     setQuerySuccess: (state, action: PayloadAction<Query>) => {
       const { currenFilter, searchQuery } = action.payload;
 
@@ -36,33 +57,21 @@ const querySlice = createSlice({
         currentFilter: currenFilter,
         searchQuery: searchQuery,
         sortBy: state.sortBy,
-        isAscending: state.isAscending
+        isAscending: state.isAscending,
+        selectedSharers: state.selectedSharers
       };
     },
-    setPageSuccess: (state, action: PayloadAction<number>) => {
-      return {
-        currentFilter: state.currentFilter,
-        searchQuery: state.searchQuery,
-        sortBy: state.sortBy,
-        isAscending: state.isAscending
-      };
-    },
+
     setSearchQuerySuccess: (state, action: PayloadAction<string>) => {
       return {
         currentFilter: state.currentFilter,
         searchQuery: action.payload,
         sortBy: state.sortBy,
-        isAscending: state.isAscending
+        isAscending: state.isAscending,
+        selectedSharers: state.selectedSharers
       };
     },
-    incrementPageSuccess: (state) => {
-      return {
-        currentFilter: state.currentFilter,
-        searchQuery: state.searchQuery,
-        sortBy: state.sortBy,
-        isAscending: state.isAscending
-      };
-    },
+
     setSortingSuccess: (state, action: PayloadAction<number>) => {
       const sortingValue = action.payload;
       const shouldToggleOrder = sortingValue === state.sortBy;
@@ -71,7 +80,8 @@ const querySlice = createSlice({
         currentFilter: state.currentFilter,
         searchQuery: state.searchQuery,
         sortBy: sortingValue,
-        isAscending: shouldToggleOrder ? !state.isAscending : true
+        isAscending: shouldToggleOrder ? !state.isAscending : true,
+        selectedSharers: state.selectedSharers
       };
     }
   }
@@ -80,10 +90,9 @@ const querySlice = createSlice({
 export const getCurrentFilter = (state: RootState) => state.query.currentFilter;
 export const {
   setFilterSuccess,
-  setPageSuccess,
-  incrementPageSuccess,
   setSearchQuerySuccess,
   setQuerySuccess,
+  handleTodosSharerSuccess,
   setSortingSuccess
 } = querySlice.actions;
 export default querySlice.reducer;

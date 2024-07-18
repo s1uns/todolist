@@ -1,7 +1,8 @@
+import emotionStyled from "@emotion/styled";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, Drawer, IconButton, styled } from "@mui/material";
+import { Drawer, IconButton, styled } from "@mui/material";
 import { ReactNode } from "react";
 
 interface SidebarProps {
@@ -41,9 +42,18 @@ const Sidebar = (props: SidebarProps) => {
           {getCloseButton(anchor ? anchor : "left")}
         </IconButton>
       </DrawerHeader>
-      <Box sx={{ height: "100%", width: 240, p: 3 }}>{children}</Box>
+      <ChildrenContainer>{children}</ChildrenContainer>
     </Drawer>
   );
 };
+
+const ChildrenContainer = emotionStyled.div`
+  padding: 2rem;
+  padding-left: 1rem;
+  height: 100%;
+  width: 15rem;
+  display: flex;
+  flex-direction: column;
+`;
 
 export default Sidebar;

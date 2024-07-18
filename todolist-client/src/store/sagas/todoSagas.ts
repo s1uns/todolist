@@ -14,10 +14,7 @@ import { TodoItem } from "../../types/todo/TodoItem";
 import { TodosCollection } from "../../types/todo/TodosCollection";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
 import { actionRequestType } from "../actions/constants";
-import {
-  incrementTodosNumberSuccess,
-  setTodosSuccess
-} from "../slices/todosSlice";
+import { setTodosSuccess } from "../slices/todosSlice";
 import { RootState } from "../store";
 
 function* workAddTodo({ payload }: PayloadAction<string>) {
@@ -67,10 +64,6 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   }
 }
 
-function* workIncrementTodosNumber() {
-  yield put(incrementTodosNumberSuccess());
-}
-
 function* workFetchTodos() {
   const { currentFilter, searchQuery, sortBy, isAscending } = yield select(
     (state: RootState) => state.query
@@ -98,10 +91,6 @@ function* todosSagas() {
   yield takeEvery(
     actionRequestType.CLEAR_COMPLETED_REQUEST,
     workClearCompleted
-  );
-  yield takeEvery(
-    actionRequestType.INCREMENT_TODOS_NUMBER,
-    workIncrementTodosNumber
   );
 }
 

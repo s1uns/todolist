@@ -1,4 +1,5 @@
 import { Query } from "../../types/query/Query";
+import { UserInfo } from "../../types/user/UserInfo";
 import { actionRequestType } from "./constants";
 
 const setFilterRequest = (payload: number) => ({
@@ -21,17 +22,18 @@ const setSortingRequest = (payload: number) => ({
   payload: payload
 });
 
-const incrementPageRequest = () => ({
-  type: actionRequestType.INCREMENT_PAGE_REQUEST
-});
-
 const setQueryRequest = (payload: Query) => ({
   type: actionRequestType.SET_QUERY_REQUEST,
   payload: payload
 });
 
+const handleSharedUserRequest = (payload: string) => ({
+  type: actionRequestType.HANDLE_SHARED_USER_REQUEST,
+  payload: payload
+});
+
 export {
-  incrementPageRequest,
+  handleSharedUserRequest,
   setCurrentPageRequest,
   setFilterRequest,
   setQueryRequest,

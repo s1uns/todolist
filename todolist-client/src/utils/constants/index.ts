@@ -19,6 +19,7 @@ const DELETE_REQUEST = "DELETE";
 // limits
 const TODOS_LIMIT = 10;
 const USERS_LIMIT = 3;
+const TODOS_SHARERS_LIMIT = 6;
 
 // filters
 const FILTER_ALL = 0;
@@ -80,6 +81,7 @@ export {
   SORT_TITLE,
   SORT_UPDATED_AT,
   TODOS_LIMIT,
+  TODOS_SHARERS_LIMIT,
   UPDATE_TODO,
   USERS_LIMIT
 };

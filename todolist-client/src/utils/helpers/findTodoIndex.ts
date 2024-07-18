@@ -14,7 +14,7 @@ const findTodoIndex = (todo: TodoItem) => {
     if (
       sortBy === SORT_CREATED_AT &&
       isAscending &&
-      list[i].createdAt >= todo.createdAt
+      list[i].createdAt > todo.createdAt
     ) {
       return i;
     }
@@ -22,7 +22,7 @@ const findTodoIndex = (todo: TodoItem) => {
     if (
       sortBy === SORT_CREATED_AT &&
       !isAscending &&
-      list[i].createdAt <= todo.createdAt
+      list[i].createdAt < todo.createdAt
     ) {
       return i;
     }

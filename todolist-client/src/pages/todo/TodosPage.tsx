@@ -9,6 +9,7 @@ import IntersectionObserverComponent from "../../components/common/IntersectionO
 import Sidebar from "../../components/common/Sidebar";
 import CreateOrUpdateTodoDialog from "../../components/todo/CreateOrUpdateTodoDialog";
 import SearchTodoInput from "../../components/todo/SearchTodoInput";
+import SharedUsersList from "../../components/todo/SharedUsersList";
 import ShareTodosModal from "../../components/todo/ShareTodosModal";
 import SortingPanel from "../../components/todo/SortingPanel";
 import ToDoItem from "../../components/todo/ToDoItem";
@@ -23,9 +24,8 @@ import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
 const TodosPage = () => {
   const dispatch = useAppDispatch();
-  const { currentFilter, searchQuery, sortBy, isAscending } = useSelector(
-    (state: RootState) => state.query
-  );
+  const { currentFilter, searchQuery, sortBy, isAscending, selectedSharers } =
+    useSelector((state: RootState) => state.query);
   const { list, totalTodos } = useSelector(getTodos);
   const [openTodoModal, setOpenTodoModal] = useState(false);
   const [openUsersModal, setOpenUsersModal] = useState(false);
@@ -71,7 +71,7 @@ const TodosPage = () => {
     todosContainerRef.current?.scroll(0, 0);
 
     dispatch(getTodosRequest());
-  }, [currentFilter, searchQuery, sortBy, isAscending]);
+  }, [currentFilter, searchQuery, sortBy, isAscending, selectedSharers]);
 
   const hasMore = useMemo(() => list.length < totalTodos, [list, totalTodos]);
 
@@ -143,7 +143,7 @@ const TodosPage = () => {
         onClose={handleCloseSortingToolbar}
       >
         <SortingPanel />
-        <div>toolbar</div>
+        <SharedUsersList />
       </Sidebar>
     </PageContainer>
   );

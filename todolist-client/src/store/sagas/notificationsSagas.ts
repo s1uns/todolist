@@ -66,13 +66,22 @@ function* workClearCompleted({
 function* workChangeSharedStatus({
   payload
 }: PayloadAction<SocketShareTodosPayload>) {
+  const { userId } = yield select(getUser);
+
   if (payload.isShared) {
-    toast.info(
-      ReloadMessage({ message: `${payload.author} shared his todos with you!` })
-    );
+    if (payload.userId !== userId) {
+      toast.info(
+        ReloadMessage({
+          message: `${payload.author} shared his todos with you!`
+        })
+      );
+    }
   } else {
     yield put(clearAuthorsTodosSuccess(payload.userId));
-    toast.info(`${payload.author} stopped sharing his todos with you!`);
+
+    if (payload.userId !== userId) {
+      toast.info(`${payload.author} stopped sharing his todos with you!`);
+    }
   }
 }
 
