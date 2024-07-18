@@ -7,9 +7,6 @@ const findTodoIndex = (todo: TodoItem) => {
   const { sortBy, isAscending } = store.getState().query;
 
   for (let i = 0; i < list.length; i++) {
-    console.log(
-      `${todo.title}[${todo.id.split("-")[0]}] - ${list[i].title}[${list[i].id.split("-")[0]}] - ${i}`
-    );
 
     if (
       sortBy === SORT_CREATED_AT &&

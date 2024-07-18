@@ -90,7 +90,6 @@ function* workHandleTodo({ type, payload }: PayloadAction<TodoItem>) {
   const { userId } = yield select(getUser);
 
   const oldTodo = list.find((todo: TodoItem) => todo.id === payload.id);
-  console.log("Todo exists: ", oldTodo);
   const fitFilters = isFitFilters(payload);
 
   if (oldTodo && fitFilters) {

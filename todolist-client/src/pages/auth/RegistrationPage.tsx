@@ -12,7 +12,7 @@ import {
 import { ChangeEvent, FC, useState } from "react";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
-import { checkEmailAvailability } from "../../api/auth";
+import { checkCredentialAvailability } from "../../api/auth";
 import GenderSelector from "../../components/auth/GenderSelector";
 import HeardFromSelector from "../../components/auth/HeardFromSelector";
 import CheckBox from "../../components/common/CheckBox";
@@ -21,6 +21,7 @@ import FormRow from "../../components/common/FormRow";
 import Input from "../../components/common/Input";
 import { registerUserRequest } from "../../store/actions/authActions";
 import { useAppDispatch } from "../../store/store";
+import { CREDENTIAL_EMAIL, CREDENTIAL_USERNAME } from "../../utils/constants";
 import { userRegistrationSchema } from "../../utils/validators";
 
 const emailSchema = yup.object().shape({ email: yup.string().email() });
@@ -57,27 +58,59 @@ const initialValues: RegistrationPageValues = {
 const RegistrationPage: FC = () => {
   const dispatch = useAppDispatch();
   const [emailErrors, setEmailErrors] = useState<string | null>(null);
+  const [usernameErrors, setUsernameErrors] = useState<string | null>(null);
+
   const emailSchema = yup
     .string()
     .email("Invalid email address")
-    .required("Required");
+    .required("The email is required.");
 
-  const validateEmail = async (email: string) => {
+  const usernameSchema = yup.string().required("The username is required.");
+
+  const validateCredential = async (
+    credential: string,
+    credentialType: number
+  ) => {
     try {
-      await emailSchema.validate(email);
+      if (credentialType === CREDENTIAL_EMAIL) {
+        await emailSchema.validate(credential);
+      }
+
+      if (credentialType === CREDENTIAL_USERNAME) {
+        await usernameSchema.validate(credential);
+      }
+
       return true;
-    } catch (err) {
+    } catch (err) {      
       return false;
     }
   };
 
-  const handleEmailIsAvailable = async (email: string) => {
-    const response = await checkEmailAvailability(email);
+  const handleCredentialIsAvailable = async (
+    credential: string,
+    credentialType: number
+  ) => {
+    const response = await checkCredentialAvailability(
+      credential,
+      credentialType
+    );
 
     if (response.success) {
-      setEmailErrors(response.data ? null : "The email is taken");
+      if (credentialType === CREDENTIAL_EMAIL) {
+        setEmailErrors(response.data ? null : "The email is taken");
+      }
+
+      if (credentialType === CREDENTIAL_USERNAME) {
+        setUsernameErrors(response.data ? null : "The username is taken");
+      }
     } else {
-      setEmailErrors("Couldn't get the email availability");
+      if (credentialType === CREDENTIAL_EMAIL) {
+        setEmailErrors("Couldn't get the email availability");
+      }
+
+      if (credentialType === CREDENTIAL_USERNAME) {
+        setUsernameErrors("Couldn't get the username availability");
+      }
     }
   };
 
@@ -96,9 +129,26 @@ const RegistrationPage: FC = () => {
     const value = e.target.value;
     setFieldValue("email", value);
 
-    const valid = await validateEmail(value);
+    const valid = await validateCredential(value, CREDENTIAL_EMAIL);
     if (valid) {
-      handleEmailIsAvailable(value);
+      handleCredentialIsAvailable(value, CREDENTIAL_EMAIL);
+    }
+  };
+
+  const handleUsernameChange = async (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    setFieldValue: (
+      field: string,
+      value: string,
+      shouldValidate?: boolean
+    ) => Promise<void | FormikErrors<FormikValues>>
+  ) => {
+    const value = e.target.value;
+    setFieldValue("username", value);
+
+    const valid = await validateCredential(value, CREDENTIAL_USERNAME);
+    if (valid) {
+      handleCredentialIsAvailable(value, CREDENTIAL_USERNAME);
     }
   };
 
@@ -138,13 +188,20 @@ const RegistrationPage: FC = () => {
                   e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => handleEmailChange(e, setFieldValue)}
               />
-              <FastField
+              <Field
                 validateOnBlur
                 validateOnChange
                 name="username"
                 placeholder="Username"
                 component={Input}
-                error={touched.username && errors.username}
+                error={
+                  usernameErrors
+                    ? usernameErrors
+                    : touched.username && errors.username
+                }
+                onChange={(
+                  e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+                ) => handleUsernameChange(e, setFieldValue)}
               />
               <FormRow fieldsGap={5}>
                 <FastField

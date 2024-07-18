@@ -18,14 +18,17 @@ const registerUser = async (
   return response;
 };
 
-const checkEmailAvailability = async (
-  email: string
+const checkCredentialAvailability = async (
+  credential: string,
+  credentialType: number
 ): Promise<ServerResponse<boolean>> => {
-  const response = await customRequest<{ email: string }, boolean>(
-    POST_REQUEST,
-    `${url}auth/available-email`,
-    { email: email }
-  );
+  const response = await customRequest<
+    { credential: string; credentialType: number },
+    boolean
+  >(POST_REQUEST, `${url}auth/available-credential`, {
+    credential: credential,
+    credentialType: credentialType
+  });
   return response;
 };
 
@@ -46,4 +49,4 @@ const logoutUser = async () => {
   return response;
 };
 
-export { checkEmailAvailability, loginUser, logoutUser, registerUser };
+export { checkCredentialAvailability, loginUser, logoutUser, registerUser };

@@ -11,7 +11,6 @@ interface TodosState {
 
 const moveTodo = (todoList: TodoItem[], todo: TodoItem, todoIndex: number) => {
   const oldIndex = todoList.findIndex((todoItem) => todoItem.id === todo.id);
-  console.log(`Old index: ${oldIndex} - New index: ${todoIndex}`);
 
   if (oldIndex !== -1) {
     if (oldIndex === todoIndex) {
