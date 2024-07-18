@@ -19,7 +19,7 @@ const IntersectionObserverComponent = (props: IntersectionObserverProps) => {
           fetchMore();
         }
       },
-      { threshold: 1 }
+      { threshold: 0.5 }
     );
 
     if (observerTarget.current) {

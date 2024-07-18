@@ -70,7 +70,7 @@ const TodosPage = () => {
   useEffect(() => {
     todosContainerRef.current?.scroll(0, 0);
 
-    dispatch(getTodosRequest());
+    dispatch(getTodosRequest(true));
   }, [currentFilter, searchQuery, sortBy, isAscending, selectedSharers]);
 
   const hasMore = useMemo(() => list.length < totalTodos, [list, totalTodos]);
@@ -137,14 +137,16 @@ const TodosPage = () => {
         />
       ) : null}
 
-      <Sidebar
-        anchor="right"
-        isOpen={openSortingToolbar}
-        onClose={handleCloseSortingToolbar}
-      >
-        <SortingPanel />
-        <SharedUsersList />
-      </Sidebar>
+      {openSortingToolbar ? (
+        <Sidebar
+          anchor="right"
+          isOpen={openSortingToolbar}
+          onClose={handleCloseSortingToolbar}
+        >
+          <SortingPanel />
+          <SharedUsersList />
+        </Sidebar>
+      ) : null}
     </PageContainer>
   );
 };

@@ -21,8 +21,9 @@ const updateTodoRequest = (payload: UpdateTodo) => ({
   payload: payload
 });
 
-const getTodosRequest = () => ({
-  type: actionRequestType.GET_TODOS_REQUEST
+const getTodosRequest = (payload?: boolean) => ({
+  type: actionRequestType.GET_TODOS_REQUEST,
+  payload: payload
 });
 
 const clearCompletedRequest = () => ({

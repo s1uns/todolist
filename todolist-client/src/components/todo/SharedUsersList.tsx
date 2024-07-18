@@ -99,18 +99,20 @@ const SharedUsersContainer = () => {
         autoFocus={true}
       />
       <UsersListContainer>
-        {sharedUsers.list.map((user) => (
-          <UserInfoContainer
-            key={user.id}
-            userId={user.id}
-            username={user.username}
-            fullName={user.fullName}
+        <div>
+          {sharedUsers.list.map((user) => (
+            <UserInfoContainer
+              key={user.id}
+              userId={user.id}
+              username={user.username}
+              fullName={user.fullName}
+            />
+          ))}
+          <IntersectionObserverComponent
+            hasMore={hasMore}
+            fetchMore={fetchMoreUsers}
           />
-        ))}
-        <IntersectionObserverComponent
-          hasMore={hasMore}
-          fetchMore={fetchMoreUsers}
-        />
+        </div>
       </UsersListContainer>
     </StyledSharedUsersContainer>
   );
@@ -121,7 +123,7 @@ export default SharedUsersContainer;
 const StyledSharedUsersContainer = styled.div`
   margin-top: 1rem;
   min-width: 17rem;
-  min-height: 15rem;
+  height: 15rem;
   display: flex;
   flex-direction: column;
 `;

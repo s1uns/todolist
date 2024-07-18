@@ -10,14 +10,12 @@ import {
   setSearchQuerySuccess,
   setSortingSuccess
 } from "../slices/querySlice";
-import { clearTodosSuccess } from "../slices/todosSlice";
 import { RootState } from "../store";
 
 function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
   const { currenFilter } = yield select((state: RootState) => state.query);
 
   if (currenFilter !== payload) {
-    yield put(clearTodosSuccess());
     yield put(setFilterSuccess(payload));
   }
 }
@@ -25,24 +23,19 @@ function* workSetCurrentFilter({ payload }: PayloadAction<number>) {
 function* workSetSearchQuery({ payload }: PayloadAction<string>) {
   const { searchQuery } = yield select((state: RootState) => state.query);
   if (searchQuery !== payload) {
-    yield put(clearTodosSuccess());
     yield put(setSearchQuerySuccess(payload));
   }
 }
 
 function* workSetQuery({ payload }: PayloadAction<Query>) {
-  yield put(clearTodosSuccess());
-
   yield put(setQuerySuccess(payload));
 }
 
 function* workSetSorting({ payload }: PayloadAction<number>) {
-  yield put(clearTodosSuccess());
   yield put(setSortingSuccess(payload));
 }
 
 function* workHandleSharedUser({ payload }: PayloadAction<string>) {
-  yield put(clearTodosSuccess());
   yield put(handleTodosSharerSuccess(payload));
 }
 

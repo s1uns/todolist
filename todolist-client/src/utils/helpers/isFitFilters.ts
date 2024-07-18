@@ -8,9 +8,13 @@ import {
 } from "../constants";
 
 const isFitFilters = (todo: TodoItem) => {
-  const { currentFilter, searchQuery, sortBy, isAscending } =
+  const { currentFilter, searchQuery, sortBy, isAscending, selectedSharers } =
     store.getState().query;
   const { list, totalTodos } = store.getState().todos;
+
+  if (selectedSharers && !selectedSharers.includes(todo.creatorId)) {
+    return false;
+  }
 
   if (list.length < totalTodos && sortBy === SORT_UPDATED_AT && isAscending) {
     return false;

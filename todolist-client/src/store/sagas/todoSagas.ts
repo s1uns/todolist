@@ -64,19 +64,20 @@ function* workUpdateTodo({ payload }: PayloadAction<UpdateTodo>) {
   }
 }
 
-function* workFetchTodos() {
+function* workFetchTodos({ payload }: PayloadAction<boolean>) {
   const { currentFilter, searchQuery, sortBy, isAscending } = yield select(
     (state: RootState) => state.query
   );
   const { list } = yield select((state: RootState) => state.todos);
+  const offset = payload ? 0 : list.length;
   const response: ServerResponse<TodosCollection> = yield call(() =>
-    getTodos(list.length, currentFilter, searchQuery, sortBy, isAscending)
+    getTodos(offset, currentFilter, searchQuery, sortBy, isAscending)
   );
 
   const fetchedTodos = response.data;
 
   if (response.success) {
-    yield put(setTodosSuccess({ ...fetchedTodos! }));
+    yield put(setTodosSuccess({ ...fetchedTodos!, overwrite: payload }));
   } else {
     toast.error(response.message);
   }
