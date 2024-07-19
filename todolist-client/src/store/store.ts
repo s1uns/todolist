@@ -8,6 +8,7 @@ import createSagaMiddleware from "redux-saga";
 import authReducer from "./slices/authSlice";
 import queryReducer from "./slices/querySlice";
 import todosReducer from "./slices/todosSlice";
+import usersReducer from "./slices/usersSlice";
 
 const rootReducer = combineReducers({
   user: authReducer,
@@ -24,7 +25,12 @@ const persistedReducer = persistReducer(persistConfig, authReducer);
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
-  reducer: { user: persistedReducer, todos: todosReducer, query: queryReducer },
+  reducer: {
+    user: persistedReducer,
+    todos: todosReducer,
+    query: queryReducer,
+    availableUsers: usersReducer
+  },
   devTools: true,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -18,7 +18,7 @@ const SearchTodoInput = () => {
   };
 
   useEffect(() => {
-    dispatch(setSearchQueryRequest(debouncedQuery));
+    dispatch(setSearchQueryRequest(inputValue));
   }, [debouncedQuery]);
 
   return (

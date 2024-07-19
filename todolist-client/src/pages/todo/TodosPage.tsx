@@ -19,6 +19,7 @@ import {
   clearCompletedRequest,
   getTodosRequest
 } from "../../store/actions/todoActions";
+import { setCurrentPageRequest } from "../../store/actions/userActions";
 import { getTodos } from "../../store/slices/todosSlice";
 import { RootState, useAppDispatch } from "../../store/store";
 import { UpdateTodo } from "../../types/todo/UpdateTodo";
@@ -48,6 +49,7 @@ const TodosPage = () => {
   };
 
   const handleCloseUsersModal = () => {
+    dispatch(setCurrentPageRequest(1));
     setOpenUsersModal(false);
   };
 

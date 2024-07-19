@@ -1,5 +1,4 @@
 import { Query } from "../../types/query/Query";
-import { UserInfo } from "../../types/user/UserInfo";
 import { actionRequestType } from "./constants";
 
 const setFilterRequest = (payload: number) => ({
@@ -8,12 +7,12 @@ const setFilterRequest = (payload: number) => ({
 });
 
 const setCurrentPageRequest = (payload: number) => ({
-  type: actionRequestType.SET_CURRENT_PAGE_REQUEST,
+  type: actionRequestType.SET_TODOS_CURRENT_PAGE_REQUEST,
   payload: payload
 });
 
 const setSearchQueryRequest = (payload: string) => ({
-  type: actionRequestType.SET_SEARCH_QUERY_REQUEST,
+  type: actionRequestType.SET_TODOS_SEARCH_QUERY_REQUEST,
   payload: payload
 });
 

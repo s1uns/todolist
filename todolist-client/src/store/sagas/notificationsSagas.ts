@@ -31,6 +31,7 @@ import {
   handleTodoSuccess,
   updateTodoSuccess
 } from "../slices/todosSlice";
+import { updateUserSuccess } from "../slices/usersSlice";
 import { RootState } from "../store";
 
 function* workRefreshConnection() {
@@ -67,19 +68,27 @@ function* workChangeSharedStatus({
   payload
 }: PayloadAction<SocketShareTodosPayload>) {
   const { userId } = yield select(getUser);
+  const { list } = yield select((state: RootState) => state.availableUsers);
 
-  if (payload.isShared) {
-    if (payload.receiverId === userId) {
+  if (payload.sharerId === userId) {
+    yield put(
+      updateUserSuccess({
+        id: payload.receiverId,
+        sharedStatus: payload.isShared
+      })
+    );
+  }
+
+  if (payload.receiverId === userId) {
+    if (payload.isShared) {
       toast.info(
         ReloadMessage({
           message: `${payload.author} shared his todos with you!`
         })
       );
-    }
-  } else {
-    yield put(clearAuthorsTodosSuccess(payload.sharerId));
+    } else {
+      yield put(clearAuthorsTodosSuccess(payload.sharerId));
 
-    if (payload.receiverId === userId) {
       toast.info(`${payload.author} stopped sharing his todos with you!`);
     }
   }

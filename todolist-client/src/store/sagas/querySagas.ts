@@ -45,7 +45,7 @@ function* querySagas() {
     workSetCurrentFilter
   );
   yield takeEvery(
-    actionRequestType.SET_SEARCH_QUERY_REQUEST,
+    actionRequestType.SET_TODOS_SEARCH_QUERY_REQUEST,
     workSetSearchQuery
   );
   yield takeEvery(actionRequestType.SET_QUERY_REQUEST, workSetQuery);

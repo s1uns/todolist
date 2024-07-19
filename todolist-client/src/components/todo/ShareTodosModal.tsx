@@ -10,11 +10,16 @@ import {
   Pagination,
   Typography
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { manageShared } from "../../api/shared";
-import { getAvailableUsers as getAvailableUsersAsync } from "../../api/user";
 import useDebounce from "../../hooks/common/useDebounce";
-import { UserInfo } from "../../types/user/UserInfo";
+import {
+  getAvailableUsersRequest,
+  setCurrentPageRequest,
+  setSearchQueryRequest
+} from "../../store/actions/userActions";
+import { RootState, useAppDispatch } from "../../store/store";
 import Input from "../common/Input";
 
 interface ShareTodosModalProps {
@@ -38,7 +43,6 @@ const SharedUser = (props: SharedUserProps) => {
 
     if (response.success) {
       toast.success(response.data);
-      onClose();
     } else {
       toast.error(response.data);
     }
@@ -52,9 +56,11 @@ const SharedUser = (props: SharedUserProps) => {
 };
 
 const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
-  const [users, setUsers] = useState<UserInfo[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useAppDispatch();
+
+  const { currentPage, searchQuery, totalPages, list } = useSelector(
+    (state: RootState) => state.availableUsers
+  );
   const [inputValue, setInputValue] = useState("");
   const debouncedQuery = useDebounce(inputValue);
 
@@ -67,29 +73,16 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
 
   useEffect(() => {
     if (open) {
-      getAvailableUsers(currentPage, debouncedQuery);
+      dispatch(getAvailableUsersRequest());
     }
-  }, [open, currentPage, debouncedQuery]);
+  }, [open, currentPage, searchQuery]);
 
   useEffect(() => {
-    setCurrentPage(1);
+    dispatch(setSearchQueryRequest(debouncedQuery));
   }, [debouncedQuery]);
 
   const handleChangePage = (e: ChangeEvent<unknown>, newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
-  const getAvailableUsers = async (page: number, searchQuery: string) => {
-    const response = await getAvailableUsersAsync(page, searchQuery);
-
-    if (response.success) {
-      const { list, totalPages } = response.data!;
-
-      setUsers(list);
-      setTotalPages(totalPages);
-    } else {
-      toast.error(response.message);
-    }
+    dispatch(setCurrentPageRequest(newPage));
   };
 
   return (
@@ -115,7 +108,7 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
           autoFocus={true}
         />
         <UsersList>
-          {users.map((user) => (
+          {list.map((user) => (
             <SharedUser
               key={user.id}
               id={user.id}
