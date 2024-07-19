@@ -12,7 +12,7 @@ const isFitFilters = (todo: TodoItem) => {
     store.getState().query;
   const { list, totalTodos } = store.getState().todos;
 
-  if (selectedSharers && !selectedSharers.includes(todo.creatorId)) {
+  if (selectedSharers.length && !selectedSharers.includes(todo.creatorId)) {
     return false;
   }
 

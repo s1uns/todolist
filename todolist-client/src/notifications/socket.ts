@@ -33,7 +33,6 @@ const socket = io(url, {
 
 socket.on(SOCKET_ACTION, (action: SocketAction) => {
   const { type, data } = action;
-
   switch (type) {
     case SOCKET_TODO_CREATION:
       store.dispatch(todoCreationAction(data.newTodo!));

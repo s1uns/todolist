@@ -69,7 +69,7 @@ function* workChangeSharedStatus({
   const { userId } = yield select(getUser);
 
   if (payload.isShared) {
-    if (payload.userId !== userId) {
+    if (payload.receiverId === userId) {
       toast.info(
         ReloadMessage({
           message: `${payload.author} shared his todos with you!`
@@ -77,9 +77,9 @@ function* workChangeSharedStatus({
       );
     }
   } else {
-    yield put(clearAuthorsTodosSuccess(payload.userId));
+    yield put(clearAuthorsTodosSuccess(payload.sharerId));
 
-    if (payload.userId !== userId) {
+    if (payload.receiverId === userId) {
       toast.info(`${payload.author} stopped sharing his todos with you!`);
     }
   }

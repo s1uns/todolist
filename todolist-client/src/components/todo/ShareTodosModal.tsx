@@ -71,6 +71,10 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
     }
   }, [open, currentPage, debouncedQuery]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedQuery]);
+
   const handleChangePage = (e: ChangeEvent<unknown>, newPage: number) => {
     setCurrentPage(newPage);
   };
@@ -125,7 +129,7 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
         <UsersPagination
           size="large"
           count={totalPages}
-          defaultPage={1}
+          page={currentPage}
           variant="outlined"
           shape="rounded"
           onChange={handleChangePage}

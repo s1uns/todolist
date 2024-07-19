@@ -1,5 +1,6 @@
 export type SocketShareTodosPayload = {
-  userId: string;
+  sharerId: string;
+  receiverId: string;
   author: string;
   isShared: boolean;
 };
