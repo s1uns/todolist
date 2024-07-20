@@ -71,6 +71,10 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
     setInputValue(searchQuery);
   };
 
+  const handleChangePage = (e: ChangeEvent<unknown>, newPage: number) => {
+    dispatch(setCurrentPageRequest(newPage));
+  };
+
   useEffect(() => {
     if (open) {
       dispatch(getAvailableUsersRequest());
@@ -80,10 +84,6 @@ const ShareTodosModal = ({ open, onClose }: ShareTodosModalProps) => {
   useEffect(() => {
     dispatch(setSearchQueryRequest(debouncedQuery));
   }, [debouncedQuery]);
-
-  const handleChangePage = (e: ChangeEvent<unknown>, newPage: number) => {
-    dispatch(setCurrentPageRequest(newPage));
-  };
 
   return (
     <Modal
