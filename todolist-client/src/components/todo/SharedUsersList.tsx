@@ -1,13 +1,14 @@
 import styled from "@emotion/styled";
 import SearchIcon from "@mui/icons-material/Search";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { getTodosSharers } from "../../api/user";
 import useDebounce from "../../hooks/common/useDebounce";
 import { handleSharedUserRequest } from "../../store/actions/queryActions";
-import { getUser } from "../../store/slices/authSlice";
+import {
+  getSharersRequest,
+  setSearchQueryRequest
+} from "../../store/actions/sharersActions";
 import { RootState, useAppDispatch } from "../../store/store";
-import { TodosSharersCollection } from "../../types/user/TodosSharersCollection";
 import CheckBox from "../common/CheckBox";
 import Input from "../common/Input";
 import IntersectionObserverComponent from "../common/IntersectionObserverComponent";
@@ -44,12 +45,12 @@ const UserInfoContainer = (props: UserInfoProps) => {
 };
 
 const SharedUsersContainer = () => {
-  const { userId, username } = useSelector(getUser);
+  const dispatch = useAppDispatch();
   const [searchValue, setSearchValue] = useState<string>("");
-  const [sharedUsers, setSharedUsers] = useState<TodosSharersCollection>({
-    list: [],
-    totalUsers: 0
-  });
+  const { list, totalUsers, searchQuery } = useSelector(
+    (state: RootState) => state.sharers
+  );
+  const sharersContainerRef = useRef<HTMLDivElement>(null);
 
   const debouncedQuery = useDebounce(searchValue);
   ``;
@@ -60,34 +61,20 @@ const SharedUsersContainer = () => {
     setSearchValue(searchQuery);
   };
 
-  const fetchMoreUsers = async (overwrite?: boolean) => {
-    const newUsers = await getTodosSharers(
-      overwrite ? 0 : sharedUsers.list.length,
-      debouncedQuery
-    );
-    if (newUsers.data) {
-      setSharedUsers((oldUsers) =>
-        overwrite
-          ? {
-              list: newUsers.data!.list,
-              totalUsers: newUsers.data!.totalUsers
-            }
-          : {
-              list: [...oldUsers.list, ...newUsers.data!.list],
-              totalUsers: newUsers.data!.totalUsers
-            }
-      );
-    }
+  const fetchMoreUsers = async () => {
+    dispatch(getSharersRequest());
   };
 
   useEffect(() => {
-    fetchMoreUsers(true);
+    dispatch(setSearchQueryRequest(debouncedQuery));
   }, [debouncedQuery]);
 
-  const hasMore = useMemo(
-    () => sharedUsers.list.length < sharedUsers.totalUsers,
-    [sharedUsers]
-  );
+  useEffect(() => {
+    sharersContainerRef.current?.scroll(0, 0);
+    dispatch(getSharersRequest(true));
+  }, [searchQuery]);
+
+  const hasMore = useMemo(() => list.length < totalUsers, [list, totalUsers]);
   return (
     <StyledSharedUsersContainer>
       <Input
@@ -98,9 +85,9 @@ const SharedUsersContainer = () => {
         onChange={handleChangeSearchQuery}
         autoFocus={true}
       />
-      <UsersListContainer>
+      <UsersListContainer ref={sharersContainerRef}>
         <div>
-          {sharedUsers.list.map((user) => (
+          {list.map((user) => (
             <UserInfoContainer
               key={user.id}
               userId={user.id}

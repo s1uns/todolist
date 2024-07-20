@@ -24,6 +24,8 @@ import getTodoToDelete from "../../utils/helpers/getTodoToDelete";
 import isFitFilters from "../../utils/helpers/isFitFilters";
 import shouldMoveTodo from "../../utils/helpers/shouldMoveTodo";
 import { getUser } from "../slices/authSlice";
+import { handleTodosSharerSuccess } from "../slices/querySlice";
+import { addSharerSuccess, deleteSharerSuccess } from "../slices/sharersSlice";
 import {
   clearAuthorsTodosSuccess,
   clearCompletedSuccess,
@@ -68,7 +70,9 @@ function* workChangeSharedStatus({
   payload
 }: PayloadAction<SocketShareTodosPayload>) {
   const { userId } = yield select(getUser);
-  const { list } = yield select((state: RootState) => state.availableUsers);
+  const { list, totalUsers } = yield select(
+    (state: RootState) => state.sharers
+  );
 
   if (payload.sharerId === userId) {
     yield put(
@@ -81,15 +85,29 @@ function* workChangeSharedStatus({
 
   if (payload.receiverId === userId) {
     if (payload.isShared) {
+      if (list.length === totalUsers) {
+        yield put(
+          addSharerSuccess({
+            id: payload.sharerId,
+            username: payload.sharerUsername,
+            fullName: payload.sharerFullname
+          })
+        );
+      }
+
       toast.info(
         ReloadMessage({
-          message: `${payload.author} shared his todos with you!`
+          message: `${payload.sharerFullname} shared his todos with you!`
         })
       );
     } else {
+      yield put(handleTodosSharerSuccess(payload.sharerId));
+      yield put(deleteSharerSuccess(payload.sharerId));
       yield put(clearAuthorsTodosSuccess(payload.sharerId));
 
-      toast.info(`${payload.author} stopped sharing his todos with you!`);
+      toast.info(
+        `${payload.sharerFullname} stopped sharing his todos with you!`
+      );
     }
   }
 }

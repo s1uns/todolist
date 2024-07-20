@@ -7,6 +7,7 @@ import storage from "redux-persist/es/storage";
 import createSagaMiddleware from "redux-saga";
 import authReducer from "./slices/authSlice";
 import queryReducer from "./slices/querySlice";
+import sharersReducer from "./slices/sharersSlice";
 import todosReducer from "./slices/todosSlice";
 import usersReducer from "./slices/usersSlice";
 
@@ -29,7 +30,8 @@ const store = configureStore({
     user: persistedReducer,
     todos: todosReducer,
     query: queryReducer,
-    availableUsers: usersReducer
+    availableUsers: usersReducer,
+    sharers: sharersReducer
   },
   devTools: true,
   middleware: (getDefaultMiddleware) =>
