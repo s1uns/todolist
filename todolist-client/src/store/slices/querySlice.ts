@@ -50,6 +50,22 @@ const querySlice = createSlice({
       };
     },
 
+    deleteTodosSharerSuccess: (state, action: PayloadAction<string>) => {
+      const newUserId = action.payload;
+
+      const newSelectedUsersList = [...state.selectedSharers].filter(
+        (userId) => userId !== newUserId
+      );
+
+      return {
+        currentFilter: state.currentFilter,
+        searchQuery: state.searchQuery,
+        sortBy: state.sortBy,
+        isAscending: state.isAscending,
+        selectedSharers: newSelectedUsersList
+      };
+    },
+
     setQuerySuccess: (state, action: PayloadAction<Query>) => {
       const { currenFilter, searchQuery } = action.payload;
 
@@ -93,6 +109,7 @@ export const {
   setSearchQuerySuccess,
   setQuerySuccess,
   handleTodosSharerSuccess,
-  setSortingSuccess
+  setSortingSuccess,
+  deleteTodosSharerSuccess
 } = querySlice.actions;
 export default querySlice.reducer;

@@ -24,7 +24,6 @@ import getTodoToDelete from "../../utils/helpers/getTodoToDelete";
 import isFitFilters from "../../utils/helpers/isFitFilters";
 import shouldMoveTodo from "../../utils/helpers/shouldMoveTodo";
 import { getUser } from "../slices/authSlice";
-import { handleTodosSharerSuccess } from "../slices/querySlice";
 import { addSharerSuccess, deleteSharerSuccess } from "../slices/sharersSlice";
 import {
   clearAuthorsTodosSuccess,
@@ -35,6 +34,7 @@ import {
 } from "../slices/todosSlice";
 import { updateUserSuccess } from "../slices/usersSlice";
 import { RootState } from "../store";
+import { deleteTodosSharerSuccess } from "../slices/querySlice";
 
 function* workRefreshConnection() {
   const { userId } = yield select(getUser);
@@ -101,7 +101,7 @@ function* workChangeSharedStatus({
         })
       );
     } else {
-      yield put(handleTodosSharerSuccess(payload.sharerId));
+      yield put(deleteTodosSharerSuccess(payload.sharerId));
       yield put(deleteSharerSuccess(payload.sharerId));
       yield put(clearAuthorsTodosSuccess(payload.sharerId));
 
