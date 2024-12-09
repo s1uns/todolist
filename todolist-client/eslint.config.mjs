@@ -1,9 +1,9 @@
-import react from "eslint-plugin-react";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
-import globals from "globals";
-import reactRecommended from "eslint-plugin-react/configs/recommended.js";
 import eslintConfigPrettier from "eslint-config-prettier";
+import react from "eslint-plugin-react";
+import reactRecommended from "eslint-plugin-react/configs/recommended.js";
+import globals from "globals";
 
 export default [
   {
@@ -35,7 +35,8 @@ export default [
       react
     },
     rules: {
-      semi: "error"
+      semi: "error",
+      "typescriptEslint/no-explicit-any": "error"
     }
   },
   eslintConfigPrettier

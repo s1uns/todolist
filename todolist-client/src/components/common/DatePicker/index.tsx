@@ -1,30 +1,59 @@
-import ReactDatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { Typography } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
-import { Container } from "@mui/material";
-import { DatePickerProps } from "./types";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FC } from "react";
 
+import styled from "@emotion/styled";
+import {
+  DateValidationError,
+  LocalizationProvider,
+  DatePicker as MuiDatePicker,
+  PickerChangeHandlerContext
+} from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { FieldInputProps } from "formik";
+
+interface DatePickerProps {
+  label: string;
+  placeholder: string;
+  value: Dayjs;
+  field?: FieldInputProps<Dayjs>;
+  error?: string;
+
+  onChange?: (
+    value: Dayjs | null,
+    context: PickerChangeHandlerContext<DateValidationError>
+  ) => void;
+}
+
 const DatePicker: FC<DatePickerProps> = (props: DatePickerProps) => {
-  const { placeholder, onChange } = props;
+  const { label, placeholder, field, value, error, onChange } = props;
+
+  const pickerValue = field
+    ? dayjs(field.value)
+    : value
+      ? dayjs(value)
+      : dayjs(new Date());
 
   return (
-    <Container sx={{ width: "50%" }}>
-      <InputLabel className="form-label">{placeholder}</InputLabel>
+    <DatePickerContainer>
+      <InputLabel className="form-label">{label}</InputLabel>
 
-      <ReactDatePicker
-        className="input"
-        dateFormat="dd.MM.yyyy"
-        showPopperArrow={false}
-        showMonthDropdown
-        dropdownMode="select"
-        onChange={(value) => {
-          onChange(value!);
-        }}
-        todayButton="Today"
-      />
-    </Container>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <MuiDatePicker
+          label={placeholder}
+          name="birthDate"
+          value={pickerValue}
+          onChange={onChange}
+        />
+      </LocalizationProvider>
+      <Typography color="error">{error ? error : "\u00A0"}</Typography>
+    </DatePickerContainer>
   );
 };
 
 export default DatePicker;
+
+const DatePickerContainer = styled.div`
+  width: 50%;
+`;
